@@ -20,8 +20,10 @@ set -e
 
 cd "$_WEBPACKDIR"
 
-mkdir -p "$_ROOT/public/dist"
-if [ -e dist ]; then echo 'dist symlink already exist'; else ln -s ../public/dist dist; fi
+mkdir -p override
+
+#mkdir -p "$_ROOT/public/dist"
+#if [ -e dist ]; then echo 'dist symlink already exist'; else ln -s ../public/dist dist; fi
 
 node roderic/preprocessor.js
 

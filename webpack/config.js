@@ -3,16 +3,18 @@ require('./roderic/restrict-to-node')(__filename);
 
 const path              = require("path");
 
-const root              = path.resolve(__dirname);
+const webpack           = path.resolve(__dirname);
+
+const root              = path.resolve(webpack, '..');
 
 // relative path to public server directory
-const web               = path.resolve(root, 'dist');
+const output            = path.resolve(root, 'public', 'dist');
 
-const node_modules      = path.join(root, 'node_modules');
+const node_modules      = path.join(webpack, 'node_modules');
 
-const app               = path.resolve(root, 'src');
+const app               = path.resolve(webpack, 'src');
 
-const override          = path.resolve(root, 'override');
+const override          = path.resolve(webpack, 'override');
 
 require('dotenv-up')({
   override    : false,
@@ -21,16 +23,14 @@ require('dotenv-up')({
 
 const env               = require('./roderic/dotenv');
 
-const webpack           = __dirname;
-
 module.exports = mode => ({
   // just name for this project, it's gonna show up in some places
   name: env('DOCKER_IMAGE_NAME_PROD'),
   root,
-  web,
   app,
   webpack,
   node_modules,
+  output,
   resolve: [ // where to search by require and files to watch
 
     app,
@@ -44,7 +44,6 @@ module.exports = mode => ({
       app,
       // ...
     ],
-    outputForWeb    : web,
   },
 });
 

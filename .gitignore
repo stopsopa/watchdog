@@ -5,3 +5,4 @@ node_modules
 /webpack/dist
 preprocessed.js
 /public/public
+yarn-error.log

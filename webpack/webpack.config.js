@@ -8,21 +8,32 @@ const webpack               = require('webpack');
 
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
+const TerserPlugin = require('terser-webpack-plugin');
+
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
 const log                   = require('inspc');
 
-const config                = require(path.resolve(__dirname, 'config.js'))(process.env.NODE_ENV);
+const config                = require('./config.js')(process.env.NODE_ENV);
 
 require('colors');
 
 utils.setup(config);
 
-log.dump({
-  'process.env.NODE_ENV': process.env.NODE_ENV
-})
+const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = {
+  // I'm using mode 'prod..' setting DefinePlugin manually to get rid of evals from transpiled output
+  // more info: https://webpack.js.org/guides/production/#specify-the-mode
+  //            https://webpack.js.org/configuration/mode/#mode-production
   mode: 'production',
+
   entry: utils.entries(),
+  output: { // https://webpack.js.org/configuration/output/#outputpath
+    path: config.output,
+    filename: "[name].bundle.js",
+  },
+
   module: {
     rules: [
       {
@@ -58,10 +69,19 @@ module.exports = {
     ]
   },
   optimization: {
-    minimize: process.env.NODE_ENV === 'production',
+    minimize: isProd,
   },
   plugins: [
-    new MiniCssExtractPlugin(), // https://webpack.js.org/plugins/mini-css-extract-plugin/#root
+    // https://webpack.js.org/guides/production/
+    // https://webpack.js.org/guides/output-management/#cleaning-up-the-dist-folder
+    new CleanWebpackPlugin(),
+
+    new MiniCssExtractPlugin({
+      // Options similar to the same options in webpackOptions.output
+      // both options are optional
+      filename: `[name].bundle.css`,
+      // chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
+    }), // https://webpack.js.org/plugins/mini-css-extract-plugin/#root
     new webpack.DefinePlugin({ // https://webpack.js.org/plugins/define-plugin/
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
     }),
