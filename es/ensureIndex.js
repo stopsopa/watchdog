@@ -1,5 +1,5 @@
 
-const estool = require('./lib/es');
+const estool = require('./es');
 
 const mappings = require('./mapping');
 

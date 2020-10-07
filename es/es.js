@@ -9,7 +9,7 @@ const isObject = require('nlab/isObject');
 
 const log = require('inspc');
 
-const jsonfetch = require('./jsonfetch');
+const jsonfetch = require('../lib/jsonfetch');
 
 const th = msg => new Error(`es.js error: ${msg}`);
 

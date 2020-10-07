@@ -33,7 +33,6 @@ module.exports = {
     path: config.output,
     filename: "[name].bundle.js",
   },
-
   module: {
     rules: [
       {

@@ -122,7 +122,7 @@ const host = env('NODE_HOST');
 
 const estool = (async function () {
 
-  const estool                = require('./lib/es');
+  const estool                = require('./es/es');
 
   estool.init({
     default: {
@@ -136,7 +136,7 @@ const estool = (async function () {
 
   await delay(1000);
 
-  const ensureIndex = require('./ensureIndex');
+  const ensureIndex = require('./es/ensureIndex');
 
   const es = estool('default', true);
 
