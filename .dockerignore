@@ -1,0 +1,17 @@
+/logs/*
+!/logs/.gitignore
+node_modules
+/test/
+*-tmp-*
+.nvmrc
+Dockerfile.*
+Examples.txt
+Makefile
+README.md
+test.sh
+.env
+/public/dist/dist
+/webpack/dist
+/webpack/node_modules/
+#/webpack/package.json
+preprocessed.js

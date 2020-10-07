@@ -1,0 +1,101 @@
+
+body {
+    padding: 20px;
+}
+.main {
+    display: flex;
+}
+
+.leftBlock {
+    width: 50%;
+    display: inline-block;
+}
+.leftBlock > div {
+    min-height: 36px;
+
+}
+.leftBlock > div > span.label,
+.leftBlock > div > label {
+    width: 130px;
+    display: inline-block;
+    vertical-align: top;
+    line-height: 26px;
+}
+.leftBlock > div > .right {
+    width: calc(100% - 140px);
+    display: inline-block;
+}
+
+.leftBlock > div.timeout input[type="text"] {
+    width: 100px;
+    margin-right: 20px;
+}
+.leftBlock > div.timeout > .right .extra-control {
+    width: 300px;
+    display: inline-block;
+}
+
+.leftBlock > div.limitRedirections input[type="text"] {
+    width: 100px;
+    margin-right: 20px;
+}
+.leftBlock > div.limitRedirections > .right .extra-control {
+    width: 300px;
+    display: inline-block;
+}
+
+.leftBlock > div.waitUntil label {
+    display: block;
+}
+.leftBlock > div.waitUntil label input {
+    margin-right: 20px;
+}
+
+.leftBlock > div.blockImages label {
+    display: block;
+}
+.leftBlock > div.blockImages label input {
+    margin-right: 20px;
+}
+
+.send button {
+    margin-right: 20px;
+}
+
+#url {
+    width: 100%;
+}
+.red {
+    color: red;
+}
+
+/* code */
+
+.code {
+    width: 45%;
+    display: inline-block;
+}
+textarea {
+    width: 90%;
+    /*min-height: 327px;*/
+    color: white;
+    background-color: #484848;
+    font-family: monospace;
+}
+.result .tabs label {
+    margin-left: 20px;
+}
+.result .tabs input {
+    margin-right: 10px;
+}
+pre.html {
+    font-family: monospace;
+    font-size: 12px;
+}
+
+.relative {
+    position: relative;
+}
+.absolute {
+    position: absolute;
+}

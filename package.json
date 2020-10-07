@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "basic-auth": "^2.0.1",
+    "compression": "^1.7.4",
+    "dotenv-up": "^1.0.30",
+    "express": "^4.17.1",
+    "inspc": "^0.0.19",
+    "lodash": "^4.17.20",
+    "nlab": "^0.0.80",
+    "serialize-error": "^7.0.1"
+  }
+}
