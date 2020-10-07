@@ -41,24 +41,28 @@ module.exports = {
       },
       {
         test: /\.s[ac]ss$/i,
+        // include: [
+        //   config.node_modules,
+        //   // path.resolve(__dirname, 'path/to/imported/file/dir'),
+        // ],
         use: [
           // // Creates `style` nodes from JS strings
           // 'style-loader', i will relay on MiniCssExtractPlugin
           MiniCssExtractPlugin.loader,
           // Translates CSS into CommonJS
-          'css-loader',
+          'css-loader', // https://webpack.js.org/loaders/css-loader/
           // Compiles Sass to CSS
-          'sass-loader',
+          'sass-loader', // https://webpack.js.org/loaders/sass-loader/#root
         ],
       },
     ]
   },
   optimization: {
-    minimize: false,
+    minimize: process.env.NODE_ENV === 'production',
   },
   plugins: [
-    new MiniCssExtractPlugin(),
-    new webpack.DefinePlugin({
+    new MiniCssExtractPlugin(), // https://webpack.js.org/plugins/mini-css-extract-plugin/#root
+    new webpack.DefinePlugin({ // https://webpack.js.org/plugins/define-plugin/
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
     }),
   ],

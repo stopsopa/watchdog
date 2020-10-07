@@ -4,3 +4,4 @@ node_modules
 /public/dist/
 /webpack/dist
 preprocessed.js
+/public/public

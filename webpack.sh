@@ -10,13 +10,18 @@ function clean {
 
 trap clean EXIT;
 
-cd "$_WEBPACKDIR"
-
 set -x
 set -e
 
+(
+  cd "$_ROOT/public"
+  if [ -e public ]; then echo 'dist symlink already exist'; else ln -s ../webpack/node_modules public; fi
+)
+
+cd "$_WEBPACKDIR"
+
 mkdir -p "$_ROOT/public/dist"
-ln -s ../public/dist dist || true
+if [ -e dist ]; then echo 'dist symlink already exist'; else ln -s ../public/dist dist; fi
 
 node roderic/preprocessor.js
 
