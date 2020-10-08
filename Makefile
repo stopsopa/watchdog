@@ -17,3 +17,6 @@ preprocess:
 # prod or dev
 server:
 	node server.js
+
+dev:
+	nodemon server.js

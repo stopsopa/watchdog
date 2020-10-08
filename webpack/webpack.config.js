@@ -1,20 +1,20 @@
 'use strict';
 
-const path                  = require('path');
+const path                    = require('path');
 
-const utils                 = require('./roderic/utils');
+const utils                   = require('./roderic/utils');
 
-const webpack               = require('webpack');
+const webpack                 = require('webpack');
 
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const MiniCssExtractPlugin    = require('mini-css-extract-plugin');
 
-const TerserPlugin = require('terser-webpack-plugin');
+const TerserPlugin            = require('terser-webpack-plugin');
 
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const { CleanWebpackPlugin }  = require('clean-webpack-plugin');
 
-const log                   = require('inspc');
+const log                     = require('inspc');
 
-const config                = require('./config.js')(process.env.NODE_ENV);
+const config                  = require('./config.js')(process.env.NODE_ENV);
 
 require('colors');
 
