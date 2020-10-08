@@ -23,7 +23,7 @@ import log from 'inspc';
  *
  *
  * NOTICE: IDE completion works with this one better
- * 
+ *
   import {
     StoreContext as StoreContextAssoc,
     setStoreAssocSet,

@@ -13,13 +13,16 @@ import log from 'inspc';
 
 import { StoreProjectsProvider } from './_storage/storeProjects';
 import { StoreAssocProvider } from './_storage/storeAssoc';
+import { StoreSocketProvider } from './_storage/storeSocket';
 
 import App from './App';
 
 const Main = () => (
   <StoreAssocProvider>
     <StoreProjectsProvider>
-      <App />
+      <StoreSocketProvider>
+        <App />
+      </StoreSocketProvider>
     </StoreProjectsProvider>
   </StoreAssocProvider>
 )

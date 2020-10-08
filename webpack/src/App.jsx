@@ -26,13 +26,11 @@ import {
 
 import * as storeAssoc from './_storage/storeAssoc';
 
-import io from 'socket.io-client';
+import * as storeSocket from './_storage/storeSocket';
 
 let i = 0;
 
 export default function App() {
-
-  const [ socket, setSocket ] = useState(false);
 
   const [ basic, setBasic ] = useState(false);
 
@@ -44,6 +42,10 @@ export default function App() {
     state: stateAssoc,
     setStoreAssocSet,
   } = React.useContext(storeAssoc.StoreContext);
+
+  const {
+    state: socket,
+  } = React.useContext(storeSocket.StoreContext);
 
   useEffect(() => {
 
@@ -59,26 +61,6 @@ export default function App() {
       }
 
     }());
-
-    const socket = io();
-
-    setSocket(socket);
-
-    window.socket = socket;
-
-    socket.on('connect', () => {
-      log.dump('connected to server')
-    });
-
-    socket.on('disconnect', () => {
-      log.dump('disconnect from server')
-    });
-
-    socket.on('abc', abc => {
-      log.dump({
-        abc
-      })
-    })
 
   }, []);
 
