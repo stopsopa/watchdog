@@ -17,15 +17,17 @@ const {serializeError, deserializeError} = require('serialize-error');
 
 import Textarea from './Textarea.jsx';
 
-import './ttt.scss'
-
 import { Button } from 'semantic-ui-react'
+
+import io from 'socket.io-client';
 
 const Main = () => {
 
   const [ loading, setLoading ] = useState(false);
 
   const [ basic, setBasic ] = useState(false);
+
+  const [ socket, setSocket ] = useState(false);
 
   useEffect(() => {
 
@@ -41,6 +43,23 @@ const Main = () => {
       }
 
     }());
+
+    const socket = io();
+
+    setSocket(socket);
+
+    window.socket = socket;
+
+    log.dump({
+      socket,
+    })
+
+    socket.on('abc', abc => {
+      log.dump({
+        abc
+      })
+    })
+
   }, []);
 
   return (

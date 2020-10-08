@@ -20,6 +20,13 @@ const {serializeError, deserializeError} = require('serialize-error');
 
 const app = express();
 
+const server    = require('http').createServer(app);
+
+const io        = require('socket.io')(server); // io
+
+// https://stackoverflow.com/a/37159364/5560682
+io.use(require('socketio-wildcard')());
+
 app.set('json spaces', 4);
 
 app.use(express.urlencoded({extended: false}));
@@ -179,10 +186,20 @@ app.all('/geo', async (req, res) => {
   }
 });
 
-app.listen(port, host, () => {
+app.use(require('./webpack/src/io')({
+  io
+}));
 
-  console.log(`Running ${host}:${port}\n`);
-});
+// for sockets
+server.listen( // ... we have to listen on server
+  port,
+  host,
+  undefined, // io -- this extra parameter
+  () => {
+    console.log(`\n 🌎  Server is running ` + ` ${host}:${port} ` + "\n")
+  }
+);
+
 
 
 

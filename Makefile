@@ -5,10 +5,10 @@ npm-jest:
 jest:
 	@echo "\nrun:\n    /bin/bash test.sh --help\n"
 
-wpck-build:
+wprod:
 	/bin/bash webpack.sh
 
-wpck-dev:
+wdev:
 	/bin/bash webpack.sh dev
 
 preprocess:

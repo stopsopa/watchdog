@@ -7,6 +7,8 @@
     "inspc": "^0.0.19",
     "lodash": "^4.17.20",
     "nlab": "^0.0.80",
-    "serialize-error": "^7.0.1"
+    "serialize-error": "^7.0.1",
+    "socket.io": "^2.3.0",
+    "socketio-wildcard": "^2.0.0"
   }
 }
