@@ -33,10 +33,16 @@ module.exports = {
     path: config.output,
     filename: "[name].bundle.js",
   },
+
+  node: {
+    // https://github.com/webpack/webpack/issues/1599
+    __dirname: true,
+    __filename: true
+  },
   module: {
     rules: [
       {
-        test: /\.jsx$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
@@ -69,6 +75,9 @@ module.exports = {
   },
   optimization: {
     minimize: isProd,
+  },
+  resolve: {
+    extensions: [".js", ".jsx"],
   },
   plugins: [
     // https://webpack.js.org/guides/production/

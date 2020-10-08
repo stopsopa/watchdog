@@ -1,5 +1,9 @@
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useRef
+} from 'react';
 
 import { render } from 'react-dom';
 
@@ -11,23 +15,35 @@ import { render } from 'react-dom';
 
 import log from 'inspc';
 
-const now = () => (new Date()).toISOString().substring(0, 19).replace('T', ' ').replace(/[^\d]/g, '-');
-
-const {serializeError, deserializeError} = require('serialize-error');
-
 import Textarea from './Textarea.jsx';
 
-import { Button } from 'semantic-ui-react'
+import { Button } from 'semantic-ui-react';
+
+import {
+  StoreContext as StoreContextProjects,
+  fetchDataAction,
+} from './_storage/storeProjects';
+
+import * as storeAssoc from './_storage/storeAssoc';
 
 import io from 'socket.io-client';
 
-const Main = () => {
+let i = 0;
 
-  const [ loading, setLoading ] = useState(false);
+export default function App() {
+
+  const [ socket, setSocket ] = useState(false);
 
   const [ basic, setBasic ] = useState(false);
 
-  const [ socket, setSocket ] = useState(false);
+  const {
+    state: stateProjects,
+  } = React.useContext(StoreContextProjects);
+
+  const {
+    state: stateAssoc,
+    setStoreAssocSet,
+  } = React.useContext(storeAssoc.StoreContext);
 
   useEffect(() => {
 
@@ -50,14 +66,9 @@ const Main = () => {
 
     window.socket = socket;
 
-    log.dump({
-      socket,
-    })
-
     socket.on('connect', () => {
       log.dump('connected to server')
     });
-
 
     socket.on('disconnect', () => {
       log.dump('disconnect from server')
@@ -71,11 +82,16 @@ const Main = () => {
 
   }, []);
 
+  useEffect(() => {
+    stateProjects.projects.length === 0 && fetchDataAction();
+  }, []);
+
   return (
     <>
-      <Button>Click Here</Button>
+      <Button onClick={() => setStoreAssocSet(`key${i}`, `val${i++}`)}>Click Here</Button>
       <br />
-      {basic && <Textarea defaultValue={(`
+      {basic && <Textarea
+        defaultValue={(`
 fetch('/scrapper', {
     method: 'POST',
     credentials: 'omit',
@@ -84,13 +100,15 @@ fetch('/scrapper', {
     },
     body: JSON.stringify()
 })  
-`)} spellCheck={false} correct={10} />}
+`)}
+        spellCheck={false}
+        correct={10}
+      />}
+
+      <pre>{JSON.stringify(stateProjects, null, 4)}</pre>
+      <pre>{JSON.stringify(stateAssoc, null, 4)}</pre>
     </>
-  )
+  );
 }
 
-render(
-  <Main />,
-  document.getElementById('app')
-);
 

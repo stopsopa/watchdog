@@ -51,7 +51,11 @@ node ../node_modules/.bin/webpack
 if [ "$1" = "dev" ]; then
 
 node ../node_modules/.bin/onchange \
-  'src/**/*.entry.jsx' \
+  '**/*.js' \
+  '**/*.jsx' \
+  '**/*.html' \
+  '**/*.css' \
+  '**/*.scss' \
   --exclude-path .prettierignore \
   -- \
   node ../node_modules/.bin/webpack
