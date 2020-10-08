@@ -3,6 +3,18 @@ _ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 
 _WEBPACKDIR="$_ROOT/webpack";
 
+if ! [ -f "$_ROOT/.env" ]; then
+
+  cp "$_ROOT/.env.dist" "$_ROOT/.env"
+fi
+
+if ! [ -f "$_ROOT/.env" ]; then
+
+  echo "$_ROOT/.env doesn't exist"
+
+  exit
+fi
+
 function clean {
 
   cd "$_ROOT"
@@ -15,7 +27,7 @@ set -e
 
 (
   cd "$_ROOT/public"
-  if [ -e public ]; then echo 'dist symlink already exist'; else ln -s ../webpack/node_modules public; fi
+  if [ -e public ]; then echo 'dist symlink already exist'; else ln -s ../node_modules public; fi
 )
 
 cd "$_WEBPACKDIR"
@@ -34,15 +46,15 @@ if [ "$1" = "dev" ]; then
   export NODE_ENV="development"
 fi
 
-node node_modules/.bin/webpack
+node ../node_modules/.bin/webpack
 
 if [ "$1" = "dev" ]; then
 
-node node_modules/.bin/onchange \
+node ../node_modules/.bin/onchange \
   'src/**/*.entry.jsx' \
   --exclude-path .prettierignore \
   -- \
-  node node_modules/.bin/webpack
+  node ../node_modules/.bin/webpack
 
 fi
 

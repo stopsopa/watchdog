@@ -54,6 +54,15 @@ const Main = () => {
       socket,
     })
 
+    socket.on('connect', () => {
+      log.dump('connected to server')
+    });
+
+
+    socket.on('disconnect', () => {
+      log.dump('disconnect from server')
+    });
+
     socket.on('abc', abc => {
       log.dump({
         abc

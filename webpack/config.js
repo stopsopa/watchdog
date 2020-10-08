@@ -10,7 +10,7 @@ const root              = path.resolve(webpack, '..');
 // relative path to public server directory
 const output            = path.resolve(root, 'public', 'dist');
 
-const node_modules      = path.join(webpack, 'node_modules');
+const node_modules      = path.resolve(root, 'node_modules');
 
 const app               = path.resolve(webpack, 'src');
 

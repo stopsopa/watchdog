@@ -5,7 +5,7 @@ npm-jest:
 jest:
 	@echo "\nrun:\n    /bin/bash test.sh --help\n"
 
-wprod:
+wprod: yarndev
 	/bin/bash webpack.sh
 
 wdev:
@@ -20,3 +20,9 @@ server:
 
 dev:
 	nodemon server.js
+
+yarnprod:
+	export NODE_ENV=production && yarn
+
+yarndev:
+	yarn

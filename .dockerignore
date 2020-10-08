@@ -5,13 +5,8 @@ node_modules
 *-tmp-*
 .nvmrc
 Dockerfile.*
-Examples.txt
 Makefile
 README.md
-test.sh
+/public/public
 .env
-/public/dist/dist
-/webpack/dist
-/webpack/node_modules/
-#/webpack/package.json
 preprocessed.js
