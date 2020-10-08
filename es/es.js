@@ -30,6 +30,7 @@ const th = msg => new Error(`es.js error: ${msg}`);
       port        : parseInt(env('PROTECTED_ES_DEFAULT_PORT'), 10),
       username    : process.env.PROTECTED_ES_DEFAULT_USERNAME, // because es.js might work with servers without credentials (uprotected server)
       password    : process.env.PROTECTED_ES_DEFAULT_PASSWORD,
+      prefix      : process.env.PROTECTED_ES_DEFAULT_INDEX_PREFIX,
     }
   });
  *
@@ -78,10 +79,18 @@ const tool = ses => {
 
     const reg = /^https?:\/\//i;
 
-    const {
+    let {
         domain,
         auth,
+        prefix = '',
     } = config;
+
+    if ( typeof prefix !== 'string' || !prefix.trim() ) {
+
+        prefix = '';
+    }
+
+    prefix = prefix.trim();
 
     /**
      * Examples:
@@ -96,7 +105,7 @@ const tool = ses => {
      *        method: 'PUT'
      *      })
      */
-    return (path, opt = {}) => {
+    const tool = (path, opt = {}) => {
 
         if ( ! reg.test(path) ) {
 
@@ -115,6 +124,10 @@ const tool = ses => {
             ...rest,
         });
     }
+
+    tool.prefix = name => (`${prefix}${name}`);
+
+    return tool;
 }
 
 const validate = (name, value, type = 'string') => {
@@ -165,6 +178,7 @@ tool.init = list => {
                 port,
                 username,
                 password,
+                prefix,
             } = list[key];
 
             tool.setup(
@@ -173,6 +187,7 @@ tool.init = list => {
                 port,
                 username,
                 password,
+                prefix,
                 key,
             );
         })
@@ -181,7 +196,7 @@ tool.init = list => {
     console && console.log && console.log(`\nconfiguration for es.js library not found\n`);
 }
 
-tool.setup = (schema, host, port, username, password, sessionName) => {
+tool.setup = (schema, host, port, username, password, prefix, sessionName) => {
 
     if ( ! sessionName ) {
 
@@ -214,6 +229,7 @@ tool.setup = (schema, host, port, username, password, sessionName) => {
         schema,
         host,
         port: String(port),
+        prefix,
         domain: `${schema}://${host}` + ( (port === 80) ? `` : `:${port}`),
     };
 

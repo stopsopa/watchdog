@@ -9,6 +9,8 @@ const putMapping = async (index, mapping) => {
 
     const es = estool();
 
+    index = es.prefix(index);
+
     const r = await es(`/${index}`, {
         method: 'PUT',
         body: mapping,
@@ -103,7 +105,9 @@ tool.delete = async () => {
 
         for (let row of mappings) {
 
-            const index = (Object.keys(row))[0];
+            let index = (Object.keys(row))[0];
+
+            index = es.prefix(index);
 
             const response = await es(`/${index}`, {
                 method: "DELETE",

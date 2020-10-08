@@ -131,6 +131,7 @@ const estool = (async function () {
       port        : parseInt(env('PROTECTED_ES_DEFAULT_PORT'), 10),
       username    : process.env.PROTECTED_ES_DEFAULT_USERNAME, // because es.js might work with servers without credentials (uprotected server)
       password    : process.env.PROTECTED_ES_DEFAULT_PASSWORD,
+      prefix      : process.env.PROTECTED_ES_DEFAULT_INDEX_PREFIX,
     }
   });
 
