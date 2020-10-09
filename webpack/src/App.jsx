@@ -52,12 +52,17 @@ export default function App() {
 
     if (socket) {
 
-      socket.on('abc', abc => {
+      const abc = abc => {
+        log.dump({
+          abc,
+        })
         /// ...
-      })
+      };
 
-      return () => {
-        socket.off('abc')
+      socket.on('abc', abc)
+
+      return () => { // https://stackoverflow.com/a/34716449/5560682
+        socket.off('abc', abc)
       }
     }
 

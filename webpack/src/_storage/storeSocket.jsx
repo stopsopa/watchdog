@@ -23,20 +23,23 @@ import log from 'inspc';
     state: socket,
   } = useContext(storeSocket.StoreContext);
 
-  useEffect(() => {
 
-    if (socket) {
+   useEffect(() => {
 
-      socket.on('abc', abc => {
-        /// ...
-      })
+      if (socket) {
 
-      return () => {
-        socket.off('abc')
+        const abc = abc => {
+          /// ...
+        };
+
+        socket.on('abc', abc)
+
+        return () => { // https://stackoverflow.com/a/34716449/5560682
+          socket.off('abc', abc)
+        }
       }
-    }
 
-  }, [socket]);
+    }, [socket]);
  */
 
 export const StoreContext = createContext();
