@@ -22,31 +22,6 @@ const app = express();
 
 const server    = require('http').createServer(app);
 
-const io        = require('socket.io')(server); // io
-
-// https://stackoverflow.com/a/37159364/5560682
-io.use(require('./app/lib/socketio-wildcard')());
-
-require('./app/io').bind({
-  io
-});
-
-(function () {
-
-  const io = require('./app/io');
-
-  const ref = (a, b, c) => {
-    log.dump({
-      "require('./app/io')" : {
-        a, b, c
-      }
-    })
-  };
-
-  io.on('abc', ref)
-
-}());
-
 app.set('json spaces', 4);
 
 app.use(express.urlencoded({extended: false}));
@@ -147,6 +122,29 @@ if ( port < 1 ) {
 
 const host = env('NODE_HOST');
 
+// for sockets
+server.listen( // ... we have to listen on server
+  port,
+  host,
+  undefined, // io -- this extra parameter
+  () => {
+    console.log(`\n 🌎  Server is running ` + ` ${host}:${port} ` + "\n")
+  }
+);
+
+(function () {
+
+  const io        = require('socket.io')(server); // io
+
+// https://stackoverflow.com/a/37159364/5560682
+  io.use(require('./app/lib/socketio-wildcard')());
+
+  require('./app/io').bind({
+    io
+  });
+
+}());
+
 const estool = (async function () {
 
   const estool                = require('./app/es/es');
@@ -184,37 +182,6 @@ const estool = (async function () {
   return estool;
 
 }());
-
-app.all('/geo', async (req, res) => {
-
-  try {
-
-    return res.json({
-      test: true,
-      // data,
-    })
-  }
-  catch (e) {
-
-    log.dump({
-      'server.js error': serializeError(e)
-    });
-
-    return res.status(500).json({
-      e: e.message,
-    });
-  }
-});
-
-// for sockets
-server.listen( // ... we have to listen on server
-  port,
-  host,
-  undefined, // io -- this extra parameter
-  () => {
-    console.log(`\n 🌎  Server is running ` + ` ${host}:${port} ` + "\n")
-  }
-);
 
 
 

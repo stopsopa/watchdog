@@ -47,6 +47,22 @@ const putMapping = async (index, mapping) => {
 
     console.log(r)
 
+    try {
+
+        if ( (r.status === 200 && r.body.acknowledged === true) || r.body.error.type === 'resource_already_exists_exception') {
+
+            // all good
+
+            return true;
+        }
+    }
+    catch (e) {
+
+        log.dump({
+            putMapping_error: 'condition (r.status === 200 && r.body.acknowledged === true) || r.body.error.type === \'resource_already_exists_exception\'   failed'
+        })
+    }
+
     return true;
 }
 
@@ -120,14 +136,16 @@ tool.delete = async () => {
             }, 6)
         }
 
+        console.log("\n\n    all good\n\n")
+
     } catch (e) {
 
         log.dump({
-            ensureindex_error: e
+            delete_es_index_error: e
         }, 3);
-
-        process.exit(1);
     }
+
+    process.exit(0);
 }
 
 module.exports = tool;
