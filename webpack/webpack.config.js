@@ -27,13 +27,11 @@ module.exports = {
   // more info: https://webpack.js.org/guides/production/#specify-the-mode
   //            https://webpack.js.org/configuration/mode/#mode-production
   mode: 'production',
-
   entry: utils.entries(),
   output: { // https://webpack.js.org/configuration/output/#outputpath
     path: config.output,
     filename: "[name].bundle.js",
   },
-
   node: {
     // https://github.com/webpack/webpack/issues/1599
     __dirname: true,

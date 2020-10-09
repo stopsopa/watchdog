@@ -27,8 +27,6 @@ module.exports = (opt = {}) => {
 
   io.on('connection', socket => {
 
-    log('connected...');
-
     // * possible thanks to socketio-wildcard library
     socket.on('*', function(packet) {
 
@@ -38,13 +36,34 @@ module.exports = (opt = {}) => {
 
       let [name, value] = data;
 
-      if ( typeof name === 'string' && /^[ab]:.+/.test(name) ) {
+      if ( typeof name === 'string' && /^s?[ab]s?:.+/.test(name) ) {
 
         name = name.split(':');
 
-        const mode = name.shift();
+        let mode = name.shift();
 
         name = name.join(':');
+
+        let s = trim(mode, 's');
+
+        // log.dump({
+        //   place: '*',
+        //   name,
+        //   mode,
+        //   s,
+        //   'mode !== s': mode !== s
+        // })
+
+        if (mode !== s) {
+
+          mode = s;
+
+          s = true;
+        }
+        else {
+
+          s = false;
+        }
 
         if (mode === 'b') {
 
@@ -60,51 +79,15 @@ module.exports = (opt = {}) => {
 
     socket.on('abc', abc => {
       log.dump({
+
+        serer: 'ggg',
         abc,
       })
     });
 
-    // you can send something here to initialize data in browser
-    // socket.on('init', id => {
-    //
-    //   log('init: ' + id)
-    // });
-    //
-    // socket.on('gethash', async () => {
-    //
-    //   try {
-    //
-    //     const hash = await mrun.generateNewHash();
-    //
-    //     socket.emit('sethash', hash);
-    //   }
-    //   catch (e) {
-    //
-    //     log.dump({
-    //       gethash_error: e
-    //     }, 3)
-    //   }
-    // });
-    //
-    // socket.on('start', async ({
-    //   hash,
-    //   url,
-    // }) => {
-    //
-    //
-    // });
-    //
-    // socket.on('load', async ({
-    //   input,
-    //   hash,
-    //   offset,
-    // }) => {
-
   });
 
   const router = Router();
-
-
 
   return router;
 };

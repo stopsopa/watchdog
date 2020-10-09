@@ -25,7 +25,7 @@ const server    = require('http').createServer(app);
 const io        = require('socket.io')(server); // io
 
 // https://stackoverflow.com/a/37159364/5560682
-io.use(require('socketio-wildcard')());
+io.use(require('./lib/socketio-wildcard')());
 
 app.set('json spaces', 4);
 
