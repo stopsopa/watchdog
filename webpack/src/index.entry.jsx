@@ -19,17 +19,18 @@ import App from './App';
 
 const Main = () => {
 
-  const [ show, setShow ] = useState(true);
+  // const [ show, setShow ] = useState(true);
 
   return (
-    <StoreAssocProvider>
+    <StoreSocketProvider>
       <StoreProjectsProvider>
-        <StoreSocketProvider>
-          <button onClick={() => setShow(!show)}>toggle</button>
-          {show && <App />}
-        </StoreSocketProvider>
+        <StoreAssocProvider>
+          {/*<button onClick={() => setShow(!show)}>toggle</button>*/}
+          {/*{show && <App />}*/}
+          <App />
+        </StoreAssocProvider>
       </StoreProjectsProvider>
-    </StoreAssocProvider>
+    </StoreSocketProvider>
   )
 }
 
