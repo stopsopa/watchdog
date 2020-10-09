@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "basic-auth": "^2.0.1",
+    "cache-loader": "^4.1.0",
     "compression": "^1.7.4",
     "dotenv-up": "^1.0.30",
     "express": "^4.17.1",

@@ -46,20 +46,26 @@ if [ "$1" = "dev" ]; then
   export NODE_ENV="development"
 fi
 
-node "$_ROOT/node_modules/.bin/webpack" --config "$_WEBPACKDIR/webpack.config.js"
-
 if [ "$1" = "dev" ]; then
 
-node "$_ROOT/node_modules/.bin/onchange" \
-  '**/*.js' \
-  '**/*.jsx' \
-  '**/*.html' \
-  '**/*.css' \
-  '**/*.scss' \
-  --exclude-path "$_ROOT/.prettierignore" \
-  -- \
-  node "$_ROOT/node_modules/.bin/webpack" \
+#node "$_ROOT/node_modules/.bin/onchange" \
+#  '**/*.js' \
+#  '**/*.jsx' \
+#  '**/*.html' \
+#  '**/*.css' \
+#  '**/*.scss' \
+#  --exclude-path "$_ROOT/.prettierignore" \
+#  -- \
+#  node "$_ROOT/node_modules/.bin/webpack" \
+#   --config "$_WEBPACKDIR/webpack.config.js"
+
+# https://webpack.js.org/guides/build-performance/#incremental-builds
+node "$_ROOT/node_modules/.bin/webpack" \
+   --watch \
+   --info-verbosity verbose \
    --config "$_WEBPACKDIR/webpack.config.js"
+
+#   --progress \
 
 fi
 

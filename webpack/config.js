@@ -7,6 +7,8 @@ const webpack           = path.resolve(__dirname);
 
 const root              = path.resolve(webpack, '..');
 
+const vardir            = path.resolve(root, 'var');
+
 // relative path to public server directory
 const output            = path.resolve(root, 'public', 'dist');
 
@@ -30,6 +32,7 @@ module.exports = mode => ({
   app,
   webpack,
   node_modules,
+  vardir,
   output,
   resolve: [ // where to search by require and files to watch
 
