@@ -8,6 +8,7 @@
 
 var glob        = require("glob");
 var path        = require("path");
+
 require('colors');
 
 const th = msg => new Error(`utils.js error: ${msg}`);

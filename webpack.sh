@@ -37,7 +37,7 @@ mkdir -p override
 #mkdir -p "$_ROOT/public/dist"
 #if [ -e dist ]; then echo 'dist symlink already exist'; else ln -s ../public/dist dist; fi
 
-node "$_WEBPACKDIR/roderic/preprocessor.js"
+node "$_ROOT/app/lib/preprocessor.js"
 
 export NODE_ENV="production"
 

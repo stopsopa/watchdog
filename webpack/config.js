@@ -1,5 +1,5 @@
 
-require('./roderic/restrict-to-node')(__filename);
+require('./lib/restrict-to-node')(__filename);
 
 const path              = require("path");
 
@@ -14,16 +14,16 @@ const output            = path.resolve(root, 'public', 'dist');
 
 const node_modules      = path.resolve(root, 'node_modules');
 
-const app               = path.resolve(webpack, 'src');
+const app               = path.resolve(root, 'app');
 
-const override          = path.resolve(webpack, 'override');
+const override          = path.resolve(app, 'override');
 
 require('dotenv-up')({
   override    : false,
   deep        : 3,
 }, false, 'config.js');
 
-const env               = require('./roderic/dotenv');
+const env               = require('../app/lib/dotenv');
 
 module.exports = mode => ({
   // just name for this project, it's gonna show up in some places

@@ -2,7 +2,6 @@ node_modules
 .env
 *-tmp-*
 /public/dist/
-/webpack/dist
 preprocessed.js
 /public/public
 yarn-error.log

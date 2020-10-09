@@ -1,0 +1,27 @@
+version: '3.5'
+services:
+    mysql:
+        image: mysql/mysql-server:5.7
+        container_name: mysql_${PROJECT_NAME}
+        ports:
+            - "$PROTECTED_MYSQL_PORT:3306"
+        environment:
+            - MYSQL_ROOT_PASSWORD=$PROTECTED_MYSQL_PASS
+            - MYSQL_ROOT_HOST=%
+        networks:
+            - "${PROJECT_NAME}-network"
+        volumes:
+            - ./mysql_db/$PROJECT_NAME:/var/lib/mysql
+#        deploy:
+#            resources:
+#                limits:
+##                    cpus: '0.50'
+##                    memory: 50M
+#                    memory: 5G
+#                reservations:
+##                    cpus: '0.25'
+#                    memory: 5G
+
+networks:
+    ${PROJECT_NAME}-network:
+        name: ${PROJECT_NAME}-network

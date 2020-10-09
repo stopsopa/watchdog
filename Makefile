@@ -12,7 +12,7 @@ wdev:
 	/bin/bash webpack.sh dev
 
 preprocess:
-	(cd webpack && node roderic/preprocessor.js)
+	(cd app && node lib/preprocessor.js)
 
 # prod or dev
 server:
@@ -26,3 +26,44 @@ yarnprod:
 
 yarndev:
 	yarn
+
+
+
+
+
+doc: docs
+	(cd docker && /bin/bash docker-compose.sh up)
+	(cd migrations && node recreate-db.js safe)
+	make -s mrun
+
+docs:
+	(cd docker && /bin/bash docker-compose.sh stop)
+
+
+
+fixtures: rebuild
+	@(cd migrations && node recreate-db.js safe)
+	@(cd migrations && make -s mrun)
+
+diff:
+	@(cd migrations && make -s diff)
+
+mrun:
+	@(cd migrations && make -s mrun)
+
+mmove:
+	@(cd migrations && make -s mmove)
+
+torun:
+	@(cd migrations && make -s torun)
+
+mrevert:
+	@(cd migrations && make -s mrevert)
+
+mtest:
+	@(cd migrations && make -s mtest)
+
+minfo:
+	@(cd migrations && make -s minfo)
+mcountdb:
+	@(cd migrations && make -s mcountdb)

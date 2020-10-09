@@ -74,18 +74,18 @@
 
       io.use(require('./lib/socketio-wildcard')());
 
-      require('./webpack/src/io').bind({
+      require('./app/io').bind({
         io
       });
 
       (function () {
 
         WARNING: CHECK io.js FILE FOR THIS BIT
-        const io = require('./webpack/src/io');
+        const io = require('./app/io');
 
         const ref = (a, b, c) => {
           log.dump({
-            "require('./webpack/src/io')" : {
+            "require('./app/io')" : {
               a, b, c
             }
           })

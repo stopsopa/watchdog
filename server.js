@@ -25,19 +25,19 @@ const server    = require('http').createServer(app);
 const io        = require('socket.io')(server); // io
 
 // https://stackoverflow.com/a/37159364/5560682
-io.use(require('./lib/socketio-wildcard')());
+io.use(require('./app/lib/socketio-wildcard')());
 
-require('./webpack/src/io').bind({
+require('./app/io').bind({
   io
 });
 
 (function () {
 
-  const io = require('./webpack/src/io');
+  const io = require('./app/io');
 
   const ref = (a, b, c) => {
     log.dump({
-      "require('./webpack/src/io')" : {
+      "require('./app/io')" : {
         a, b, c
       }
     })
@@ -149,7 +149,7 @@ const host = env('NODE_HOST');
 
 const estool = (async function () {
 
-  const estool                = require('./es/es');
+  const estool                = require('./app/es/es');
 
   estool.init({
     default: {
@@ -164,7 +164,7 @@ const estool = (async function () {
 
   await delay(1000);
 
-  const ensureIndex = require('./es/ensureIndex');
+  const ensureIndex = require('./app/es/ensureIndex');
 
   const es = estool('default', true);
 

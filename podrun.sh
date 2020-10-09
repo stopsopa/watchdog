@@ -10,6 +10,6 @@ cp .env.dist .env
 
 source .env
 
-(cd webpack && node roderic/preprocessor.js)
+(cd app && node lib/preprocessor.js)
 
 node server.js
