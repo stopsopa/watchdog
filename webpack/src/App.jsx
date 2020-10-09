@@ -94,7 +94,7 @@ export default function App() {
     <>
       {socket && (
         <>
-          <Button onClick={() => socket.emit('a:abc', {tt: 'razdwa'}).emit('a:abc', {tt: 'razxxxxdwa'})}>socket</Button>
+          <Button onClick={() => socket.emit('as:abc', 'arg1', 'arg2', ['arg3'])}>socket</Button>
           <br />
         </>
       )}

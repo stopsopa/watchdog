@@ -30,14 +30,14 @@ set -e
   if [ -e public ]; then echo 'dist symlink already exist'; else ln -s ../node_modules public; fi
 )
 
-cd "$_WEBPACKDIR"
+#cd "$_WEBPACKDIR"
 
 mkdir -p override
 
 #mkdir -p "$_ROOT/public/dist"
 #if [ -e dist ]; then echo 'dist symlink already exist'; else ln -s ../public/dist dist; fi
 
-node roderic/preprocessor.js
+node "$_WEBPACKDIR/roderic/preprocessor.js"
 
 export NODE_ENV="production"
 
@@ -46,19 +46,20 @@ if [ "$1" = "dev" ]; then
   export NODE_ENV="development"
 fi
 
-node ../node_modules/.bin/webpack
+node "$_ROOT/node_modules/.bin/webpack" --config "$_WEBPACKDIR/webpack.config.js"
 
 if [ "$1" = "dev" ]; then
 
-node ../node_modules/.bin/onchange \
+node "$_ROOT/node_modules/.bin/onchange" \
   '**/*.js' \
   '**/*.jsx' \
   '**/*.html' \
   '**/*.css' \
   '**/*.scss' \
-  --exclude-path .prettierignore \
+  --exclude-path "$_ROOT/.prettierignore" \
   -- \
-  node ../node_modules/.bin/webpack
+  node "$_ROOT/node_modules/.bin/webpack" \
+   --config "$_WEBPACKDIR/webpack.config.js"
 
 fi
 
