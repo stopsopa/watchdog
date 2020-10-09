@@ -1,6 +1,8 @@
 
 _ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 
+node "$_ROOT/bash/node/versioncheck.js" --nvmrc .nvmrc --exact
+
 _WEBPACKDIR="$_ROOT/webpack";
 
 if ! [ -f "$_ROOT/.env" ]; then
