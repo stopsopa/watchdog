@@ -52,11 +52,12 @@ export default function App() {
 
     if (socket) {
 
-      const abc = abc => {
+      const abc = (a, b, c) => {
+
         log.dump({
-          abc,
+          t: 'browser',
+          a, b, c
         })
-        /// ...
       };
 
       socket.on('abc', abc)

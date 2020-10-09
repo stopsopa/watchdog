@@ -34,7 +34,7 @@ module.exports = (opt = {}) => {
         data = []
       } = packet;
 
-      let [name, value] = data;
+      let [name, ...rest] = data;
 
       if ( typeof name === 'string' && /^s?[ab]s?:.+/.test(name) ) {
 
@@ -67,21 +67,33 @@ module.exports = (opt = {}) => {
 
         if (mode === 'b') {
 
-          return socket.broadcast.emit(name, value);
+          return socket.broadcast.emit(name, ...rest);
         }
 
         if (mode === 'a') {
 
-          return io.emit(name, value);
+          return io.emit(name, ...rest);
         }
       }
     });
 
-    socket.on('abc', abc => {
-      log.dump({
+    socket.on('abc', (a, b, c, cb) => {
 
-        serer: 'ggg',
-        abc,
+      log.dump({
+        t: 'one',
+        a, b, c
+      })
+
+      cb && cb('ack', 'b')
+
+      // now call in browser:
+      // window.socket.emit('abc', 'raz', 'dwa', {trzy: 'ctery'}, (a, b) => console.log('ac: ', a, b))
+    });
+
+    socket.on('abc', (a, b, c) => {
+      log.dump({
+        t: 'two',
+        a, b, c
       })
     });
 
