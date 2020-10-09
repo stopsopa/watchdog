@@ -17,15 +17,21 @@ import { StoreSocketProvider } from './_storage/storeSocket';
 
 import App from './App';
 
-const Main = () => (
-  <StoreAssocProvider>
-    <StoreProjectsProvider>
-      <StoreSocketProvider>
-        <App />
-      </StoreSocketProvider>
-    </StoreProjectsProvider>
-  </StoreAssocProvider>
-)
+const Main = () => {
+
+  const [ show, setShow ] = useState(true);
+
+  return (
+    <StoreAssocProvider>
+      <StoreProjectsProvider>
+        <StoreSocketProvider>
+          <button onClick={() => setShow(!show)}>toggle</button>
+          {show && <App />}
+        </StoreSocketProvider>
+      </StoreProjectsProvider>
+    </StoreAssocProvider>
+  )
+}
 
 render(
   <Main />,

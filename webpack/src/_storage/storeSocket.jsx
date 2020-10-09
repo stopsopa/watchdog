@@ -1,3 +1,7 @@
+/**
+ * https://socket.io/docs/emit-cheatsheet/
+ * https://socket.io/get-started/chat/#Broadcasting
+ */
 
 import React, {
   createContext,
@@ -17,7 +21,22 @@ import log from 'inspc';
 
   const {
     state: socket,
-  } = React.useContext(StoreContextSocket);
+  } = useContext(storeSocket.StoreContext);
+
+  useEffect(() => {
+
+    if (socket) {
+
+      socket.on('abc', abc => {
+        /// ...
+      })
+
+      return () => {
+        socket.off('abc')
+      }
+    }
+
+  }, [socket]);
  */
 
 export const StoreContext = createContext();
@@ -33,13 +52,18 @@ const th = (function () {
   }
 }());
 
+/**
+ * WARNING: Be careful to create only one provider on the page
+ */
 export function StoreSocketProvider(props) {
 
   const [ socket, setSocket ] = useState(false);
 
   useEffect(() => {
 
-    const socket = io();
+    const socket = io({
+      transports: ['websocket'] // https://socket.io/docs/client-api/#With-websocket-transport-only
+    });
 
     window.socket = socket;
 
@@ -54,12 +78,6 @@ export function StoreSocketProvider(props) {
 
       setSocket(undefined);
     });
-
-    socket.on('abc', abc => {
-      log.dump({
-        abc
-      })
-    })
 
   }, []);
 

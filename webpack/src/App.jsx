@@ -50,6 +50,21 @@ export default function App() {
 
   useEffect(() => {
 
+    if (socket) {
+
+      socket.on('abc', abc => {
+        /// ...
+      })
+
+      return () => {
+        socket.off('abc')
+      }
+    }
+
+  }, [socket]);
+
+  useEffect(() => {
+
     (async function () {
 
       const response = await fetch('/basic');
