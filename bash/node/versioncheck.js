@@ -66,6 +66,8 @@ if ( ! toCheck.trim() ) {
 
 toCheck = trim(toCheck);
 
+let ver = process.version
+
 // JSON.stringify('v14.4.0'.match(/^(v?\d+\.\d+)(\.\d+)?$/), null, 4)
 // "[
 // "v14.4.0",
@@ -91,11 +93,6 @@ if ( ! Array.isArray(parts) || parts.length !== 3) {
 if (process.argv.indexOf('--exact') === -1) {
 
   toCheck = parts[1];
-}
-
-let ver = process.version
-
-if (process.argv.indexOf('--exact') === -1) {
 
   ver = ver.split('.');
 
