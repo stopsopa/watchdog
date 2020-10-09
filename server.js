@@ -27,6 +27,26 @@ const io        = require('socket.io')(server); // io
 // https://stackoverflow.com/a/37159364/5560682
 io.use(require('./lib/socketio-wildcard')());
 
+require('./webpack/src/io').bind({
+  io
+});
+
+(function () {
+
+  const io = require('./webpack/src/io');
+
+  const ref = (a, b, c) => {
+    log.dump({
+      "require('./webpack/src/io')" : {
+        a, b, c
+      }
+    })
+  };
+
+  io.on('abc', ref)
+
+}());
+
 app.set('json spaces', 4);
 
 app.use(express.urlencoded({extended: false}));
@@ -185,10 +205,6 @@ app.all('/geo', async (req, res) => {
     });
   }
 });
-
-app.use(require('./webpack/src/io')({
-  io
-}));
 
 // for sockets
 server.listen( // ... we have to listen on server

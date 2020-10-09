@@ -1,31 +1,33 @@
 
-const express           = require('express');
-
-const Router            = express.Router;
-
 const log               = require('inspc');
 
 const { wait }          = require('nlab/delay');
 
 const trim              = require('nlab/trim');
 
-// const knex              = require('knex-abstract');
+const th                = msg => new Error(`io.js error: ${msg}`);
 
-// const mrun              = knex().model.run;
-//
-// const mnodes            = knex().model.nodes;
-//
-// const mlogs             = knex().model.logs;
-//
-// const medges            = knex().model.edges;
+let io;
 
-module.exports = (opt = {}) => {
+let list = [];
 
-  const {
-    io,
-  } = opt;
+const tool = {}
+
+function bindList(socket) {
+
+  list.forEach(({name, fn}) => {
+
+    socket.on(name, fn);
+  })
+}
+
+tool.bind = (opt = {}) => {
+
+  ({io} = opt);
 
   io.on('connection', socket => {
+
+    console.log('io.js connection', socket.id)
 
     // * possible thanks to socketio-wildcard library
     socket.on('*', function(packet) {
@@ -77,31 +79,109 @@ module.exports = (opt = {}) => {
       }
     });
 
-    socket.on('abc', (a, b, c, cb) => {
+    bindList(socket);
 
-      log.dump({
-        t: 'one',
-        a, b, c
-      })
-
-      cb && cb('ack', 'b')
-
-      // now call in browser:
-      // window.socket.emit('abc', 'raz', 'dwa', {trzy: 'ctery'}, (a, b) => console.log('ac: ', a, b))
-    });
-
-    socket.on('abc', (a, b, c) => {
-      log.dump({
-        t: 'two',
-        a, b, c
-      })
-    });
+    // socket.on('abc', (a, b, c, cb) => {
+    //
+    //   log.dump({
+    //     t: 'one',
+    //     a, b, c
+    //   })
+    //
+    //   cb && cb('ack', 'b')
+    //
+    //   // now call in browser:
+    //   // window.socket.emit('abc', 'raz', 'dwa', {trzy: 'ctery'}, (a, b) => console.log('ac: ', a, b))
+    // });
+    //
+    // socket.on('abc', (a, b, c) => {
+    //   log.dump({
+    //     t: 'two',
+    //     a, b, c
+    //   })
+    // });
 
   });
-
-  const router = Router();
-
-  return router;
 };
+
+tool.on = (name, fn) => {
+
+  if ( ! io ) {
+
+    throw th(`io.js->on() method error, first call bind() method`);
+  }
+
+  if ( typeof name !== 'string' ) {
+
+    throw th(`io.js->on() method error, typeof name !== 'string'`);
+  }
+
+  if ( ! name.trim() ) {
+
+    throw th(`io.js->on() method error, name is an empty`);
+  }
+
+  if ( typeof fn !== 'function' ) {
+
+    throw th(`io.js->on() method error, fn is not a function for given name event '${name}'`);
+  }
+
+  list.push({
+    name,
+    fn,
+  });
+
+  var sockets = io.sockets.sockets;
+
+  for(var id in sockets)
+  {
+    var socket = sockets[id]; //loop through and do whatever with each connected socket
+
+    socket.on(name, fn);
+  }
+}
+
+tool.off = (name, fn) => {
+
+  if ( ! io ) {
+
+    throw th(`io.js->off() method error, first call bind() method`);
+  }
+
+  if ( typeof name !== 'string' ) {
+
+    throw th(`io.js->on() method error, typeof name !== 'string'`);
+  }
+
+  if ( ! name.trim() ) {
+
+    throw th(`io.js->on() method error, name is an empty`);
+  }
+
+  var sockets = io.sockets.sockets;
+
+  if (typeof fn === 'function') {
+
+    log.dump({unbind: name, fn});
+
+    for(let id in sockets) {
+      sockets[id].off(name, fn);
+    }
+
+    list = list.filter(b => ! (b.name === name && b.fn === fn));
+  }
+  else {
+
+    for(let id in sockets) {
+      sockets[id].removeAllListeners(name);
+    }
+
+    list = list.filter(b => {
+      return b.name !== name;
+    });
+  }
+}
+
+module.exports = tool;
 
 
