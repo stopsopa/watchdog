@@ -65,8 +65,6 @@ node "$_ROOT/node_modules/.bin/webpack" \
    --info-verbosity verbose \
    --config "$_WEBPACKDIR/webpack.config.js"
 
-#   --progress \
-
 fi
 
 
