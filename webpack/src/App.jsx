@@ -2,7 +2,8 @@
 import React, {
   useEffect,
   useState,
-  useRef
+  useRef,
+  useContext,
 } from 'react';
 
 import { render } from 'react-dom';
@@ -36,16 +37,16 @@ export default function App() {
 
   const {
     state: stateProjects,
-  } = React.useContext(StoreContextProjects);
+  } = useContext(StoreContextProjects);
 
   const {
     state: stateAssoc,
     setStoreAssocSet,
-  } = React.useContext(storeAssoc.StoreContext);
+  } = useContext(storeAssoc.StoreContext);
 
   const {
     state: socket,
-  } = React.useContext(storeSocket.StoreContext);
+  } = useContext(storeSocket.StoreContext);
 
   useEffect(() => {
 
@@ -70,7 +71,9 @@ export default function App() {
 
   return (
     <>
-      <Button onClick={() => setStoreAssocSet(`key${i}`, `val${i++}`)}>Click Here</Button>
+      <Button onClick={() => setStoreAssocSet(`key${i}`, `val${i++}`)}>setStoreAssocSet</Button>
+      <br />
+      <Button onClick={() => socket.emit('a:abc', {tt: 'razdwa'}).emit('a:abc', {tt: 'razxxxxdwa'})}>socket</Button>
       <br />
       {basic && <Textarea
         defaultValue={(`

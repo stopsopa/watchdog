@@ -61,7 +61,9 @@ export function StoreSocketProvider(props) {
 
   }, []);
 
-  return (<StoreContext.Provider value={socket}>{props.children}</StoreContext.Provider>);
+  return (<StoreContext.Provider value={{
+    state: socket,
+  }}>{props.children}</StoreContext.Provider>);
 }
 
 // reducer:
