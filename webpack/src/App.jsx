@@ -71,9 +71,13 @@ export default function App() {
 
   return (
     <>
+      {socket && (
+        <>
+          <Button onClick={() => socket.emit('a:abc', {tt: 'razdwa'}).emit('a:abc', {tt: 'razxxxxdwa'})}>socket</Button>
+          <br />
+        </>
+      )}
       <Button onClick={() => setStoreAssocSet(`key${i}`, `val${i++}`)}>setStoreAssocSet</Button>
-      <br />
-      <Button onClick={() => socket.emit('a:abc', {tt: 'razdwa'}).emit('a:abc', {tt: 'razxxxxdwa'})}>socket</Button>
       <br />
       {basic && <Textarea
         defaultValue={(`

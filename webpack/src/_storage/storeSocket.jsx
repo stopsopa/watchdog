@@ -41,16 +41,18 @@ export function StoreSocketProvider(props) {
 
     const socket = io();
 
-    setSocket(socket);
-
     window.socket = socket;
 
     socket.on('connect', () => {
       log.dump('connected to server')
+
+      setSocket(socket);
     });
 
     socket.on('disconnect', () => {
       log.dump('disconnect from server')
+
+      setSocket(undefined);
     });
 
     socket.on('abc', abc => {
