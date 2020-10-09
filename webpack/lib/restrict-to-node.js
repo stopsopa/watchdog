@@ -8,7 +8,7 @@ module.exports = file => {
 
     if ( ! file ) {
 
-        throw `restrict-to-node: file parameter not specified`;
+        throw new Error(`restrict-to-node: file parameter not specified`);
     }
 
     const node = typeof global !== 'undefined' && Object.prototype.toString.call(global.process) === '[object process]';
