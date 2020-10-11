@@ -64,7 +64,6 @@ if [ "$1" = "dev" ]; then
 # https://webpack.js.org/guides/build-performance/#incremental-builds
 node "$_ROOT/node_modules/.bin/webpack" \
    --watch \
-   --info-verbosity verbose \
    --config "$_WEBPACKDIR/webpack.config.js"
 
 fi
