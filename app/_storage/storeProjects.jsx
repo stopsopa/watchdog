@@ -62,9 +62,9 @@ export function StoreProjectsProvider(props) {
 import {
   PROJECTS_LIST_POPULATE,
   PROJECTS_FORM_POPULATE,
-  PROJECTS_POPULATE_ERRORS,
   PROJECTS_FORM_RESET,
   PROJECTS_FORM_EDIT_FIELD,
+  PROJECTS_ERRORS_POPULATE,
 } from './_types';
 
 function reducer(state, action) {
@@ -79,11 +79,6 @@ function reducer(state, action) {
         ...state,
         form: action.payload
       };
-    case PROJECTS_POPULATE_ERRORS:
-      return {
-        ...state,
-        errors: action.payload
-      };
     case PROJECTS_FORM_RESET:
       return {
         ...state,
@@ -97,6 +92,11 @@ function reducer(state, action) {
           ...state.form,
           [action.key]: action.value,
         },
+      };
+    case PROJECTS_ERRORS_POPULATE:
+      return {
+        ...state,
+        errors: action.payload
       };
     default:
       return state;
@@ -141,13 +141,6 @@ export const actionProjectsFormPopulate = ({
     errors,
   }) => {
 
-    log.dump({
-      projects_form_populate: {
-        form,
-        errors,
-      }
-    })
-
     dispatch({
       type: PROJECTS_FORM_POPULATE,
       payload: form,
@@ -156,7 +149,7 @@ export const actionProjectsFormPopulate = ({
     if ( typeof errors !== 'undefined' ) {
 
       dispatch({
-        type: PROJECTS_POPULATE_ERRORS,
+        type: PROJECTS_ERRORS_POPULATE,
         payload: errors,
       });
     }
