@@ -2,6 +2,7 @@
 import React, {
   createContext,
   useReducer,
+  useContext,
 } from 'react';
 
 import log from 'inspc';
@@ -36,26 +37,32 @@ const initialState = {
 
 let state, dispatch;
 
+        import * as storeSocket from './storeSocket';
+
+        let socket;
+
 export function StoreProjectsProvider(props) {
+
+          ({ state: socket } = useContext(storeSocket.StoreContext));
 
   [state, dispatch] = useReducer(reducer, initialState);
 
   return (<StoreContext.Provider value={{
     state,
     dispatch,
-    fetchDataAction,
+    actionProjectsGetList,
   }}>{props.children}</StoreContext.Provider>);
 }
 
 // reducer:
 
 import {
-  PROJECTS_POPULATE,
+  PROJECTS_POPULATE_LIST,
 } from './_types';
 
 function reducer(state, action) {
   switch (action.type) {
-    case PROJECTS_POPULATE:
+    case PROJECTS_POPULATE_LIST:
       return { ...state, projects: action.payload };
     default:
       return state;
@@ -64,12 +71,30 @@ function reducer(state, action) {
 
 // actions && selectors:
 
-export const fetchDataAction = async () => {
+export const actionProjectsGetList = ({
+  socket,
+}) => {
 
-  setTimeout(() => {
+  socket.emit('projects_populate_list');
+
+  const projects_populate_list = ({
+    list,
+  }) => {
+
     dispatch({
-      type: PROJECTS_POPULATE,
-      payload: ['proj 1', 'proj 2']
+      type: PROJECTS_POPULATE_LIST,
+      payload: list,
     })
-  }, 1000);
+  }
+
+  socket.on('projects_populate_list', projects_populate_list);
+
+  return () => {
+
+    socket.off('projects_populate_list', projects_populate_list);
+  }
 };
+
+export const getProjectList = () => {
+  return state.projects;
+}

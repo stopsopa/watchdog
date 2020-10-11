@@ -17,20 +17,26 @@ import { StoreSocketProvider } from './_storage/storeSocket';
 
 import App from './App';
 
+import {
+  BrowserRouter as Router,
+} from "react-router-dom";
+
 const Main = () => {
 
   // const [ show, setShow ] = useState(true);
 
   return (
-    <StoreSocketProvider>
-      <StoreProjectsProvider>
-        <StoreAssocProvider>
-          {/*<button onClick={() => setShow(!show)}>toggle</button>*/}
-          {/*{show && <App />}*/}
-          <App />
-        </StoreAssocProvider>
-      </StoreProjectsProvider>
-    </StoreSocketProvider>
+    <Router>
+      <StoreSocketProvider>
+        <StoreProjectsProvider>
+          <StoreAssocProvider>
+            {/*<button onClick={() => setShow(!show)}>toggle</button>*/}
+            {/*{show && <App />}*/}
+            <App />
+          </StoreAssocProvider>
+        </StoreProjectsProvider>
+      </StoreSocketProvider>
+    </Router>
   )
 }
 

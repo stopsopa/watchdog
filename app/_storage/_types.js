@@ -1,6 +1,6 @@
 
 
-export const PROJECTS_POPULATE = 'PROJECTS_POPULATE';
+export const PROJECTS_POPULATE_LIST = 'PROJECTS_POPULATE_LIST';
 
 export const ASSOC_SET      = 'ASSOC_SET';
 export const ASSOC_DELETE   = 'ASSOC_DELETE';

@@ -25,6 +25,11 @@ tool.bind = (opt = {}) => {
 
   ({io} = opt);
 
+  const {
+    bind,
+    ...rest
+  } = opt;
+
   io.on('connection', socket => {
 
     console.log('io.js connection', socket.id)
@@ -101,6 +106,11 @@ tool.bind = (opt = {}) => {
     //   })
     // });
 
+    bind({
+      io,
+      socket,
+      ...rest,
+    });
   });
 };
 
@@ -125,11 +135,6 @@ tool.on = (name, fn) => {
 
     throw th(`io.js->on() method error, fn is not a function for given name event '${name}'`);
   }
-
-  list.push({
-    name,
-    fn,
-  });
 
   var sockets = io.sockets.sockets;
 
@@ -162,9 +167,8 @@ tool.off = (name, fn) => {
 
   if (typeof fn === 'function') {
 
-    log.dump({unbind: name, fn});
-
     for(let id in sockets) {
+
       sockets[id].off(name, fn);
     }
 
@@ -173,10 +177,12 @@ tool.off = (name, fn) => {
   else {
 
     for(let id in sockets) {
+
       sockets[id].removeAllListeners(name);
     }
 
     list = list.filter(b => {
+
       return b.name !== name;
     });
   }
