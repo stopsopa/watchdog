@@ -59,13 +59,7 @@ module.exports = knex => extend(knex, prototype, {
 //         }
 
         return {
-            // firstName   : '',
-            // lastName    : '',
-            // email       : '',
-            // password    : '',
-            // enabled     : false,
-            // author      : null,
-            // roles,
+            name: '',
         }
     },
     fromDb: async function (row, opt, trx) {

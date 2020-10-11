@@ -33,6 +33,8 @@ const th = (function () {
 
 const initialState = {
   projects: [],
+  form: {},
+  errors: {},
 };
 
 let state, dispatch;
@@ -50,20 +52,52 @@ export function StoreProjectsProvider(props) {
   return (<StoreContext.Provider value={{
     state,
     dispatch,
-    actionProjectsGetList,
+    actionProjectsListPopulate,
+    actionProjectsFormReset,
   }}>{props.children}</StoreContext.Provider>);
 }
 
 // reducer:
 
 import {
-  PROJECTS_POPULATE_LIST,
+  PROJECTS_LIST_POPULATE,
+  PROJECTS_FORM_POPULATE,
+  PROJECTS_POPULATE_ERRORS,
+  PROJECTS_FORM_RESET,
+  PROJECTS_FORM_EDIT_FIELD,
 } from './_types';
 
 function reducer(state, action) {
   switch (action.type) {
-    case PROJECTS_POPULATE_LIST:
-      return { ...state, projects: action.payload };
+    case PROJECTS_LIST_POPULATE:
+      return {
+        ...state,
+        projects: action.payload
+      };
+    case PROJECTS_FORM_POPULATE:
+      return {
+        ...state,
+        form: action.payload
+      };
+    case PROJECTS_POPULATE_ERRORS:
+      return {
+        ...state,
+        errors: action.payload
+      };
+    case PROJECTS_FORM_RESET:
+      return {
+        ...state,
+        form: {},
+        errors: {},
+      };
+    case PROJECTS_FORM_EDIT_FIELD:
+      return {
+        ...state,
+        form: {
+          ...state.form,
+          [action.key]: action.value,
+        },
+      };
     default:
       return state;
   }
@@ -71,30 +105,100 @@ function reducer(state, action) {
 
 // actions && selectors:
 
-export const actionProjectsGetList = ({
-  socket,
-}) => {
+export const actionProjectsListPopulate = () => {
 
-  socket.emit('projects_populate_list');
+  socket.emit('projects_list_populate');
 
-  const projects_populate_list = ({
+  const projects_list_populate = ({
     list,
   }) => {
 
     dispatch({
-      type: PROJECTS_POPULATE_LIST,
+      type: PROJECTS_LIST_POPULATE,
       payload: list,
     })
   }
 
-  socket.on('projects_populate_list', projects_populate_list);
+  socket.on('projects_list_populate', projects_list_populate);
 
   return () => {
 
-    socket.off('projects_populate_list', projects_populate_list);
+    socket && socket.off('projects_list_populate', projects_list_populate);
   }
+};
+
+export const actionProjectsFormPopulate = ({
+  id,
+  onLoad,
+}) => {
+
+  actionProjectsFormReset()
+
+  socket.emit('projects_form_populate', id);
+
+  const projects_form_populate = ({
+    form,
+    errors,
+  }) => {
+
+    log.dump({
+      projects_form_populate: {
+        form,
+        errors,
+      }
+    })
+
+    dispatch({
+      type: PROJECTS_FORM_POPULATE,
+      payload: form,
+    });
+
+    if ( typeof errors !== 'undefined' ) {
+
+      dispatch({
+        type: PROJECTS_POPULATE_ERRORS,
+        payload: errors,
+      });
+    }
+
+    onLoad();
+  }
+
+  socket.on('projects_form_populate', projects_form_populate);
+
+  return () => {
+
+    socket && socket.off('projects_form_populate', projects_form_populate);
+  }
+};
+
+export const actionProjectsFormSubmit = ({
+  form,
+}) => {
+
+  socket.emit('projects_form_submit', form);
+};
+
+export const actionProjectsFormReset = () => {
+  dispatch({ type: PROJECTS_FORM_RESET })
+};
+
+export const actionProjectsFormEditField = (key, value) => {
+  dispatch({
+    type: PROJECTS_FORM_EDIT_FIELD,
+    key,
+    value,
+  })
 };
 
 export const getProjectList = () => {
   return state.projects;
+}
+
+export const getProjectForm = () => {
+  return state.form;
+}
+
+export const getProjectFormErrors = () => {
+  return state.errors;
 }

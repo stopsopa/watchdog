@@ -11,8 +11,16 @@ import './ProjectsEdit.scss';
 import log from 'inspc';
 
 import {
-  Button,
   Breadcrumb,
+  List,
+  Button,
+  Icon,
+  Form,
+  Checkbox,
+  Loader,
+  Modal,
+  Header,
+  Dropdown,
 } from 'semantic-ui-react';
 
 import {
@@ -21,14 +29,25 @@ import {
 
 import {
   StoreContext as StoreContextProjects,
-  actionProjectsGetList,
+
+  actionProjectsListPopulate,
+  actionProjectsFormPopulate,
+  actionProjectsFormReset,
+  actionProjectsFormEditField,
+  actionProjectsFormSubmit,
+
   getProjectList,
+  getProjectForm,
+  getProjectFormErrors,
 } from '../../_storage/storeProjects';
 
 export default function ProjectsEdit({
-  socket,
   id,
 }) {
+
+  const [ loading, setLoading ] = useState(true);
+
+  const [ sending, setSending ] = useState(false);
 
   const {
     state: stateProjects,
@@ -36,18 +55,34 @@ export default function ProjectsEdit({
 
   useEffect(() => {
 
-    return actionProjectsGetList({
-      socket,
-    });
+    return actionProjectsFormPopulate({
+      id,
+      onLoad: () => {
+        setLoading(false);
+        setSending(false);
+      }
+    })
 
   }, []);
+
+  const form = getProjectForm();
+
+  const errors = getProjectFormErrors();
+
+  function onSubmit() {
+
+    setSending(true)
+
+    actionProjectsFormSubmit({
+      form,
+    });
+  }
 
   return (
     <div className="projects">
       <Breadcrumb>
         <Breadcrumb.Section
           // onClick={loginSignOut}
-          icon
           size="mini"
           as={Link}
           to="/"
@@ -57,7 +92,34 @@ export default function ProjectsEdit({
       </Breadcrumb>
       <hr />
       <div>
-        Form...
+
+        {loading ? (
+          `Loading...`
+        ) : (
+          <Form onSubmit={onSubmit}
+                autoComplete="off"
+          >
+            <Form.Field
+              disabled={loading}
+              error={!!errors.name}
+            >
+              <label>Name</label>
+              <input placeholder='Name' value={form.name}
+                     onChange={e => actionProjectsFormEditField('name', e.target.value)}
+                     autoComplete="nope"
+              />
+              {errors.name && <div className="error">{errors.name}</div>}
+            </Form.Field>
+            <Form.Field disabled={sending}>
+              <Button type='submit'
+                      autoComplete="nope"
+              >
+                {form.id ? 'Save changes' : 'Create'}
+              </Button> {sending && `Sending data...`}
+            </Form.Field>
+          </Form>
+        )}
+
       </div>
     </div>
   );

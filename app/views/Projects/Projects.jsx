@@ -21,13 +21,11 @@ import {
 
 import {
   StoreContext as StoreContextProjects,
-  actionProjectsGetList,
+  actionProjectsListPopulate,
   getProjectList,
 } from '../../_storage/storeProjects';
 
-export default function Projects({
-  socket,
-}) {
+export default function Projects() {
 
   const {
     state: stateProjects,
@@ -35,9 +33,7 @@ export default function Projects({
 
   useEffect(() => {
 
-    return actionProjectsGetList({
-      socket,
-    });
+    return actionProjectsListPopulate();
 
   }, []);
 
@@ -48,7 +44,6 @@ export default function Projects({
         <Breadcrumb.Divider />
         <Breadcrumb.Section
           // onClick={loginSignOut}
-          icon
           size="mini"
           as={Link}
           to="/create"

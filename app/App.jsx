@@ -32,17 +32,17 @@ export default function App() {
           <Route
             path="/"
             exact={true}
-            component={() => <Projects socket={socket} />}
+            component={Projects}
           />
           <Route
             path="/create"
             exact={true}
-            component={() => <ProjectsEdit socket={socket} />}
+            component={ProjectsEdit}
           />
           <Route
             path="/edit/:id"
             exact={true}
-            component={(...props) => <ProjectsEdit socket={socket} {...props} />}
+            component={ProjectsEdit}
           />
           <Route
             exact={true}
