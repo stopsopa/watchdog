@@ -5,6 +5,8 @@ const knex = require('knex-abstract');
 
 const delay = require('nlab/delay');
 
+const validator = require('@stopsopa/validator');
+
 module.exports = ({
   io,
   socket,
@@ -12,7 +14,7 @@ module.exports = ({
 
   const man   = knex().model.projects;
 
-  socket.on('projects_list_populate', async () => {
+  const projects_list_populate = async target => {
 
     log.dump('projects_list_populate')
 
@@ -20,7 +22,7 @@ module.exports = ({
 
       const list = await man.query('select * from :table: order by created');
 
-      socket.emit('projects_list_populate', {
+      target.emit('projects_list_populate', {
         list,
       })
     }
@@ -34,7 +36,9 @@ module.exports = ({
         error: 'failed to fetch projects list from database',
       })
     }
-  })
+  }
+
+  socket.on('projects_list_populate', () => projects_list_populate(socket));
 
   socket.on('projects_form_populate', async id => {
 
@@ -81,28 +85,45 @@ module.exports = ({
 
     try {
 
-      let errors;
+      let id              = form.id;
 
-      let id = form.id;
+      const mode          = id ? 'edit' : 'create';
 
-      // if (id) {
-      //
-      //   form = await man.query('select * from :table: where id = :id', {
-      //     id,
-      //   });
-      // }
-      // else {
-      //
-      //   form = await man.initialize();
-      // }
+      let entityPrepared  = man.prepareToValidate(form, mode);
 
-      await delay(1000)
+      const validators    = man.getValidators(mode, id, entityPrepared);
+
+      const errors        = await validator(entityPrepared, validators);
+
+      if ( ! errors.count() ) {
+
+        if (mode === 'edit') {
+
+          await man.update(entityPrepared, id);
+        }
+        else {
+
+          id = await man.insert(entityPrepared);
+        }
+
+        // await delay(300);
+
+        form = await man.find(id);
+
+        if ( ! form ) {
+
+          return socket.emit('projects_form_populate', {
+            error: `Database state conflict: updated/created entity doesn't exist`,
+          })
+        }
+
+        await projects_list_populate(io);
+      }
 
       socket.emit('projects_form_populate', {
         form,
-        errors: {
-          name: 'empty name'
-        },
+        errors: errors.getTree(),
+        submitted: true,
       })
     }
     catch (e) {

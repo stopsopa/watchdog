@@ -24,7 +24,8 @@ import {
 } from 'semantic-ui-react';
 
 import {
-  Link
+  Link,
+  useHistory,
 } from 'react-router-dom';
 
 import {
@@ -49,29 +50,40 @@ export default function ProjectsEdit({
 
   const [ sending, setSending ] = useState(false);
 
+  const history = useHistory();
+
   const {
     state: stateProjects,
   } = useContext(StoreContextProjects);
-
-  useEffect(() => {
-
-    return actionProjectsFormPopulate({
-      id,
-      onLoad: () => {
-        setLoading(false);
-        setSending(false);
-      }
-    })
-
-  }, []);
 
   const form = getProjectForm();
 
   const errors = getProjectFormErrors();
 
+  useEffect(() => {
+
+    return actionProjectsFormPopulate({
+      id,
+      onLoad: ({
+        form,
+        errors,
+        submitted,
+      }) => {
+        setLoading(false);
+        setSending(false);
+
+        if (submitted && Object.keys(errors || {}).length === 0) {
+
+          history.push(`/`);
+        }
+      }
+    })
+
+  }, []);
+
   function onSubmit() {
 
-    setSending(true)
+    setSending(true);
 
     actionProjectsFormSubmit({
       form,

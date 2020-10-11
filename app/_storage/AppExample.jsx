@@ -16,7 +16,7 @@ import { render } from 'react-dom';
 
 import log from 'inspc';
 
-import Textarea from '../Textarea.jsx';
+import Textarea from '../components/Textarea.jsx';
 
 import { Button } from 'semantic-ui-react';
 

@@ -227,8 +227,6 @@ module.exports = knex => extend(knex, prototype, {
 //     },
     prepareToValidate: function (data = {}, mode) {
 
-        data = JSON.parse(JSON.stringify(data));
-
         if (typeof data.id !== 'undefined') {
 
             delete data.id;
@@ -238,44 +236,15 @@ module.exports = knex => extend(knex, prototype, {
 
         delete data.updated;
 
-        if (mode === 'create') {
-
-//            if (empty($data['shortname']) && !empty($data['name'])) {
-//
-//                $data['shortname'] = Urlizer::urlizeTrim($data['name']);
-//            }
-        }
-
-        if (data.config === null) {
-
-            delete data.config;
-        }
-
         return data;
     },
-    getValidators: function (mode = null, id) {
+    getValidators: function () {
         return new Collection({
             id: new Optional(),
-            firstName: new Required([
+            name: new Required([
                 new NotBlank(),
-                new Length({max: 50}),
+                new Length({max: 255}),
             ]),
-            lastName: new Required([
-                new NotBlank(),
-                new Length({max: 50}),
-            ]),
-            email: new Required(new Email()),
-            password: new Required([
-                new NotBlank(),
-                new Length({min: 8 ,max: 50}),
-            ]),
-            enabled: new Required(new Type('boolean')),
-            roles: new Required([
-                new Count({min: 1}),
-                new All(new Type('integer'))
-            ]),
-            author: new Optional(),
-            config: new Optional(),
         });
     },
 }, table, id);

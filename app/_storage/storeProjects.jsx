@@ -132,14 +132,16 @@ export const actionProjectsFormPopulate = ({
   onLoad,
 }) => {
 
-  actionProjectsFormReset()
+  actionProjectsFormReset();
 
   socket.emit('projects_form_populate', id);
 
-  const projects_form_populate = ({
-    form,
-    errors,
-  }) => {
+  const projects_form_populate = data => {
+
+    const {
+      form,
+      errors,
+    } = data;
 
     dispatch({
       type: PROJECTS_FORM_POPULATE,
@@ -154,7 +156,7 @@ export const actionProjectsFormPopulate = ({
       });
     }
 
-    onLoad();
+    onLoad(data);
   }
 
   socket.on('projects_form_populate', projects_form_populate);
