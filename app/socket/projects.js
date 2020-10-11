@@ -12,6 +12,8 @@ module.exports = ({
 
   socket.on('projects_populate_list', async () => {
 
+    log.dump('projects_populate_list')
+
     try {
 
       const list = await man.query('select * from :table: order by created');

@@ -10,6 +10,8 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 
 import Projects from './views/Projects/Projects';
 
+import ProjectsEdit from './views/Projects/ProjectsEdit';
+
 import {
   Button,
   Breadcrumb,
@@ -31,6 +33,16 @@ export default function App() {
             path="/"
             exact={true}
             component={() => <Projects socket={socket} />}
+          />
+          <Route
+            path="/create"
+            exact={true}
+            component={() => <ProjectsEdit socket={socket} />}
+          />
+          <Route
+            path="/edit/:id"
+            exact={true}
+            component={(...props) => <ProjectsEdit socket={socket} {...props} />}
           />
           <Route
             exact={true}

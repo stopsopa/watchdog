@@ -6,7 +6,7 @@ import React, {
   useContext,
 } from 'react';
 
-import './Projects.scss';
+import './ProjectsEdit.scss';
 
 import log from 'inspc';
 
@@ -25,8 +25,9 @@ import {
   getProjectList,
 } from '../../_storage/storeProjects';
 
-export default function Projects({
+export default function ProjectsEdit({
   socket,
+  id,
 }) {
 
   const {
@@ -44,21 +45,19 @@ export default function Projects({
   return (
     <div className="projects">
       <Breadcrumb>
-        <Breadcrumb.Section>Dashboard</Breadcrumb.Section>
-        <Breadcrumb.Divider />
         <Breadcrumb.Section
           // onClick={loginSignOut}
           icon
           size="mini"
           as={Link}
-          to="/create"
-        >Create project</Breadcrumb.Section>
+          to="/"
+        >Dashboard</Breadcrumb.Section>
+        <Breadcrumb.Divider />
+        <Breadcrumb.Section>{id ? `Create` : `Edit ${'..name..'}`}</Breadcrumb.Section>
       </Breadcrumb>
       <hr />
       <div>
-        {getProjectList().map(p => (
-          <div key={p.id}>#{p.id} - {p.name}</div>
-        ))}
+        Form...
       </div>
     </div>
   );
