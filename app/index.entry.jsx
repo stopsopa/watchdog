@@ -15,6 +15,9 @@ import { StoreProjectsProvider } from './_storage/storeProjects';
 import { StoreAssocProvider } from './_storage/storeAssoc';
 import { StoreSocketProvider } from './_storage/storeSocket';
 
+import { StoreGlobalLoaderProvider } from './components/GlobalLoader/storeGlobalLoader';
+import GlobalLoader from './components/GlobalLoader/GlobalLoader';
+
 import App from './App';
 
 import {
@@ -30,9 +33,12 @@ const Main = () => {
       <StoreSocketProvider>
         <StoreProjectsProvider>
           <StoreAssocProvider>
-            {/*<button onClick={() => setShow(!show)}>toggle</button>*/}
-            {/*{show && <App />}*/}
-            <App />
+            <StoreGlobalLoaderProvider>
+              <GlobalLoader/>
+              {/*<button onClick={() => setShow(!show)}>toggle</button>*/}
+              {/*{show && <App />}*/}
+              <App />
+            </StoreGlobalLoaderProvider>
           </StoreAssocProvider>
         </StoreProjectsProvider>
       </StoreSocketProvider>

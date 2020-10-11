@@ -8,3 +8,10 @@ export const PROJECTS_ERRORS_POPULATE   = 'PROJECTS_ERRORS_POPULATE';
 
 export const ASSOC_SET      = 'ASSOC_SET';
 export const ASSOC_DELETE   = 'ASSOC_DELETE';
+
+export const LOADER_ON      = 'LOADER_ON';
+export const LOADER_OFF     = 'LOADER_OFF';
+export const LOADER_ERROR   = 'LOADER_ERROR';
+export const LOADER_MESSAGE = 'LOADER_MESSAGE';
+export const LOADER_BUTTONS_SHOW = 'LOADER_BUTTONS_SHOW';
+export const LOADER_BUTTONS_HIDE = 'LOADER_BUTTONS_HIDE';
