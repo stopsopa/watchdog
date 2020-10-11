@@ -33,7 +33,7 @@ import {
   actionProjectsListPopulate,
   actionProjectsFormPopulate,
   actionProjectsFormReset,
-  actionProjectsFormEditField,
+  actionProjectsFormFieldEdit,
   actionProjectsFormSubmit,
 
   getProjectList,
@@ -105,7 +105,7 @@ export default function ProjectsEdit({
             >
               <label>Name</label>
               <input placeholder='Name' value={form.name}
-                     onChange={e => actionProjectsFormEditField('name', e.target.value)}
+                     onChange={e => actionProjectsFormFieldEdit('name', e.target.value)}
                      autoComplete="nope"
               />
               {errors.name && <div className="error">{errors.name}</div>}

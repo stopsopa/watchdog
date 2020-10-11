@@ -63,7 +63,7 @@ import {
   PROJECTS_LIST_POPULATE,
   PROJECTS_FORM_POPULATE,
   PROJECTS_FORM_RESET,
-  PROJECTS_FORM_EDIT_FIELD,
+  PROJECTS_FORM_FIELD_EDIT,
   PROJECTS_ERRORS_POPULATE,
 } from './_types';
 
@@ -85,7 +85,7 @@ function reducer(state, action) {
         form: {},
         errors: {},
       };
-    case PROJECTS_FORM_EDIT_FIELD:
+    case PROJECTS_FORM_FIELD_EDIT:
       return {
         ...state,
         form: {
@@ -176,9 +176,9 @@ export const actionProjectsFormReset = () => {
   dispatch({ type: PROJECTS_FORM_RESET })
 };
 
-export const actionProjectsFormEditField = (key, value) => {
+export const actionProjectsFormFieldEdit = (key, value) => {
   dispatch({
-    type: PROJECTS_FORM_EDIT_FIELD,
+    type: PROJECTS_FORM_FIELD_EDIT,
     key,
     value,
   })
