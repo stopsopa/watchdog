@@ -10,3 +10,8 @@ README.md
 /public/public
 .env
 preprocessed.js
+
+
+# after build in docker image, remove content of this directory too,
+# or add flag to skip using cache-loader in webpack.config.js
+/var/cache-loader/
