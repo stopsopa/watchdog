@@ -8,7 +8,7 @@ import React, {
 
 import { Route, Switch, Redirect } from 'react-router-dom';
 
-import Projects from './views/Projects/Projects';
+import ProjectsList from './views/Projects/ProjectsList';
 
 import ProjectsEdit from './views/Projects/ProjectsEdit';
 
@@ -32,7 +32,7 @@ export default function App() {
           <Route
             path="/"
             exact={true}
-            component={Projects}
+            component={ProjectsList}
           />
           <Route
             path="/create"

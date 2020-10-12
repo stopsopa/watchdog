@@ -8,7 +8,7 @@ import React, {
   useContext,
 } from 'react';
 
-import './Projects.scss';
+import './ProjectsList.scss';
 
 import log from 'inspc';
 
@@ -33,7 +33,13 @@ import {
   getProjectList,
 } from '../../_storage/storeProjects';
 
-export default function Projects() {
+import {
+  StoreContext as StoreContextNotifications,
+
+  notificationsAdd,
+} from '../../components/Notifications/storeNotifications';
+
+export default function ProjectsList() {
 
   const [ deleting, setDeleting ] = useState(false);
 
@@ -41,10 +47,10 @@ export default function Projects() {
     setDeleting(false);
   }
 
-  function deleteItem() {
+  function deleteItem(deleting) {
     setDeleting(false);
-
-
+    actionProjectsDelete(deleting.id);
+    notificationsAdd(`Project "${deleting.name}" has been removed`)
   }
 
   useContext(StoreContextProjects);
@@ -119,10 +125,7 @@ progress
         <Modal.Actions>
           <Button
             color="red"
-            onClick={() => {
-              cancelDelete()
-              actionProjectsDelete(deleting.id)
-            }}
+            onClick={() => deleteItem(deleting)}
           >
             <Icon name='trash alternate outline' /> Yes
           </Button>
