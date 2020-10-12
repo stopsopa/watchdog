@@ -84,7 +84,7 @@ function form(state = initialState.form, action) {
       return {};
     case PROJECTS_FORM_FIELD_EDIT:
       return {
-        ...state.form,
+        ...state,
         [action.key]: action.value,
       };
     default:
