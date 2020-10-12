@@ -4,9 +4,9 @@ import React, {
   useReducer,
 } from 'react';
 
-export const NOTIFICATION_ADD      = 'NOTIFICATION_ADD';
-export const NOTIFICATION_REMOVE     = 'NOTIFICATION_REMOVE';
-export const NOTIFICATION_UPDATE   = 'NOTIFICATION_UPDATE';
+export const NOTIFICATIONS_ADD         = 'NOTIFICATIONS_ADD';
+export const NOTIFICATIONS_REMOVE      = 'NOTIFICATIONS_REMOVE';
+export const NOTIFICATIONS_UPDATE      = 'NOTIFICATIONS_UPDATE';
 
 export const StoreContext = createContext();
 
@@ -25,11 +25,11 @@ const initialState = [];
 
 const reducer = (state = [], action) => {
   switch (action.type) {
-    case NOTIFICATION_ADD:
+    case NOTIFICATIONS_ADD:
       return [...[action.payload], ...state];
-    case NOTIFICATION_REMOVE:
+    case NOTIFICATIONS_REMOVE:
       return state.filter(item => (item.id !== action.payload));
-    case NOTIFICATION_UPDATE:
+    case NOTIFICATIONS_UPDATE:
       return state.map(item => {
 
         if (item.id === action.payload.id) {
@@ -81,6 +81,7 @@ function isObject(a) {
 };
 
 const animationTime = 400;
+
 const delay = 90;
 
 const def= {
@@ -107,7 +108,7 @@ export const notificationsRemove = id => {
     payload.type = payload.type.replace(/(\s|^)show(\s|$)/g, ' ');
 
     dispatch({
-      type: NOTIFICATION_UPDATE,
+      type: NOTIFICATIONS_UPDATE,
       payload : {
         ...payload,
         type:payload.type + ' hide show'
@@ -115,7 +116,7 @@ export const notificationsRemove = id => {
     });
 
     setTimeout(() => dispatch({
-      type: NOTIFICATION_UPDATE,
+      type: NOTIFICATIONS_UPDATE,
       payload : {
         ...payload,
         type:payload.type + ' hide'
@@ -125,7 +126,7 @@ export const notificationsRemove = id => {
     setTimeout(() => {
 
       dispatch({
-        type: NOTIFICATION_REMOVE,
+        type: NOTIFICATIONS_REMOVE,
         payload: id
       });
 
@@ -187,12 +188,12 @@ export const notificationsAdd = (...args) => {
   }
 
   dispatch({
-    type: NOTIFICATION_ADD,
+    type: NOTIFICATIONS_ADD,
     payload
   });
 
   setTimeout(() => dispatch({
-    type: NOTIFICATION_UPDATE,
+    type: NOTIFICATIONS_UPDATE,
     payload : {
       ...payload,
       type:payload.type + ' show'
