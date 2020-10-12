@@ -5,6 +5,8 @@ import React, {
   useContext,
 } from 'react';
 
+import combineReducers from 'nlab/combineReducers'
+
 import log from 'inspc';
 
 /**
@@ -67,41 +69,47 @@ import {
   PROJECTS_ERRORS_POPULATE,
 } from './_types';
 
-function reducer(state, action) {
+function projects(state = initialState.projects, action) {
   switch (action.type) {
     case PROJECTS_LIST_POPULATE:
-      return {
-        ...state,
-        projects: action.payload
-      };
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
+function form(state = initialState.form, action) {
+  switch (action.type) {
     case PROJECTS_FORM_POPULATE:
-      return {
-        ...state,
-        form: action.payload
-      };
+      return action.payload;
     case PROJECTS_FORM_RESET:
-      return {
-        ...state,
-        form: {},
-        errors: {},
-      };
+      return {};
     case PROJECTS_FORM_FIELD_EDIT:
       return {
-        ...state,
-        form: {
-          ...state.form,
-          [action.key]: action.value,
-        },
-      };
-    case PROJECTS_ERRORS_POPULATE:
-      return {
-        ...state,
-        errors: action.payload
+        ...state.form,
+        [action.key]: action.value,
       };
     default:
       return state;
   }
 }
+
+function errors(state = initialState.errors, action) {
+  switch (action.type) {
+    case PROJECTS_FORM_RESET:
+      return {};
+    case PROJECTS_ERRORS_POPULATE:
+      return action.payload;
+    default:
+      return state;
+  }
+}
+
+const reducer = combineReducers({
+  projects,
+  form,
+  errors,
+});
 
 // actions && selectors:
 

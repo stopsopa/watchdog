@@ -34,8 +34,6 @@ import {
 } from '../../_storage/storeProjects';
 
 import {
-  StoreContext as StoreContextNotifications,
-
   notificationsAdd,
 } from '../../components/Notifications/storeNotifications';
 
