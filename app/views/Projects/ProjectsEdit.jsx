@@ -70,7 +70,7 @@ export default function ProjectsEdit() {
       id,
       onLoad: ({
         form,
-        errors,
+        errors = {},
         submitted,
       }) => {
         setLoading(false);
@@ -78,7 +78,7 @@ export default function ProjectsEdit() {
 
         if (submitted) {
 
-          if (Object.keys(errors || {}).length === 0) {
+          if (Object.keys(errors).length === 0) {
 
             history.push(`/`);
 
