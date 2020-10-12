@@ -75,10 +75,13 @@ export function StoreAssocProvider(props) {
 
 // reducer:
 
-import {
-  ASSOC_SET,
-  ASSOC_DELETE,
-} from './_types';
+// import {
+//   ASSOC_SET,
+//   ASSOC_DELETE,
+// } from './_types';
+
+export const ASSOC_SET      = 'ASSOC_SET';
+export const ASSOC_DELETE   = 'ASSOC_DELETE';
 
 function reducer(state, action) {
   switch (action.type) {

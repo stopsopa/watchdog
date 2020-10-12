@@ -61,13 +61,11 @@ export function StoreProjectsProvider(props) {
 
 // reducer:
 
-import {
-  PROJECTS_LIST_POPULATE,
-  PROJECTS_FORM_POPULATE,
-  PROJECTS_FORM_RESET,
-  PROJECTS_FORM_FIELD_EDIT,
-  PROJECTS_ERRORS_POPULATE,
-} from './_types';
+export const PROJECTS_LIST_POPULATE     = 'PROJECTS_LIST_POPULATE';
+export const PROJECTS_FORM_POPULATE     = 'PROJECTS_FORM_POPULATE';
+export const PROJECTS_FORM_RESET        = 'PROJECTS_FORM_RESET';
+export const PROJECTS_FORM_FIELD_EDIT   = 'PROJECTS_FORM_FIELD_EDIT';
+export const PROJECTS_ERRORS_POPULATE   = 'PROJECTS_ERRORS_POPULATE';
 
 function projects(state = initialState.projects, action) {
   switch (action.type) {
