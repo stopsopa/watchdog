@@ -39,8 +39,6 @@ import {
     actionGlobalLoaderButtonsHide,
 } from './storeGlobalLoader';
 
-let visible = undefined;
-
 export default function GlobalLoader() {
 
     useContext(StoreContext);
@@ -48,25 +46,6 @@ export default function GlobalLoader() {
     const status = getGlobalLoaderStatus();
 
     const msg = getGlobalLoaderMsg();
-
-    useEffect(() => {
-
-        const event = e => {
-            if (e.keyCode === 192) {
-                visible ? actionGlobalLoaderButtonsHide() : actionGlobalLoaderButtonsShow();
-            }
-        };
-
-        try {
-            document.addEventListener('keydown', event, true);
-        } catch (e) {}
-
-        return () => {
-            try {
-                document && document.removeEventListener('keydown', this.event, true);
-            } catch (e) {}
-        }
-    }, []);
 
     if ( status === 'off' ) {
 
