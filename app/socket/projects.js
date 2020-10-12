@@ -52,9 +52,7 @@ module.exports = ({
 
       if (id) {
 
-        form = await man.query('select * from :table: where id = :id', {
-          id,
-        });
+        form = await man.find(id);
       }
       else {
 
@@ -133,6 +131,30 @@ module.exports = ({
       }, 2);
 
       socket.emit('projects_form_submit', {
+        error: `failed to fetch project by id '${id}' list from database.......`,
+      })
+    }
+  })
+
+  socket.on('projects_delete', async id => {
+
+    log.dump({
+      projects_delete: id,
+    })
+
+    try {
+
+      await man.delete(id);
+
+      await projects_list_populate(io);
+    }
+    catch (e) {
+
+      log.dump({
+        projects_delete_error: e,
+      }, 2);
+
+      socket.emit('projects_delete', {
         error: `failed to fetch project by id '${id}' list from database.......`,
       })
     }

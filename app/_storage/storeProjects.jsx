@@ -105,6 +105,11 @@ function reducer(state, action) {
 
 // actions && selectors:
 
+export const actionProjectsDelete = id => {
+
+  socket.emit('projects_delete', id);
+};
+
 export const actionProjectsListPopulate = () => {
 
   socket.emit('projects_list_populate');

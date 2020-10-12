@@ -26,6 +26,7 @@ import {
 import {
   Link,
   useHistory,
+  useParams,
 } from 'react-router-dom';
 
 import {
@@ -45,9 +46,9 @@ import {
   notificationsAdd,
 } from '../../components/Notifications/storeNotifications';
 
-export default function ProjectsEdit({
-  id,
-}) {
+export default function ProjectsEdit() {
+
+  const { id } = useParams();
 
   useContext(StoreContextProjects);
 
@@ -103,7 +104,7 @@ export default function ProjectsEdit({
   }
 
   return (
-    <div className="projects">
+    <div className="project-edit">
       <Breadcrumb>
         <Breadcrumb.Section
           // onClick={loginSignOut}
