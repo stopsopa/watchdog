@@ -31,30 +31,33 @@ import {
 import {
   StoreContext as StoreContextProjects,
 
-  actionProjectsListPopulate,
   actionProjectsFormPopulate,
-  actionProjectsFormReset,
   actionProjectsFormFieldEdit,
   actionProjectsFormSubmit,
 
-  getProjectList,
   getProjectForm,
   getProjectFormErrors,
 } from '../../_storage/storeProjects';
 
+import {
+  StoreContext as StoreContextNotifications,
+
+  notificationsAdd,
+} from '../../components/Notifications/storeNotifications';
+
 export default function ProjectsEdit({
   id,
 }) {
+
+  useContext(StoreContextProjects);
+
+  useContext(StoreContextNotifications);
 
   const [ loading, setLoading ] = useState(true);
 
   const [ sending, setSending ] = useState(false);
 
   const history = useHistory();
-
-  const {
-    state: stateProjects,
-  } = useContext(StoreContextProjects);
 
   const form = getProjectForm();
 
@@ -75,6 +78,8 @@ export default function ProjectsEdit({
         if (submitted && Object.keys(errors || {}).length === 0) {
 
           history.push(`/`);
+
+          notificationsAdd(`Project '<b>${form.name}</b>' have been ${id ? 'edited': 'created'}`)
         }
       }
     })

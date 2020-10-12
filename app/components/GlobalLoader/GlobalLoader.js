@@ -1,3 +1,26 @@
+/**
+
+ Usage:
+
+    import { StoreGlobalLoaderProvider } from './components/GlobalLoader/storeGlobalLoader';
+    import GlobalLoader from './components/GlobalLoader/GlobalLoader';
+
+    const Main = () => {
+
+        return (
+            <StoreGlobalLoaderProvider>
+                <GlobalLoader/>
+                <App />
+            </StoreGlobalLoaderProvider>
+        )
+    }
+
+    render(
+        <Main />,
+        document.getElementById('app')
+    );
+*/
+
 
 import React, {
     useEffect,
@@ -10,29 +33,27 @@ import classnames from 'classnames';
 
 import {
     StoreContext,
-    getLoaderStatus,
-    getLoaderMsg,
-    loaderButtonsShow,
-    loaderButtonsHide,
+    getGlobalLoaderStatus,
+    getGlobalLoaderMsg,
+    actionGlobalLoaderButtonsShow,
+    actionGlobalLoaderButtonsHide,
 } from './storeGlobalLoader';
 
 let visible = undefined;
 
 export default function GlobalLoader() {
 
-    const {
-        state: stateLoader,
-    } = useContext(StoreContext);
+    useContext(StoreContext);
 
-    const status = getLoaderStatus();
+    const status = getGlobalLoaderStatus();
 
-    const msg = getLoaderMsg();
+    const msg = getGlobalLoaderMsg();
 
     useEffect(() => {
 
         const event = e => {
             if (e.keyCode === 192) {
-                visible ? loaderButtonsHide() : loaderButtonsShow();
+                visible ? actionGlobalLoaderButtonsHide() : actionGlobalLoaderButtonsShow();
             }
         };
 

@@ -6,12 +6,10 @@ import React, {
 
 import combineReducers from 'nlab/combineReducers';
 
-export const LOADER_ON      = 'LOADER_ON';
-export const LOADER_OFF     = 'LOADER_OFF';
-export const LOADER_ERROR   = 'LOADER_ERROR';
-export const LOADER_MESSAGE = 'LOADER_MESSAGE';
-export const LOADER_BUTTONS_SHOW = 'LOADER_BUTTONS_SHOW';
-export const LOADER_BUTTONS_HIDE = 'LOADER_BUTTONS_HIDE';
+export const GLOBAL_LOADER_ON            = 'GLOBAL_LOADER_ON';
+export const GLOBAL_LOADER_OFF           = 'GLOBAL_LOADER_OFF';
+export const GLOBAL_LOADER_ERROR         = 'GLOBAL_LOADER_ERROR';
+export const GLOBAL_LOADER_MESSAGE       = 'GLOBAL_LOADER_MESSAGE';
 
 export const StoreContext = createContext();
 
@@ -29,18 +27,17 @@ const th = (function () {
 const initialState = {
   status: 'off',
   msg: '',
-  show: false,
 };
 
 const status = (state = initialState.status, action) => {
   switch (action.type) {
-    case LOADER_ON:
+    case GLOBAL_LOADER_ON:
       return 'on';
-    case LOADER_ERROR:
+    case GLOBAL_LOADER_ERROR:
       return 'err';
-    case LOADER_OFF:
+    case GLOBAL_LOADER_OFF:
       return 'off';
-    case LOADER_MESSAGE:
+    case GLOBAL_LOADER_MESSAGE:
       return 'msg';
     default:
       return state;
@@ -49,20 +46,9 @@ const status = (state = initialState.status, action) => {
 
 const msg = (state = initialState.msg, action) => {
   switch (action.type) {
-    case LOADER_ERROR:
-    case LOADER_MESSAGE:
+    case GLOBAL_LOADER_ERROR:
+    case GLOBAL_LOADER_MESSAGE:
       return action.msg;
-    default:
-      return state;
-  }
-}
-
-const show = (state = initialState.show, action) => {
-  switch (action.type) {
-    case LOADER_BUTTONS_SHOW:
-      return true;
-    case LOADER_BUTTONS_HIDE:
-      return false;
     default:
       return state;
   }
@@ -71,7 +57,6 @@ const show = (state = initialState.show, action) => {
 const reducer = combineReducers({
   status,
   msg,
-  show
 });
 
 let state, dispatch;
@@ -86,10 +71,13 @@ export function StoreGlobalLoaderProvider(props) {
   }}>{props.children}</StoreContext.Provider>);
 }
 
-export const loaderOff = (delay = 0) => setTimeout(() => dispatch({
-  type: LOADER_OFF
-}), delay);
+export const actionGlobalLoaderOn = () => {
+  dispatch({ type: GLOBAL_LOADER_ON })
+};
 
+export const actionGlobalLoaderOff = (delay = 0) => setTimeout(() => dispatch({
+  type: GLOBAL_LOADER_OFF
+}), delay);
 
 const definition = function (type) {
 
@@ -106,42 +94,32 @@ const definition = function (type) {
 
     handler = setTimeout(() => {
 
-      dispatch(loaderOff());
+      dispatch(actionGlobalLoaderOff());
 
     }, time || 50000);
   }, delay);
 };
 
-export const loaderError    = definition(LOADER_ERROR);
+export const actionGlobalLoaderError    = definition(GLOBAL_LOADER_ERROR);
 
-export const loaderMessage  = definition(LOADER_MESSAGE);
+export const actionGlobalLoaderMessage  = definition(GLOBAL_LOADER_MESSAGE);
 
 try {
 
-  window.loaderMessage  = loaderMessage;
+  window.actionGlobalLoaderMessage  = actionGlobalLoaderMessage;
 
-  window.loaderError    = loaderError;
+  window.actionGlobalLoaderError    = actionGlobalLoaderError;
+
+  window.actionGlobalLoaderOn    = actionGlobalLoaderOn;
+
+  window.actionGlobalLoaderOff    = actionGlobalLoaderOff;
 }
 catch (e) {
 
 }
 
-export const loaderButtonsShow = () => {
-  dispatch({ type: LOADER_BUTTONS_SHOW })
-};
+export const getGlobalLoaderStatus          = () => state.status;
 
-export const loaderButtonsHide = () => {
-  dispatch({ type: LOADER_BUTTONS_HIDE })
-};
+export const getGlobalLoaderMsg             = () => state.msg;
 
-export const loaderOn = () => {
-  dispatch({ type: LOADER_ON })
-};
-
-export const getLoaderStatus        = () => state.status;
-
-export const getLoaderMsg           = () => state.msg;
-
-export const getLoading             = () => getLoaderStatus() === 'on';
-
-export const getLoaderButtonVisible = () => state.show;
+export const getGlobalLoaderLoading         = () => getGlobalLoaderStatus() === 'on';

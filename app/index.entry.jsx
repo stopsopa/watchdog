@@ -18,6 +18,9 @@ import { StoreSocketProvider } from './_storage/storeSocket';
 import { StoreGlobalLoaderProvider } from './components/GlobalLoader/storeGlobalLoader';
 import GlobalLoader from './components/GlobalLoader/GlobalLoader';
 
+import { StoreNotificationsProvider } from './components/Notifications/storeNotifications';
+import Notifications from './components/Notifications/Notifications';
+
 import App from './App';
 
 import {
@@ -33,12 +36,15 @@ const Main = () => {
       <StoreSocketProvider>
         <StoreProjectsProvider>
           <StoreAssocProvider>
-            <StoreGlobalLoaderProvider>
-              <GlobalLoader/>
-              {/*<button onClick={() => setShow(!show)}>toggle</button>*/}
-              {/*{show && <App />}*/}
-              <App />
-            </StoreGlobalLoaderProvider>
+            <StoreNotificationsProvider>
+              <StoreGlobalLoaderProvider>
+                <GlobalLoader/>
+                <Notifications />
+                {/*<button onClick={() => setShow(!show)}>toggle</button>*/}
+                {/*{show && <App />}*/}
+                <App />
+              </StoreGlobalLoaderProvider>
+            </StoreNotificationsProvider>
           </StoreAssocProvider>
         </StoreProjectsProvider>
       </StoreSocketProvider>
