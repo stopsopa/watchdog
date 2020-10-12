@@ -12,6 +12,8 @@ import ProjectsList from './views/Projects/ProjectsList';
 
 import ProjectsEdit from './views/Projects/ProjectsEdit';
 
+import Project from './views/Projects/Project';
+
 import {
   Button,
   Breadcrumb,
@@ -33,6 +35,11 @@ export default function App() {
             path="/"
             exact={true}
             component={ProjectsList}
+          />
+          <Route
+            path="/:id(\d+)"
+            exact={true}
+            component={Project}
           />
           <Route
             path="/create"

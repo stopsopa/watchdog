@@ -104,7 +104,7 @@ export default function Project() {
   }
 
   return (
-    <div className="project-edit">
+    <div>
       <Breadcrumb>
         <Breadcrumb.Section
           // onClick={loginSignOut}
@@ -113,36 +113,37 @@ export default function Project() {
           to="/"
         >Dashboard</Breadcrumb.Section>
         <Breadcrumb.Divider />
-        <Breadcrumb.Section>{id ? `Edit project "${form.name}"`: `Create project`}</Breadcrumb.Section>
+        <Breadcrumb.Section>{`Project "${form.name}"`}</Breadcrumb.Section>
       </Breadcrumb>
       <hr />
-      <div>
+      <div className="project">
 
         {loading ? (
           `Loading...`
         ) : (
-          <Form onSubmit={onSubmit}
-                autoComplete="off"
-          >
-            <Form.Field
-              disabled={loading}
-              error={!!errors.name}
-            >
-              <label>Name</label>
-              <input placeholder='Name' value={form.name}
-                     onChange={e => actionProjectsFormFieldEdit('name', e.target.value)}
-                     autoComplete="nope"
-              />
-              {errors.name && <div className="error">{errors.name}</div>}
-            </Form.Field>
-            <Form.Field disabled={sending}>
-              <Button type='submit'
-                      autoComplete="nope"
-              >
-                {form.id ? 'Save changes' : 'Create'}
-              </Button> {sending && `Sending data...`}
-            </Form.Field>
-          </Form>
+          <div>
+            <div className="header">
+              <div>
+                <h1>{`Project "${form.name}"`}</h1>
+              </div>
+              <div>
+                <span className="add-probe-span">
+                  add probe:
+                </span>
+                <Button icon="paper plane" content="Active" />
+                <Button icon="assistive listening systems" content="Passive" />
+              </div>
+            </div>
+            <div className="project-probes">
+              <div className="probe">
+
+              </div>
+              <div className="probe">
+
+              </div>
+            </div>
+
+          </div>
         )}
 
       </div>

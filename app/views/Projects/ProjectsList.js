@@ -74,7 +74,7 @@ export default function ProjectsList() {
       <hr />
       <div className="projects-list">
         {getProjectList().map(p => (
-          <Link key={p.id} className='project' to={`/${p.id}`} style={{border: '2px solid red'}}>
+          <Link key={p.id} className='project' to={`/${p.id}`}>
             <div>
               #{p.id} - {p.name}
               <div className="helpers">
