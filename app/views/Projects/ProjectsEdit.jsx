@@ -113,7 +113,7 @@ export default function ProjectsEdit() {
           to="/"
         >Dashboard</Breadcrumb.Section>
         <Breadcrumb.Divider />
-        <Breadcrumb.Section>{id ? `Create` : `Edit ${'..name..'}`}</Breadcrumb.Section>
+        <Breadcrumb.Section>{id ? `Edit project "${form.name}"`: `Create project`}</Breadcrumb.Section>
       </Breadcrumb>
       <hr />
       <div>
