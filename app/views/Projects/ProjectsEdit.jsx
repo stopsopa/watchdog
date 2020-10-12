@@ -75,11 +75,18 @@ export default function ProjectsEdit({
         setLoading(false);
         setSending(false);
 
-        if (submitted && Object.keys(errors || {}).length === 0) {
+        if (submitted) {
 
-          history.push(`/`);
+          if (Object.keys(errors || {}).length === 0) {
 
-          notificationsAdd(`Project '<b>${form.name}</b>' have been ${id ? 'edited': 'created'}`)
+            history.push(`/`);
+
+            notificationsAdd(`Project '<b>${form.name}</b>' have been ${id ? 'edited': 'created'}`)
+          }
+          else {
+
+            notificationsAdd(`Validation error has been detected, please check the data in the form and submit again.`, 'error');
+          }
         }
       }
     })
