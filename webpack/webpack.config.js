@@ -105,6 +105,8 @@ module.exports = {
   },
   //...
   stats: {
-    colors: true
+    colors: {
+      green: '\u001b[32m',
+    },
   },
 };
