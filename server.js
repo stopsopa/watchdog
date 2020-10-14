@@ -16,7 +16,7 @@ const delay         = require('nlab/delay');
 
 const compression   = require('compression');
 
-const {serializeError, deserializeError} = require('serialize-error');
+const serializeError = require('nlab/serializeError');
 
 const app = express();
 

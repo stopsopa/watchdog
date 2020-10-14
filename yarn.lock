@@ -4706,12 +4706,12 @@ nlab@^0.0.53:
     inspc "^0.0.16"
     md5 "^2.2.1"
 
-nlab@^0.0.84:
-  version "0.0.84"
-  resolved "https://registry.yarnpkg.com/nlab/-/nlab-0.0.84.tgz#b0fb2608c5a600c462b068c80f8d8287e1dc9a0c"
-  integrity sha512-GgXObb2ZYtnZqSAh+q1HysSnU3GgTG3G3YiFZzV0S3ULro9DRZwv8iGgaz6J4wlOZf16p3Hfrke50ClFeO5IJw==
+nlab@^0.0.85:
+  version "0.0.85"
+  resolved "https://registry.yarnpkg.com/nlab/-/nlab-0.0.85.tgz#fe1b0a1de7ed3ad826ec9859e26f2b073e1adf51"
+  integrity sha512-Gp4ex0cnoRtdXn9pgY2EzDQlpgZTlV6F649nZJLVewnrMs8yllbHji11bV8tafLH9YZwsu5ZpdjgdtHYSj6puQ==
   dependencies:
-    inspc "^0.0.16"
+    inspc "^0.0.19"
     md5 "^2.2.1"
     sjcl "^1.0.8"
 

@@ -7,7 +7,7 @@ const http          = require('http');
 
 const querystring   = require('querystring');
 
-const {serializeError, deserializeError} = require('serialize-error');
+const serializeError = require('nlab/serializeError');
 
 const th            = msg => new Error(`request: ${String(msg)}`);
 

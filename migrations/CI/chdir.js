@@ -3,7 +3,7 @@ const path = require('path');
 
 
 
-const {serializeError, deserializeError} = require('serialize-error');
+const serializeError = require('nlab/serializeError');
 
 (function () {
 

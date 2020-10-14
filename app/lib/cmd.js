@@ -1,7 +1,7 @@
 
 const { spawn } = require("child_process");
 
-const {serializeError, deserializeError} = require('serialize-error');
+const serializeError = require('nlab/serializeError');
 
 const th    = msg => new Error(`${__filename} error: ${msg}`);
 

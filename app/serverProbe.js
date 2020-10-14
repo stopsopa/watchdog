@@ -7,7 +7,7 @@ const mkdirp = require('mkdirp');
 
 const isObject = require('nlab/isObject');
 
-const {serializeError, deserializeError} = require('serialize-error');
+const serializeError = require('nlab/serializeError');
 
 const th = (msg, data) => {
 
@@ -93,11 +93,6 @@ function tool(db) {
 
         e = serializeError(e);
 
-        if (typeof e.stack === 'string') {
-
-          e.stack = e.stack.split("\n")
-        }
-
         const err = th(`couldn't import file '${file}'`);
 
         err.details = e;
@@ -146,11 +141,6 @@ function tool(db) {
       catch (e) {
 
         e = serializeError(e);
-
-        if (typeof e.stack === 'string') {
-
-          e.stack = e.stack.split("\n")
-        }
 
         return {
           status: 'crashed',

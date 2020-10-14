@@ -5,7 +5,7 @@ const request       = require('./request');
 
 const th = msg => new Error(`promise.js error: ${msg}`);
 
-const {serializeError, deserializeError} = require('serialize-error');
+const serializeError = require('nlab/serializeError');
 
 module.exports = function (url, opt = {}) {
 

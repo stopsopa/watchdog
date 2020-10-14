@@ -11,7 +11,7 @@ const isObject      = require('nlab/isObject');
 
 const log           = require('inspc');
 
-const {serializeError, deserializeError} = require('serialize-error');
+const serializeError = require('nlab/serializeError');
 
 const emsg          = msg => `jsonfetch: ${msg}`;
 

@@ -7,7 +7,7 @@ const delay = require('nlab/delay');
 
 const validator = require('@stopsopa/validator');
 
-const {serializeError, deserializeError} = require('serialize-error');
+const serializeError = require('nlab/serializeError');
 
 const serverProbe       = require('../serverProbe');
 
@@ -182,11 +182,6 @@ module.exports = ({
     catch (e) {
 
       e = serializeError(e);
-
-      if (typeof e.stack === 'string') {
-
-        e.stack = e.stack.split("\n")
-      }
 
       log.dump({
         probes_run_code_catch_error: e,
