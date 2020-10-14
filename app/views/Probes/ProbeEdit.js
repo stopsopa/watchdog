@@ -84,14 +84,6 @@ export default function ProbeEdit() {
     probe_id = parseInt(probe_id, 10);
   }
 
-  log.dump({
-    ProbeEdit: {
-      project_id,
-      probe_id,
-      type,
-    }
-  })
-
   useContext(StoreContextProjects);
 
   const [ loading, setLoading ] = useState(true);
@@ -105,6 +97,11 @@ export default function ProbeEdit() {
   const pform = getProjectForm();
 
   const form = getProbesForm();
+
+  if ( typeof type !== 'string' && form && typeof form.type === 'string') {
+
+    type = form.type
+  }
 
   const errors = getProbesFormErrors();
 
@@ -120,14 +117,6 @@ export default function ProbeEdit() {
 
       setLoading(false);
       setSending(false);
-
-      log.dump({
-        onLoad_back: {
-          form,
-          errors,
-          submitted,
-        }
-      })
 
       if (submitted) {
 

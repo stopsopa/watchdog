@@ -25,7 +25,7 @@
             padding: 5px;
             margin: 5px;
 
-            background-color: #f1f1f1;
+            background-color: #ffefd2;
             box-shadow: 0 0 2px #040404;
 
             display: flex;
@@ -38,7 +38,7 @@
             & > div:first-child {
 
                 .helpers {
-                    //display: none;
+                    display: none;
                     position: absolute;
                     top: -12px;
                     right: -5px;

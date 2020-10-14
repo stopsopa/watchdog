@@ -106,10 +106,8 @@ module.exports = knex => extend(knex, prototype, {
         //     row.roles = [];
         // }
         //
-        // if (typeof row.enabled !== 'undefined') {
-        //
-        //     row.enabled = !!row.enabled;
-        // }
+
+        row.enabled = !!row.enabled;
         //
         // if (typeof row.config === 'string') {
         //
@@ -131,6 +129,8 @@ module.exports = knex => extend(knex, prototype, {
 
             return row;
         }
+
+        row.enabled = !!row.enabled;
 
         // if (typeof row.roles !== 'undefined') {
         //
@@ -260,14 +260,14 @@ module.exports = knex => extend(knex, prototype, {
 
         return data;
     },
-    getValidators: function () {
-        return new Collection({
+    getValidators: function (mode, id, entityPrepared) {
+
+        const collection = {
             id: new Optional(),
             name: new Required([
                 new NotBlank(),
                 new Length({max: 255}),
             ]),
-            description: new Optional(new Type('str')),
             type: new Choice(['active', 'passive']),
             code: new Optional([
                 new Type('str'),
@@ -282,13 +282,6 @@ module.exports = knex => extend(knex, prototype, {
                             } = context.rootData;
 
                             if ( /^(active|passive)$/.test(type) ) {
-
-                                log.dump({
-                                    ty: typeof value,
-                                    type,
-                                    reg: /^(active|passive)$/.test(type),
-                                    xx: 'ttt'
-                                })
 
                                 let validationError = false;
 
@@ -306,10 +299,6 @@ module.exports = knex => extend(knex, prototype, {
 
                                     validationError = JSON.stringify(serializeError(e), null, 4)
                                 }
-
-                                log.dump({
-                                    evaluateFunction_validator_error: validationError
-                                })
 
                                 if ( validationError ) {
 
@@ -369,6 +358,13 @@ module.exports = knex => extend(knex, prototype, {
             project_id: new Required([
                 new Type('int'),
             ]),
-        });
+        };
+
+        if (typeof entityPrepared.description !== 'undefined') {
+
+            collection.description = new Optional();
+        }
+
+        return new Collection(collection);
     },
 }, table, id);

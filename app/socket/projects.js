@@ -14,6 +14,41 @@ module.exports = ({
 
   const man   = knex().model.projects;
 
+  const projects_form_populate = async (target, id) => {
+
+    log.dump({
+      projects_form_populate: id
+    })
+
+    try {
+
+      let form;
+
+      if (id) {
+
+        form = await man.find(id);
+      }
+      else {
+
+        form = await man.initialize();
+      }
+
+      target.emit('projects_form_populate', {
+        form,
+      })
+    }
+    catch (e) {
+
+      log.dump({
+        projects_form_populate_error: e,
+      }, 2);
+
+      target.emit('projects_form_populate', {
+        error: `failed to fetch project by id '${id}' list from database`,
+      })
+    }
+  }
+
   const projects_list_populate = async target => {
 
     log.dump('projects_list_populate')
@@ -40,40 +75,7 @@ module.exports = ({
 
   socket.on('projects_list_populate', () => projects_list_populate(socket));
 
-  socket.on('projects_form_populate', async id => {
-
-    log.dump({
-      projects_form_populate: id
-    })
-
-    try {
-
-      let form;
-
-      if (id) {
-
-        form = await man.find(id);
-      }
-      else {
-
-        form = await man.initialize();
-      }
-
-      socket.emit('projects_form_populate', {
-        form,
-      })
-    }
-    catch (e) {
-
-      log.dump({
-        projects_form_populate_error: e,
-      }, 2);
-
-      socket.emit('projects_form_populate', {
-        error: `failed to fetch project by id '${id}' list from database`,
-      })
-    }
-  })
+  socket.on('projects_form_populate', id => projects_form_populate(socket, id))
 
   socket.on('projects_form_submit', async form => {
 
@@ -116,6 +118,8 @@ module.exports = ({
         }
 
         await projects_list_populate(io);
+
+        await projects_form_populate(io, id)
       }
 
       socket.emit('projects_form_populate', {

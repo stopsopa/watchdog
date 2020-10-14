@@ -62,8 +62,6 @@ export function StoreProjectsProvider(props) {
   return (<StoreContext.Provider value={{
     state,
     dispatch,
-    actionProjectsListPopulate,
-    actionProjectsFormReset,
   }}>{props.children}</StoreContext.Provider>);
 }
 
@@ -248,8 +246,8 @@ export const actionProjectsFormPopulate = ({
 };
 
 export const actionProjectsFormSubmit = ({
-                                           form,
-                                         }) => {
+  form,
+}) => {
 
   socket.emit('projects_form_submit', form);
 };
@@ -270,10 +268,44 @@ export const actionProjectsFormFieldEdit = (key, value) => {
 
 // probes
 
+export const actionProbesDelete = id => {
+
+  socket.emit('probes_delete', id);
+};
+
+
+export const actionProbesListPopulate = ({
+  project_id,
+  onLoad = () => {},
+}) => {
+
+  socket.emit('probes_list_populate', project_id);
+
+  const probes_list_populate = ({
+    list,
+  }) => {
+
+    dispatch({
+      type: PROBES_LIST_POPULATE,
+      payload: list,
+    })
+
+    onLoad({
+      list,
+    });
+  }
+
+  socket.on('probes_list_populate', probes_list_populate);
+
+  return () => {
+
+    socket && socket.off('probes_list_populate', probes_list_populate);
+  }
+};
 
 
 export const actionProbesFormPopulate = ({
-  project_id:
+  project_id,
   probe_id,
   type,
   onLoad = () => {},
@@ -282,7 +314,7 @@ export const actionProbesFormPopulate = ({
   actionProbesFormReset();
 
   socket.emit('probes_form_populate', {
-    project_id:
+    project_id,
     probe_id,
     type,
   });

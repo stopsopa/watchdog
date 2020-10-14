@@ -18,13 +18,17 @@ module.exports = ({
 
   const man   = knex().model.probes;
 
-  const probes_list_populate = async target => {
+  const probes_list_populate = async (target, project_id) => {
 
-    log.dump('probes_list_populate')
+    log.dump({
+      probes_list_populate: project_id,
+    })
 
     try {
 
-      const list = await man.fetch('select * from :table: order by created');
+      const list = await man.fetch('select * from :table: where project_id = :project_id order by created', {
+        project_id,
+      });
 
       target.emit('probes_list_populate', {
         list,
@@ -42,7 +46,7 @@ module.exports = ({
     }
   }
 
-  socket.on('probes_list_populate', () => probes_list_populate(socket));
+  socket.on('probes_list_populate', project_id => probes_list_populate(socket, project_id));
 
   socket.on('probes_form_populate', async ({
     project_id,
@@ -136,7 +140,7 @@ module.exports = ({
           })
         }
 
-        await probes_list_populate(io);
+        await probes_list_populate(io, form.project_id);
       }
 
       socket.emit('probes_form_populate', {
@@ -202,9 +206,11 @@ module.exports = ({
 
     try {
 
+      const probe = await man.find(id);
+
       await man.delete(id);
 
-      await probes_list_populate(io);
+      await probes_list_populate(io, probe.project_id);
     }
     catch (e) {
 

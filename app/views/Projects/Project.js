@@ -10,6 +10,8 @@ import './Project.scss';
 
 import log from 'inspc';
 
+import all from 'nlab/all';
+
 import {
   Breadcrumb,
   List,
@@ -36,6 +38,11 @@ import {
   actionProjectsFormFieldEdit,
   actionProjectsFormSubmit,
 
+  actionProbesListPopulate,
+  actionProbesDelete,
+
+  getProbesList,
+
   getProjectForm,
   getProjectFormErrors,
 } from '../../views/Projects/storeProjects';
@@ -49,6 +56,18 @@ import {
 export default function Project() {
 
   const { id } = useParams();
+
+  const [ deleting, setDeleting ] = useState(false);
+
+  function cancelDelete() {
+    setDeleting(false);
+  }
+
+  function deleteItem(deleting) {
+    setDeleting(false);
+    actionProbesDelete(deleting.id);
+    notificationsAdd(`Probe "${deleting.name}" has been removed`)
+  }
 
   useContext(StoreContextProjects);
 
@@ -64,31 +83,30 @@ export default function Project() {
 
   useEffect(() => {
 
-    return actionProjectsFormPopulate({
-      id,
-      onLoad: ({
-        form,
-        errors = {},
-        submitted,
-      }) => {
-        setLoading(false);
-        setSending(false);
+    const onLoad = ([{
+      list,
+    }]) => {
 
-        if (submitted) {
+      setLoading(false);
+      setSending(false);
+    }
 
-          if (Object.keys(errors).length === 0) {
+    const [a, b] = all([d => d, () => {}], onLoad);
 
-            history.push(`/`);
-
-            notificationsAdd(`Project '<b>${form.name}</b>' have been ${id ? 'edited': 'created'}`)
-          }
-          else {
-
-            notificationsAdd(`Validation error has been detected, please check the data in the form and submit again.`, 'error');
-          }
-        }
-      }
+    const probesUnbind = actionProbesListPopulate({
+      project_id: id,
+      onLoad: a
     })
+
+    const projectUnbind = actionProjectsFormPopulate({
+      id,
+      onLoad: b
+    })
+
+    return () => {
+      probesUnbind();
+      projectUnbind();
+    }
 
   }, []);
 
@@ -115,7 +133,6 @@ export default function Project() {
       </Breadcrumb>
       <hr />
       <div className="project">
-
         {loading ? (
           `Loading...`
         ) : (
@@ -143,18 +160,69 @@ export default function Project() {
               </div>
             </div>
             <div className="project-probes">
-              <div className="probe">
+              {getProbesList().map(p => (
+                <Link key={p.id} className='probe' to={`/${form.id}/probe/edit/${p.id}`}>
+                  <div>
+                    #{p.id} - {p.name}
+                    <div className="helpers">
+                      <Button
+                        icon="trash"
+                        size="mini"
+                        color="red"
+                        onClick={e => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setDeleting(p);
+                        }}
+                      />
+                    </div>
+                  </div>
+                  {/*<div>*/}
 
-              </div>
-              <div className="probe">
-
-              </div>
+                  {/*</div>*/}
+                  {/*<div>*/}
+                  {/*  progress*/}
+                  {/*</div>*/}
+                </Link>
+              ))}
             </div>
 
           </div>
         )}
 
       </div>
+
+
+      <Modal
+        basic
+        size='small'
+        //dimmer="blurring"
+        closeOnDimmerClick={true}
+        open={!!deleting}
+        onClose={cancelDelete}
+      >
+        <Header icon='trash alternate outline' content='Deleting probe...' />
+        <Modal.Content>
+          <p>Do you really want to delete probe ?</p>
+          <p>"<b>{deleting.name}</b>" - (id: {deleting.id})</p>
+        </Modal.Content>
+        <Modal.Actions>
+          <Button
+            color="red"
+            onClick={() => deleteItem(deleting)}
+          >
+            <Icon name='trash alternate outline' /> Yes
+          </Button>
+          <Button
+            basic
+            color='green'
+            inverted
+            onClick={cancelDelete}
+          >
+            <Icon name='remove' /> No
+          </Button>
+        </Modal.Actions>
+      </Modal>
     </div>
   );
 }

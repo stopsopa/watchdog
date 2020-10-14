@@ -115,7 +115,7 @@ progress
         open={!!deleting}
         onClose={cancelDelete}
       >
-        <Header icon='trash alternate outline' content='Delete user...' />
+        <Header icon='trash alternate outline' content='Deleting project...' />
         <Modal.Content>
           <p>Do you really want to delete project ?</p>
           <p>"<b>{deleting.name}</b>" - (id: {deleting.id})</p>
