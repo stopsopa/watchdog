@@ -4,6 +4,8 @@ import React, {
   useReducer,
 } from 'react';
 
+import wait from 'nlab/delay';
+
 import combineReducers from 'nlab/combineReducers';
 
 export const GLOBAL_LOADER_ON            = 'GLOBAL_LOADER_ON';
@@ -75,15 +77,22 @@ export const actionGlobalLoaderOn = () => {
   dispatch({ type: GLOBAL_LOADER_ON })
 };
 
-export const actionGlobalLoaderOff = (delay = 0) => setTimeout(() => dispatch({
-  type: GLOBAL_LOADER_OFF
-}), delay);
+export const actionGlobalLoaderOff = async (delay = 0) => {
+
+  await wait(delay);
+
+  dispatch({
+    type: GLOBAL_LOADER_OFF
+  });
+};
 
 const definition = function (type) {
 
   let handler = null;
 
-  return (msg, time, delay = 100) => setTimeout(() => {
+  return async (msg, time, delay = 100) => {
+
+    await wait(delay);
 
     dispatch({
       type,
@@ -92,12 +101,18 @@ const definition = function (type) {
 
     clearTimeout(handler);
 
+    if ( ! Number.isInteger(time) ) { // never hide, only on demand/manually
+
+      return;
+    }
+
     handler = setTimeout(() => {
 
       dispatch(actionGlobalLoaderOff());
 
-    }, time || 50000);
-  }, delay);
+    // }, time || 50000);
+    }, time || 1000);
+  };
 };
 
 export const actionGlobalLoaderError    = definition(GLOBAL_LOADER_ERROR);

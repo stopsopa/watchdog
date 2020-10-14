@@ -15,8 +15,7 @@ else {
 }
 function init (text, correct) {
   function resize () {
-    console.log('fun resize', text)
-    text.style.height = 'auto';
+    // text.style.height = 'auto';
     var h = text.scrollHeight;
     if (Number.isInteger(correct)) {
       h += correct;
@@ -50,8 +49,12 @@ export default props => {
 
   const {
     value,
-    correct,
   } = props;
+
+  const {
+    correct,
+    ...rest
+  } = props
 
   useEffect(() => {
 
@@ -66,6 +69,6 @@ export default props => {
   }, [value]);
 
   return (
-    <textarea ref={el} {...props} />
+    <textarea ref={el} {...rest} />
   )
 }

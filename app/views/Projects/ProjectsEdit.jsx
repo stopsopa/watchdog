@@ -38,7 +38,7 @@ import {
 
   getProjectForm,
   getProjectFormErrors,
-} from '../../_storage/storeProjects';
+} from '../../views/Projects/storeProjects';
 
 import {
   StoreContext as StoreContextNotifications,
@@ -51,8 +51,6 @@ export default function ProjectsEdit() {
   const { id } = useParams();
 
   useContext(StoreContextProjects);
-
-  useContext(StoreContextNotifications);
 
   const [ loading, setLoading ] = useState(true);
 

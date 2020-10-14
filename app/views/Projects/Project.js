@@ -38,7 +38,7 @@ import {
 
   getProjectForm,
   getProjectFormErrors,
-} from '../../_storage/storeProjects';
+} from '../../views/Projects/storeProjects';
 
 import {
   StoreContext as StoreContextNotifications,
@@ -51,8 +51,6 @@ export default function Project() {
   const { id } = useParams();
 
   useContext(StoreContextProjects);
-
-  useContext(StoreContextNotifications);
 
   const [ loading, setLoading ] = useState(true);
 
@@ -130,8 +128,18 @@ export default function Project() {
                 <span className="add-probe-span">
                   add probe:
                 </span>
-                <Button icon="paper plane" content="Active" />
-                <Button icon="assistive listening systems" content="Passive" />
+                <Button
+                  icon="paper plane"
+                  content="Active"
+                  as={Link}
+                  to={`/${form.id}/probe/create/active`}
+                />
+                <Button
+                  icon="assistive listening systems"
+                  content="Passive"
+                  as={Link}
+                  to={`/${form.id}/probe/create/passive`}
+                />
               </div>
             </div>
             <div className="project-probes">

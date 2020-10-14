@@ -31,7 +31,7 @@ import {
   actionProjectsDelete,
 
   getProjectList,
-} from '../../_storage/storeProjects';
+} from '../../views/Projects/storeProjects';
 
 import {
   notificationsAdd,

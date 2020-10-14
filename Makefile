@@ -19,7 +19,7 @@ server:
 	node server.js
 
 dev:
-	nodemon --ignore public/dist server.js
+	nodemon --ignore public/dist --ignore var server.js
 
 yarnprod:
 	export NODE_ENV=production && yarn

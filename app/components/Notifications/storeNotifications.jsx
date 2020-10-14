@@ -4,6 +4,8 @@ import React, {
   useReducer,
 } from 'react';
 
+import wait from 'nlab/delay';
+
 export const NOTIFICATIONS_ADD         = 'NOTIFICATIONS_ADD';
 export const NOTIFICATIONS_REMOVE      = 'NOTIFICATIONS_REMOVE';
 export const NOTIFICATIONS_UPDATE      = 'NOTIFICATIONS_UPDATE';
@@ -90,50 +92,47 @@ const def= {
   type: '' // warning, error or empty string (default green state)
 };
 
-export const notificationsRemove = id => {
+export const notificationsRemove = async id => {
 
   const list = getNotificationsState();
 
   const found = (list || []).find(item => (item.id == id));
 
-  return new Promise(resolve => {
+  if ( ! found ) {
 
-    if ( ! found ) {
+    return;
+  }
 
-      return resolve();
+  const payload = { ...found };
+
+  payload.type = payload.type.replace(/(\s|^)show(\s|$)/g, ' ');
+
+  dispatch({
+    type: NOTIFICATIONS_UPDATE,
+    payload : {
+      ...payload,
+      type:payload.type + ' hide show'
     }
-
-    const payload = { ...found };
-
-    payload.type = payload.type.replace(/(\s|^)show(\s|$)/g, ' ');
-
-    dispatch({
-      type: NOTIFICATIONS_UPDATE,
-      payload : {
-        ...payload,
-        type:payload.type + ' hide show'
-      }
-    });
-
-    setTimeout(() => dispatch({
-      type: NOTIFICATIONS_UPDATE,
-      payload : {
-        ...payload,
-        type:payload.type + ' hide'
-      }
-    }), delay);
-
-    setTimeout(() => {
-
-      dispatch({
-        type: NOTIFICATIONS_REMOVE,
-        payload: id
-      });
-
-      resolve(payload);
-
-    }, animationTime + (3 * delay) );
   });
+
+  await wait(delay);
+
+  dispatch({
+    type: NOTIFICATIONS_UPDATE,
+    payload : {
+      ...payload,
+      type:payload.type + ' hide'
+    }
+  });
+
+  await wait(animationTime + (3 * delay) );
+
+  dispatch({
+    type: NOTIFICATIONS_REMOVE,
+    payload: id
+  });
+
+  return payload
 }
 
 /**
@@ -146,9 +145,7 @@ export const notificationsRemove = id => {
  *      time: 5000
  *  }) - explicit message, default green type, default delay
  */
-export const notificationsAdd = (...args) => {
-
-  getNotificationsState();
+export const notificationsAdd = async (...args) => {
 
   const id = generateId();
 
@@ -192,18 +189,19 @@ export const notificationsAdd = (...args) => {
     payload
   });
 
-  setTimeout(() => dispatch({
+  await wait(50);
+
+  dispatch({
     type: NOTIFICATIONS_UPDATE,
     payload : {
       ...payload,
       type:payload.type + ' show'
     }
-  }), 50);
+  })
 
-  return new Promise(resolve => setTimeout(
-    () => dispatch(notificationsRemove(id)).then(resolve),
-    payload.time
-  ));
+  await wait(payload.time);
+
+  return await notificationsRemove(id);
 };
 
 try {

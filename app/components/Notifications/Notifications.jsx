@@ -29,7 +29,7 @@
 
     ...
 
-      useContext(StoreContextNotifications);
+      useContext(StoreContextNotifications); // NOTICE: no need actually
 
     ...
 

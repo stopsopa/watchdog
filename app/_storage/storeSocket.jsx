@@ -42,6 +42,13 @@ import log from 'inspc';
     }, [socket]);
  */
 
+
+import {
+  actionGlobalLoaderError,
+  actionGlobalLoaderMessage,
+  actionGlobalLoaderOff,
+} from '../components/GlobalLoader/storeGlobalLoader';
+
 export const StoreContext = createContext();
 
 const th = (function () {
@@ -70,16 +77,48 @@ export function StoreSocketProvider(props) {
 
     window.socket = socket;
 
+    window.ren = () => {
+      // setSocket(null);
+      setTimeout(() => {
+
+        setSocket(socket);
+      }, 500);
+    }
+
+    let handler = false, i = 0;
+
     socket.on('connect', () => {
-      log.dump('connected to server')
+
+      log.dump('Connection renewed')
+
+      clearInterval(handler);
+      i = 0;
+
+      if (handler) {
+
+        actionGlobalLoaderMessage("Connection renewed", 1000);
+      }
 
       setSocket(socket);
     });
 
     socket.on('disconnect', () => {
+
       log.dump('disconnect from server')
 
-      setSocket(undefined);
+      clearInterval(handler);
+      i = 0;
+      handler = setInterval(() => {
+
+        actionGlobalLoaderError("Lost socket connection with server ... waiting to reconnect " +(".".repeat(i)), false);
+
+        i += 1;
+        if (i > 3) {
+          i = 0;
+        }
+      }, 500);
+
+      // setSocket(undefined);
     });
 
   }, []);

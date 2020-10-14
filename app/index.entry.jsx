@@ -11,7 +11,7 @@ import { render } from 'react-dom';
 
 import log from 'inspc';
 
-import { StoreProjectsProvider } from './_storage/storeProjects';
+import { StoreProjectsProvider } from './views/Projects/storeProjects';
 import { StoreAssocProvider } from './_storage/storeAssoc';
 import { StoreSocketProvider } from './_storage/storeSocket';
 
@@ -33,21 +33,21 @@ const Main = () => {
 
   return (
     <Router>
-      <StoreSocketProvider>
-        <StoreProjectsProvider>
-          <StoreAssocProvider>
-            <StoreNotificationsProvider>
-              <StoreGlobalLoaderProvider>
-                <GlobalLoader/>
-                <Notifications />
-                {/*<button onClick={() => setShow(!show)}>toggle</button>*/}
-                {/*{show && <App />}*/}
-                <App />
-              </StoreGlobalLoaderProvider>
-            </StoreNotificationsProvider>
-          </StoreAssocProvider>
-        </StoreProjectsProvider>
-      </StoreSocketProvider>
+      <StoreGlobalLoaderProvider>
+        <StoreSocketProvider>
+          <StoreProjectsProvider>
+            <StoreAssocProvider>
+              <StoreNotificationsProvider>
+                  <GlobalLoader/>
+                  <Notifications />
+                  {/*<button onClick={() => setShow(!show)}>toggle</button>*/}
+                  {/*{show && <App />}*/}
+                  <App />
+              </StoreNotificationsProvider>
+            </StoreAssocProvider>
+          </StoreProjectsProvider>
+        </StoreSocketProvider>
+      </StoreGlobalLoaderProvider>
     </Router>
   )
 }

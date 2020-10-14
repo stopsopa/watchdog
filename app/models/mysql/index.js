@@ -1,14 +1,16 @@
 
 const common                    = require('./common');
 
-const projects                     = require('./projects');
+const projects                  = require('./projects');
 
+const probes                    = require('./probes');
 
 // images.loadPaths();
 
 const managers = {
     common,
     projects,
+    probes,
 };
 
 /**

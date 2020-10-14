@@ -265,6 +265,15 @@ const estool = (async function () {
   await knex().model.common.howMuchDbIsFasterThanNode(true); // crush if greater than 5 sec
 }());
 
+(function () {
+
+  const cls = require('./app/serverProbe');
+
+  cls.setup({
+    dir: path.resolve(__dirname, 'var', 'probes'),
+  });
+}());
+
 
 
 

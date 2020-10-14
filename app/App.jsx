@@ -14,6 +14,8 @@ import ProjectsEdit from './views/Projects/ProjectsEdit';
 
 import Project from './views/Projects/Project';
 
+import ProbeEdit from './views/Probes/ProbeEdit';
+
 import {
   Button,
   Breadcrumb,
@@ -50,6 +52,16 @@ export default function App() {
             path="/edit/:id"
             exact={true}
             component={ProjectsEdit}
+          />
+          <Route
+            path="/:project_id(\d+)/probe/create/:type(active|passive)"
+            exact={true}
+            component={ProbeEdit}
+          />
+          <Route
+            path="/:project_id(\d+)/probe/edit/:probe_id"
+            exact={true}
+            component={ProbeEdit}
           />
           <Route
             exact={true}

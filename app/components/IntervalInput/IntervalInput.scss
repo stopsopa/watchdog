@@ -1,0 +1,5 @@
+.interval-input {
+    input.interval-input[class] { /* weird selector I know - but it is like this only to increase css specificity */
+        width: 82px;
+    }
+}
