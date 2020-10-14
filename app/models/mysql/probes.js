@@ -15,6 +15,8 @@ const a                 = prototype.a;
 
 const isObject          = require('nlab/isObject');
 
+const serializeError = require('nlab/serializeError');
+
 const serverProbe       = require('../../serverProbe');
 
 const ms                = require('nlab/ms');
@@ -302,7 +304,7 @@ module.exports = knex => extend(knex, prototype, {
                                 }
                                 catch (e) {
 
-                                    validationError = String(e);
+                                    validationError = JSON.stringify(serializeError(e), null, 4)
                                 }
 
                                 log.dump({
