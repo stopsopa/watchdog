@@ -183,7 +183,9 @@ export const actionProjectsDelete = id => {
   socket.emit('projects_delete', id);
 };
 
-export const actionProjectsListPopulate = () => {
+export const actionProjectsListPopulate = ({
+  projects_delete = () => {},
+}) => {
 
   socket.emit('projects_list_populate');
 
@@ -199,9 +201,16 @@ export const actionProjectsListPopulate = () => {
 
   socket.on('projects_list_populate', projects_list_populate);
 
+  socket.on('projects_delete', projects_delete);
+
   return () => {
 
-    socket && socket.off('projects_list_populate', projects_list_populate);
+    if (socket) {
+
+      socket.off('projects_list_populate', projects_list_populate);
+
+      socket.off('projects_delete', projects_delete);
+    }
   }
 };
 

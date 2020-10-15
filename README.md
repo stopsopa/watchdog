@@ -6,7 +6,7 @@
 - [ ] refresh param ?_=time (browser cache)
 - [ ] extend webpack to be able to import semantic ui css
 - [ ] parameter to skip cache-loader in webpack.config.js for docker image build mode
-- [ ] deleteing projects with probes
+- [x] deleteing projects with probes
 - [ ] favicon
 
 

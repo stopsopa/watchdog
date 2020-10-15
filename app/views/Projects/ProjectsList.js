@@ -46,14 +46,28 @@ export default function ProjectsList() {
   function deleteItem(deleting) {
     setDeleting(false);
     actionProjectsDelete(deleting.id);
-    notificationsAdd(`Project "${deleting.name}" has been removed`)
   }
 
   useContext(StoreContextProjects);
 
   useEffect(() => {
 
-    return actionProjectsListPopulate();
+    return actionProjectsListPopulate({
+      projects_delete: ({
+        error,
+        found,
+      }) => {
+
+        if ( typeof error === 'string' ) {
+
+          notificationsAdd(error, 'error');
+        }
+        else {
+
+          notificationsAdd(`Project "${found.name}" has been removed`)
+        }
+      }
+    });
 
   }, []);
 
@@ -88,8 +102,8 @@ export default function ProjectsList() {
                 />
                 <Button
                   size="mini"
-                  color="red"
                   as={Link}
+                  color="olive"
                   to={`/edit/${p.id}`}
                 >Edit</Button>
               </div>

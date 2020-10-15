@@ -146,11 +146,19 @@ module.exports = ({
       projects_delete: id,
     })
 
+    let found = {};
+
     try {
+
+      found = await man.find(id);
 
       await man.delete(id);
 
       await projects_list_populate(io);
+
+      socket.emit('projects_delete', {
+        found,
+      })
     }
     catch (e) {
 
@@ -159,7 +167,8 @@ module.exports = ({
       }, 2);
 
       socket.emit('projects_delete', {
-        error: `failed to fetch project by id '${id}' list from database.......`,
+        error: `First remove all probles of this project`,
+        found,
       })
     }
   })

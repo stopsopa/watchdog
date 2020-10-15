@@ -3,7 +3,7 @@ const path = require('path');
 
 
 
-const serializeError = require('nlab/serializeError');
+const se = require('nlab/se');
 
 (function () {
 
@@ -28,7 +28,7 @@ const serializeError = require('nlab/serializeError');
   catch (e) {
 
     log.dump({
-      'entering current working directory failed: ': serializeError(e),
+      'entering current working directory failed: ': se(e),
     })
 
     throw e;

@@ -1,7 +1,7 @@
 
 const { spawn } = require("child_process");
 
-const serializeError = require('nlab/serializeError');
+const se = require('nlab/se');
 
 const th    = msg => new Error(`${__filename} error: ${msg}`);
 
@@ -59,7 +59,7 @@ module.exports = (cmd, opt) => new Promise((resolve, reject) => {
       cmd,
       stdout,
       stderr,
-      e: serializeError(e)
+      e: se(e)
     });
   });
 

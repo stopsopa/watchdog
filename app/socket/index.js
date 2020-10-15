@@ -6,4 +6,6 @@ module.exports = (...args) => {
   require('./projects')(...args);
 
   require('./probes')(...args);
+
+  require('./logs')(...args);
 }

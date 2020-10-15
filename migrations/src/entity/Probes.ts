@@ -51,6 +51,12 @@ export class Probes {
     @Column()
     interval_ms: number;
 
+    @Column({
+        length: 255,
+        nullable: true,
+    })
+    password: string;
+
     // http://typeorm.io/#/many-to-one-one-to-many-relations
     @ManyToOne(type => Projects, {
         onDelete: "RESTRICT",

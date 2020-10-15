@@ -21,6 +21,9 @@ server:
 dev:
 	nodemon --ignore public/dist --ignore var server.js
 
+esdeleteindex:
+	@echo "\n\n    node server.js --delete\n\n"
+
 yarnprod:
 	export NODE_ENV=production && yarn
 

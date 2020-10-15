@@ -7,7 +7,7 @@ const http          = require('http');
 
 const querystring   = require('querystring');
 
-const serializeError = require('nlab/serializeError');
+const se = require('nlab/se');
 
 const th            = msg => new Error(`request: ${String(msg)}`);
 
@@ -80,7 +80,7 @@ module.exports = function request(url, opt = {}) {
           if (verbose) {
 
             log.dump({
-              request_resolve_exception_catch: serializeError(e),
+              request_resolve_exception_catch: se(e),
             })
           }
           else {

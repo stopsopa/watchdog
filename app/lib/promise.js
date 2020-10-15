@@ -5,7 +5,7 @@ const request       = require('./request');
 
 const th = msg => new Error(`promise.js error: ${msg}`);
 
-const serializeError = require('nlab/serializeError');
+const se = require('nlab/se');
 
 module.exports = function (url, opt = {}) {
 
@@ -55,7 +55,7 @@ module.exports = function (url, opt = {}) {
       if ( verbose ) {
 
         log.dump({
-          request_error: serializeError(e)
+          request_error: se(e)
         })
       }
     }

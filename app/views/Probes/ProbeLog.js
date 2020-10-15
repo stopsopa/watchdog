@@ -7,9 +7,7 @@ import React, {
   useReducer,
 } from 'react';
 
-import './ProbeEdit.scss';
-
-import isObject from 'nlab/isObject';
+import './ProbeLog.scss';
 
 import log from 'inspc';
 
@@ -68,7 +66,7 @@ import {
   notificationsAdd,
 } from '../../components/Notifications/storeNotifications';
 
-export default function ProbeEdit() {
+export default function ProbeLog() {
 
   let {
     project_id,
@@ -187,17 +185,17 @@ export default function ProbeEdit() {
           to={`/${pform.id}`}
         >{`Project "${pform.name}"`}</Breadcrumb.Section>
         <Breadcrumb.Divider />
-        <Breadcrumb.Section>{probe_id ? `Edit ${type} probe "${form.name}"`: `Create ${type} probe`}</Breadcrumb.Section>
+        <Breadcrumb.Section>{probe_id && `Logs of ${type} probe "${form.name}"`}</Breadcrumb.Section>
       </Breadcrumb>
       <hr />
-      <div className="probe">
+      <div className="probe-log">
         {loading ? (
           `Loading...`
         ) : (
           <div>
             <h1>
               <Icon name={(type === 'active') ? `paper plane` : `assistive listening systems`} />
-              {probe_id ? `Edit ${type} probe #${form.id}` : `Create ${type} probe`}
+              {probe_id && `Logs of ${type} probe #${form.id}`}
             </h1>
 
             <Form onSubmit={onSubmit}
@@ -228,17 +226,6 @@ export default function ProbeEdit() {
                 />
                 {errors.description && <div className="error">{errors.description}</div>}
               </Form.Field>
-              {(type === 'passive') && <Form.Field
-                disabled={loading}
-                error={!!errors.password}
-              >
-                <label>Password</label>
-                <input placeholder='Password' value={form.password}
-                       onChange={e => actionProbesFormFieldEdit('password', e.target.value)}
-                       autoComplete="nope"
-                />
-                {errors.password && <div className="error">{errors.password}</div>}
-              </Form.Field>}
               <Form.Field
                 disabled={loading}
                 error={!!errors.enabled}
@@ -294,25 +281,25 @@ export default function ProbeEdit() {
                       <div>Executing...</div>
                     ) : (
                       <>
-                        {(testResult) && (
+                        {(testResult && typeof testResult.status === 'string') && (
                           <table>
                             <tbody>
                             <tr>
                               <td>Is code working properly and return valid object:</td>
                               <td><span style={{
-                                color: (isObject(testResult) && typeof testResult.probe === 'boolean') ? 'green' : 'red'
-                              }}>{String((isObject(testResult) && typeof testResult.probe === 'boolean'))}</span></td>
+                                color: testResult.status === 'working' ? 'green' : 'red'
+                              }}>{testResult.status}</span></td>
                             </tr>
                             <tr>
                               <td>Probe passed:</td>
                               <td><span style={{
-                                color: isObject(testResult) && testResult.probe ? 'green' : 'red'
-                              }}>{(isObject(testResult) && testResult.probe ? 'passed' : 'failed')}</span></td>
+                                color: testResult && testResult.data && testResult.data.probe ? 'green' : 'red'
+                              }}>{(testResult && testResult.data && testResult.data.probe ? 'passed' : 'failed')}</span></td>
                             </tr>
                             </tbody>
                           </table>
                         )}
-                        <pre className="code-test-result">{JSON.stringify((testResult || "No result yet"), null, 4)}</pre>
+                        <pre className="code-test-result">{JSON.stringify((testResult && testResult.data ? testResult.data : "No result yet"), null, 4)}</pre>
                       </>
                     )}
                   </Modal.Content>

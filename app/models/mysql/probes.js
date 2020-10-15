@@ -15,9 +15,9 @@ const a                 = prototype.a;
 
 const isObject          = require('nlab/isObject');
 
-const serializeError = require('nlab/serializeError');
+const se = require('nlab/se');
 
-const serverProbe       = require('../../serverProbe');
+const probeClass       = require('../../probeClass');
 
 const ms                = require('nlab/ms');
 
@@ -50,7 +50,8 @@ const table             = 'probes';
 const id                = 'id';
 
 const def = {
-    active: fs.readFileSync(path.resolve(__dirname, '..', '..', 'views', 'Probes', 'example-active.js'), 'utf8').toString(),
+    active  : fs.readFileSync(path.resolve(__dirname, '..', '..', 'views', 'Probes', 'example-active.js'), 'utf8').toString(),
+    passive : fs.readFileSync(path.resolve(__dirname, '..', '..', 'views', 'Probes', 'example-passive.js'), 'utf8').toString(),
 }
 
 module.exports = knex => extend(knex, prototype, {
@@ -249,10 +250,10 @@ module.exports = knex => extend(knex, prototype, {
 //     },
     prepareToValidate: function (data = {}, mode) {
 
-        if (typeof data.id !== 'undefined') {
-
-            delete data.id;
-        }
+        // if (typeof data.id !== 'undefined') {
+        //
+        //     delete data.id;
+        // }
 
         delete data.created;
 
@@ -268,8 +269,9 @@ module.exports = knex => extend(knex, prototype, {
                 new NotBlank(),
                 new Length({max: 255}),
             ]),
+            description: new Optional(),
             type: new Choice(['active', 'passive']),
-            code: new Optional([
+            code: new Required([
                 new Type('str'),
                 new Callback(
                   (value, context, path, extra) =>
@@ -287,7 +289,7 @@ module.exports = knex => extend(knex, prototype, {
 
                                 try {
 
-                                    const tool = serverProbe({
+                                    const tool = probeClass({
                                         id: 0,
                                         code: value,
                                         type,
@@ -297,7 +299,7 @@ module.exports = knex => extend(knex, prototype, {
                                 }
                                 catch (e) {
 
-                                    validationError = JSON.stringify(serializeError(e), null, 4)
+                                    validationError = JSON.stringify(se(e), null, 4)
                                 }
 
                                 if ( validationError ) {
@@ -360,9 +362,18 @@ module.exports = knex => extend(knex, prototype, {
             ]),
         };
 
-        if (typeof entityPrepared.description !== 'undefined') {
+        if (typeof entityPrepared.description !== 'undefined' && entityPrepared.description !== null) {
 
-            collection.description = new Optional();
+            collection.description = new Optional(new Type('string'));
+        }
+
+        if (entityPrepared.type === 'passive') {
+
+            collection.password = new Required(new Type('string'));
+        }
+        else if (typeof entityPrepared.password !== 'undefined') {
+
+            collection.password = new Optional(new Type('string'));
         }
 
         return new Collection(collection);

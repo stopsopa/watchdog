@@ -7,38 +7,17 @@ module.exports = [
             },
             "mappings": {
                 "properties": {
-                    "address": { // usually one value
+                    "probe_id": { // usually one value
                         "type": "keyword"
+                    },
+                    "probe": {
+                        "type": "boolean"
                     },
                     "created": {
                         "type": "date"
                     },
-                    "fetched": {
-                        "type": "date"
-                    },
-                    "location": { // https://www.elastic.co/guide/en/elasticsearch/reference/current/geo-point.html#geo-point
-                        "type": "geo_point"
-                    },
-                    "response_body": {
+                    "log": {
                         "type": "nested"
-                    },
-                    "location_type": {
-                        "type": "keyword"
-                    },
-                    "administrative_area_level_2": {
-                        "type": "keyword"
-                    },
-                    "administrative_area_level_1": {
-                        "type": "keyword"
-                    },
-                    "country": {
-                        "type": "keyword"
-                    },
-                    "country_code": { // pl, en
-                        "type": "keyword"
-                    },
-                    "postal_code": {
-                        "type": "keyword"
                     },
                 }
             }

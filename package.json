@@ -9,7 +9,7 @@
     "inspc": "^0.0.19",
     "lodash": "^4.17.20",
     "mkdirp": "^1.0.4",
-    "nlab": "^0.0.85",
+    "nlab": "^0.0.90",
     "react-router-dom": "^5.2.0",
     "semantic-ui-css": "^2.4.1",
     "serialize-error": "^7.0.1",

@@ -16,6 +16,8 @@ import Project from './views/Projects/Project';
 
 import ProbeEdit from './views/Probes/ProbeEdit';
 
+import ProbeLog from './views/Probes/ProbeLog';
+
 import {
   Button,
   Breadcrumb,
@@ -62,6 +64,11 @@ export default function App() {
             path="/:project_id(\d+)/probe/edit/:probe_id"
             exact={true}
             component={ProbeEdit}
+          />
+          <Route
+            path="/:project_id(\d+)/log/:probe_id"
+            exact={true}
+            component={ProbeLog}
           />
           <Route
             exact={true}

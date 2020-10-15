@@ -7,9 +7,9 @@ const delay = require('nlab/delay');
 
 const validator = require('@stopsopa/validator');
 
-const serializeError = require('nlab/serializeError');
+const se = require('nlab/se');
 
-const serverProbe       = require('../serverProbe');
+const probeClass       = require('../probeClass');
 
 module.exports = ({
   io,
@@ -173,19 +173,19 @@ module.exports = ({
 
     try {
 
-      const tool = serverProbe({
+      const tool = probeClass({
         id: 0,
         code,
         type,
       });
 
-      const result = await tool.testRun();
+      const result = await tool.prodRunActive();
 
       socket.emit('probes_run_code', result)
     }
     catch (e) {
 
-      e = serializeError(e);
+      e = se(e);
 
       log.dump({
         probes_run_code_catch_error: e,
