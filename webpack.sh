@@ -3,8 +3,6 @@ _ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 
 node "$_ROOT/bash/node/versioncheck.js" --nvmrc .nvmrc --exact
 
-_WEBPACKDIR="$_ROOT/webpack";
-
 if ! [ -f "$_ROOT/.env" ]; then
 
   cp "$_ROOT/.env.dist" "$_ROOT/.env"
@@ -32,7 +30,7 @@ set -e
   if [ -e public ]; then echo 'dist symlink already exist'; else ln -s ../node_modules public; fi
 )
 
-#cd "$_WEBPACKDIR"
+#cd "$_ROOT"
 
 mkdir -p override
 
@@ -50,21 +48,8 @@ fi
 
 if [ "$1" = "dev" ]; then
 
-#node "$_ROOT/node_modules/.bin/onchange" \
-#  '**/*.js' \
-#  '**/*.jsx' \
-#  '**/*.html' \
-#  '**/*.css' \
-#  '**/*.scss' \
-#  --exclude-path "$_ROOT/.prettierignore" \
-#  -- \
-#  node "$_ROOT/node_modules/.bin/webpack" \
-#   --config "$_WEBPACKDIR/webpack.config.js"
-
 # https://webpack.js.org/guides/build-performance/#incremental-builds
-node "$_ROOT/node_modules/.bin/webpack" \
-   --watch \
-   --config "$_WEBPACKDIR/webpack.config.js"
+node node_modules/.bin/webpack --watch
 
 fi
 

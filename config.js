@@ -3,9 +3,7 @@ require('./lib/restrict-to-node')(__filename);
 
 const path              = require("path");
 
-const webpack           = path.resolve(__dirname);
-
-const root              = path.resolve(webpack, '..');
+const root              = path.resolve(__dirname);
 
 const vardir            = path.resolve(root, 'var');
 
@@ -30,7 +28,6 @@ module.exports = mode => ({
   name: env('DOCKER_IMAGE_NAME_PROD'),
   root,
   app,
-  webpack,
   node_modules,
   vardir,
   output,
