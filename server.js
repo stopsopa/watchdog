@@ -129,6 +129,12 @@ const estool = (async function () {
 
           // timezone: 'UTC' // https://github.com/knex/knex/issues/1461#issuecomment-222768525
           // actually knex timezone is inherited from process.env.TZ
+                // can be tested with
+                // await man.query("SET GLOBAL time_zone = 'UTC';SET SESSION time_zone = 'UTC';")
+                // log.dump({
+                //     timezone: await man.query('SELECT @@GLOBAL.time_zone, @@SESSION.time_zone;'),
+                //     test: (new Date()).toString(),
+                // })
         },
         pool: {
           afterCreate: function(conn, cb) {

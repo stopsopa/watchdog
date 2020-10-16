@@ -26,12 +26,6 @@ const tool = async function (opt = {}) {
 
     man = opt.knex.model.probes;
 
-    await man.query("SET GLOBAL time_zone = 'UTC';SET SESSION time_zone = 'UTC';")
-
-    log.dump({
-      timezone: await man.query('SELECT @@GLOBAL.time_zone, @@SESSION.time_zone;'),
-    })
-
     list = await man.fetch(`select * from :table:`);
 
     log.dump({
