@@ -8,7 +8,7 @@ require('dotenv-up')({
 
   const atomclock = require('./app/lib/atomclock');
 
-  atomclock.crashServer();
+  atomclock.crashServer(process.env.PROTECTED_MYSQL_MAX_TIME_DIFF);
 }());
 
 const path          = require('path');
@@ -75,7 +75,8 @@ const estool = (async function () {
     }
   });
 
-  await delay(1000);
+  // await delay(1000);
+
 
   const ensureIndex = require('./app/es/ensureIndex');
 

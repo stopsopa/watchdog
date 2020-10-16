@@ -12,7 +12,7 @@ require('dotenv-up')({
 
   const atomclock = require('./app/lib/atomclock');
 
-  atomclock.crashServer();
+  atomclock.crashServer(process.env.PROTECTED_MYSQL_MAX_TIME_DIFF);
 }());
 
 */
@@ -136,18 +136,21 @@ const tool = (warning = true) => promiseany([
   },
 ]);
 
-tool.crashServer = async function () {
+tool.crashServer = async function (diff) {
 
   try {
 
-    if ( ! /^\d+$/.test(process.env.PROTECTED_MYSQL_MAX_TIME_DIFF || '') ) {
+    if ( typeof diff !== 'string' ) {
 
-      console.log(`atomclock.js process.env.PROTECTED_MYSQL_MAX_TIME_DIFF (value: '${process.env.PROTECTED_MYSQL_MAX_TIME_DIFF}') is not defined or it doesn't match /^\\d+$/`);
-
-      process.exit(1);
+      throw th(`diff is not a string`);
     }
 
-    const crushnodeifdiffgreaterthansec = parseInt(process.env.PROTECTED_MYSQL_MAX_TIME_DIFF, 10);
+    if ( ! /^\d+$/.test(diff || '') ) {
+
+      throw th(`atomclock.js diff (value: '${diff}') is not defined or it doesn't match /^\\d+$/`);
+    }
+
+    const crushnodeifdiffgreaterthansec = parseInt(diff, 10);
 
     const at = await tool(false);
 
@@ -157,13 +160,12 @@ tool.crashServer = async function () {
 
     if (abs > crushnodeifdiffgreaterthansec) {
 
-      throw new Error(`atomclock.js time - node UTC time differance '${abs}' is greater than '${crushnodeifdiffgreaterthansec}' sec`);
+      throw th(`atomclock.js time - node UTC time differance '${abs}' is greater than '${crushnodeifdiffgreaterthansec}' sec`);
     }
 
     console.log(`Time differance between atomclock.js time and node.js clock time is '${abs}', should be smaller than ${crushnodeifdiffgreaterthansec}`)
 
     console.log("Time diff is small enough 👍")
-
   }
   catch (e) {
 
@@ -171,7 +173,7 @@ tool.crashServer = async function () {
       atomclick_general_error: e
     })
 
-    process.exit(1)
+    throw e;
   }
 }
 
