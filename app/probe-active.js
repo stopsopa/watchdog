@@ -11,7 +11,7 @@ const isObject      = require('nlab/isObject');
 
 const log           = require('inspc');
 
-const se = require('nlab/se');
+const se            = require('nlab/se');
 
 const emsg          = msg => `jsonfetch: ${msg}`;
 

@@ -26,20 +26,35 @@ const tool = async function (opt = {}) {
 
     man = opt.knex.model.probes;
 
-    list = await man.query(`select * from :table:`);
+    await man.query("SET GLOBAL time_zone = 'UTC';SET SESSION time_zone = 'UTC';")
+
+    log.dump({
+      timezone: await man.query('SELECT @@GLOBAL.time_zone, @@SESSION.time_zone;'),
+    })
+
+    list = await man.fetch(`select * from :table:`);
+
+    log.dump({
+      list_all_probes: list.map(r => {
+
+        const {
+          code,
+          ...rest
+        } = r;
+
+        return rest;
+      })
+    })
 
   } catch (e) {
 
     throw th(`couldn't fetch probes from db: ${e}`);
   }
 
-  // log.dump({
-  //   list: list.map(({ code, ...rest }) => rest),
-  // })
 
   for (let d of list) {
 
-    try {
+    (async function () { // this async is to just run all from list in parallel
 
       let {
         code,
@@ -48,32 +63,20 @@ const tool = async function (opt = {}) {
 
       let tmp = probeClass(d);
 
-      (async function (rest) {
+      try {
 
-        try {
+        await tmp.construct(true);
+      }
+      catch (e) {
 
-          await tmp.construct();
-        }
-        catch (e) {
+        log.dump({
+          general_error_running_probe: se(e),
+          context: rest,
+        }, 4)
 
-          log.dump({
-            general_error_running_probe: se(e),
-            context: rest,
-          }, 4)
-
-          process.exit(1);
-        }
-      }(rest));
-    }
-    catch (e) {
-
-      log.dump({
-        general_error: se(e),
-        context: rest,
-      }, 4)
-
-      process.exit(1);
-    }
+        process.exit(1);
+      }
+    }());
   }
 
 

@@ -50,8 +50,8 @@ const table             = 'probes';
 const id                = 'id';
 
 const def = {
-    active  : fs.readFileSync(path.resolve(__dirname, '..', '..', 'views', 'Probes', 'example-active.js'), 'utf8').toString(),
-    passive : fs.readFileSync(path.resolve(__dirname, '..', '..', 'views', 'Probes', 'example-passive.js'), 'utf8').toString(),
+    active  : fs.readFileSync(path.resolve(__dirname, '..', '..', 'probe-active.js'), 'utf8').toString(),
+    passive : fs.readFileSync(path.resolve(__dirname, '..', '..', 'probe-passive.js'), 'utf8').toString(),
 }
 
 module.exports = knex => extend(knex, prototype, {
@@ -108,7 +108,7 @@ module.exports = knex => extend(knex, prototype, {
         // }
         //
 
-        row.enabled = !!row.enabled;
+        row.enabled = Boolean(row.enabled);
         //
         // if (typeof row.config === 'string') {
         //

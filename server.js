@@ -126,6 +126,7 @@ const estool = (async function () {
           multipleStatements  : true, // this flag makes possible to execute queries like this:
           // `SET @x = 0; UPDATE :table: SET :sort: = (@x:=@x+1) WHERE :pid: = :id ORDER BY :l:`
           // its mainly for nested set extension library https://github.com/stopsopa/knex-abstract/blob/master/src/lr-tree.js
+          timezone: 'UTC' // https://github.com/knex/knex/issues/1461#issuecomment-222768525
         },
         pool: {
           afterCreate: function(conn, cb) {
