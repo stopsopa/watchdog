@@ -8,6 +8,8 @@
 - [ ] parameter to skip cache-loader in webpack.config.js for docker image build mode
 - [x] deleteing projects with probes
 - [ ] favicon
+- [ ] @todo - let callNext = await es(); // fetch and calculate it based on es data logs
+- [ ] probeClass()->status() - add/calculate next trigger time
 
 
 

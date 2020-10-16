@@ -28,23 +28,22 @@ const tool = async function (opt = {}) {
 
     list = await man.fetch(`select * from :table:`);
 
-    log.dump({
-      list_all_probes: list.map(r => {
-
-        const {
-          code,
-          ...rest
-        } = r;
-
-        return rest;
-      })
-    })
+    // log.dump({
+    //   list_all_probes: list.map(r => {
+    //
+    //     const {
+    //       code,
+    //       ...rest
+    //     } = r;
+    //
+    //     return rest;
+    //   })
+    // })
 
   } catch (e) {
 
     throw th(`couldn't fetch probes from db: ${e}`);
   }
-
 
   for (let d of list) {
 
