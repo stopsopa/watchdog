@@ -5,6 +5,8 @@ const isObject = require('nlab/isObject');
 
 const probeClass = require('./probeClass');
 
+const promiseall = require('nlab/promiseall');
+
 const se = require('nlab/se');
 
 let init;
@@ -79,7 +81,7 @@ const tool = async function (opt = {}) {
 
     man = opt.knex.model.probes;
 
-    list = await man.fetch(`select * from :table:`);
+    list = await man.fetch(`select * from :table: where enabled = 1 or type = 'passive'`);
 
     // log.dump({
     //   list_all_probes: list.map(r => {
@@ -98,14 +100,17 @@ const tool = async function (opt = {}) {
     throw th(`couldn't fetch probes from db: ${e}`);
   }
 
+
   ({
     knex,
     es
   } = opt);
 
+  var all = [];
+
   for (let db of list) {
 
-    (async function () {
+    all.push(async function () {
 
       // this async is to just run all from list in parallel
       // WARNING: and that's why it must be have it's own try catch for local error handling
@@ -132,6 +137,8 @@ const tool = async function (opt = {}) {
     }());
 
   }
+
+  await promiseall(all);
 
   init = opt;
 }

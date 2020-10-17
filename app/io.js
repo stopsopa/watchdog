@@ -32,7 +32,7 @@ tool.bind = (opt = {}) => {
 
   io.on('connection', socket => {
 
-    console.log('io.js connection', socket.id)
+    // console.log('io.js connection', socket.id)
 
     // * possible thanks to socketio-wildcard library
     socket.on('*', function(packet) {

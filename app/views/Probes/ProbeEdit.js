@@ -257,7 +257,9 @@ export default function ProbeEdit() {
                 <IntervalInput
                   value={form.interval_ms}
                   onChange={v => actionProbesFormFieldEdit('interval_ms', v)}
-                  include="d"
+                  valueunit="ms"
+                  rangestart="s"
+                  rangeend="d"
                 />
                 {errors.interval_ms && <div className="error">{errors.interval_ms}</div>}
               </Form.Field>

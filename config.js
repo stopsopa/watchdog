@@ -21,7 +21,7 @@ require('dotenv-up')({
   deep        : 3,
 }, false, 'config.js');
 
-const env               = require('../app/lib/dotenv');
+const env               = require('./app/lib/dotenv');
 
 module.exports = mode => ({
   // just name for this project, it's gonna show up in some places
