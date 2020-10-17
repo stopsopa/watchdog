@@ -203,12 +203,18 @@ const estool = (async function () {
 
       const driver = require('./app/probeDriver');
 
-      setTimeout(() => {
+      setTimeout(async () => {
 
-        driver({
-          knex: knex(),
-          es,
-        });
+        try {
+
+          await driver({
+            knex: knex(),
+            es,
+          });
+        }
+        catch (e) {
+
+        }
       }, 1000);
 
       // fetch('/passive')

@@ -1,6 +1,8 @@
 
 const log = require('inspc');
 
+const isObject = require('nlab/isObject');
+
 const probeClass = require('./probeClass');
 
 const se = require('nlab/se');
@@ -9,18 +11,27 @@ let init;
 
 let probes = {};
 
+let knex;
+
+let es;
+
 let man;
 
 const th = msg => new Error(`probeDriver.js error: ${msg}`);
 
 const tool = async function (opt = {}) {
 
-  let list;
+  if ( ! isObject(opt) ) {
+
+    throw th(`opt is not an object`);
+  }
 
   if ( typeof opt.es !== 'function' ) {
 
     throw th(`opt.es is not defined`);
   }
+
+  let list;
 
   try {
 
@@ -45,20 +56,31 @@ const tool = async function (opt = {}) {
     throw th(`couldn't fetch probes from db: ${e}`);
   }
 
-  for (let d of list) {
+  ({
+    knex,
+    es
+  } = opt);
 
-    (async function () { // this async is to just run all from list in parallel
+  for (let db of list) {
+
+    (async function () {
+
+      // this async is to just run all from list in parallel
+      // WARNING: and that's why it must be have it's own try catch for local error handling
+      // it should crush server actually because it is used only here with list from db
 
       let {
         code,
         ...rest
-      } = d;
-
-      let tmp = probeClass(d);
+      } = db;
 
       try {
 
-        await tmp.construct(true);
+        let cls = probeClass(db);
+
+        await cls.construct(true);
+
+        probes[rest.id] = cls;
       }
       catch (e) {
 
@@ -70,6 +92,7 @@ const tool = async function (opt = {}) {
         process.exit(1);
       }
     }());
+
   }
 
 
@@ -78,10 +101,6 @@ const tool = async function (opt = {}) {
 
 
   init = opt;
-
-
 }
-
-
 
 module.exports = tool;
