@@ -45,9 +45,15 @@ async function unregister(id) {
 
   try {
 
-    cls.destruct()
+    cls.destruct();
   }
-  catch (e) {}
+  catch (e) {
+
+    log.dump({
+      id,
+      destructuring_error: se(e),
+    })
+  }
 }
 
 const tool = async function (opt = {}) {

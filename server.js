@@ -215,14 +215,15 @@ const estool = (async function () {
           // setTimeout(() => {
           //
           //   log.dump({
-          //     probes: driver.getProbes(),
-          //   })
+          //     probes: Object.entries(driver.getProbes()).map(([key, obj]) => obj.state()),
+          //   }, 5)
           //
-          //   driver.unregister(31)                                    // ???????
           //
-          //   log.dump({
-          //     probes: driver.getProbes(),
-          //   })
+          //   // driver.unregister(31)                                    // ???????
+          //   //
+          //   // log.dump({
+          //   //   probes: driver.getProbes(),
+          //   // })
           // }, 1000);
         }
         catch (e) {

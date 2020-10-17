@@ -270,6 +270,7 @@ module.exports = knex => extend(knex, prototype, {
                 new Length({max: 255}),
             ]),
             description: new Optional(),
+            password: new Optional(),
             type: new Choice(['active', 'passive']),
             code: new Required([
                 new Type('str'),
@@ -369,9 +370,13 @@ module.exports = knex => extend(knex, prototype, {
 
         if (entityPrepared.type === 'passive') {
 
-            collection.password = new Required(new Type('string'));
+            collection.password = new Required([
+                new Type('string'),
+                new NotBlank(),
+                new Length({min: 8}),
+            ]);
         }
-        else if (typeof entityPrepared.password !== 'undefined') {
+        else if (typeof entityPrepared.password !== 'undefined' && entityPrepared.password !== null) {
 
             collection.password = new Optional(new Type('string'));
         }
