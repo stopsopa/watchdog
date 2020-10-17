@@ -19,7 +19,43 @@ let man;
 
 const th = msg => new Error(`probeDriver.js error: ${msg}`);
 
+async function register(db) {
+
+  let cls = probeClass(db);
+
+  await cls.construct(true);
+
+  probes[db.id] = cls;
+}
+
+const intreg = /^\d+$/;
+async function unregister(id) {
+
+  if ( ! intreg.test(id) ) {
+
+    throw th(`unregister() id don't match ${intreg}, it is: ` + JSON.stringify(id));
+  }
+
+  let cls;
+
+  ({
+    [id]: cls,
+    ...probes
+  } = probes);
+
+  try {
+
+    cls.destruct()
+  }
+  catch (e) {}
+}
+
 const tool = async function (opt = {}) {
+
+  if ( init ) {
+
+    throw th(`it was already initialized`);
+  }
 
   if ( ! isObject(opt) ) {
 
@@ -76,11 +112,7 @@ const tool = async function (opt = {}) {
 
       try {
 
-        let cls = probeClass(db);
-
-        await cls.construct(true);
-
-        probes[rest.id] = cls;
+        await register(db);
       }
       catch (e) {
 
@@ -95,12 +127,13 @@ const tool = async function (opt = {}) {
 
   }
 
-
-
-
-
-
   init = opt;
 }
+
+tool.getProbes = () => probes;
+
+tool.register = db => register(db);
+
+tool.unregister = id => unregister(id);
 
 module.exports = tool;

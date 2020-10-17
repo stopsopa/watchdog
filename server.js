@@ -201,9 +201,9 @@ const estool = (async function () {
         });
       }());
 
-      const driver = require('./app/probeDriver');
-
       setTimeout(async () => {
+
+        const driver = require('./app/probeDriver');
 
         try {
 
@@ -211,6 +211,19 @@ const estool = (async function () {
             knex: knex(),
             es,
           });
+
+          // setTimeout(() => {
+          //
+          //   log.dump({
+          //     probes: driver.getProbes(),
+          //   })
+          //
+          //   driver.unregister(31)                                    // ???????
+          //
+          //   log.dump({
+          //     probes: driver.getProbes(),
+          //   })
+          // }, 1000);
         }
         catch (e) {
 
