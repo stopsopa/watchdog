@@ -214,6 +214,11 @@ const estool = (async function () {
         }
         catch (e) {
 
+          log.dump({
+            probeDriver_contructor_general_error: se(e)
+          });
+
+          process.exit(1);
         }
       }, 1000);
 
