@@ -1,6 +1,9 @@
 
 
 #app .probe {
+    .noinput-checkbox.checked.warning>div>div {
+        background-color: #ff1515;
+    }
     .error {
         color: #9f3a38;
     }

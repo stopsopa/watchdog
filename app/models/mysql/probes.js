@@ -80,7 +80,8 @@ module.exports = knex => extend(knex, prototype, {
             interval_ms: generate({
                 m: 1
             }),
-            enabled: true,
+            enabled: false,
+            detailed_log: false,
             code: def[extra.type],
             ...extra,
         }
@@ -109,6 +110,8 @@ module.exports = knex => extend(knex, prototype, {
         //
 
         row.enabled = Boolean(row.enabled);
+
+        row.detailed_log = Boolean(row.detailed_log);
         //
         // if (typeof row.config === 'string') {
         //
@@ -131,7 +134,9 @@ module.exports = knex => extend(knex, prototype, {
             return row;
         }
 
-        row.enabled = !!row.enabled;
+        row.enabled = Boolean(row.enabled);
+
+        row.detailed_log = Boolean(row.detailed_log);
 
         // if (typeof row.roles !== 'undefined') {
         //
@@ -327,6 +332,9 @@ module.exports = knex => extend(knex, prototype, {
                 ),
             ]),
             enabled: new Required([
+                new Type('bool'),
+            ]),
+            detailed_log: new Required([
                 new Type('bool'),
             ]),
             interval_ms: new Required([

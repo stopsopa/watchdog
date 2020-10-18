@@ -251,6 +251,17 @@ export default function ProbeEdit() {
               </Form.Field>
               <Form.Field
                 disabled={loading}
+                error={!!errors.detailed_log}
+              >
+                <NoInput
+                  checked={Boolean(form.detailed_log)}
+                  onChange={() => actionProbesFormFieldEdit('detailed_log', !form.detailed_log)}
+                  className="warning"
+                >Save detailed logs also for "probe": true</NoInput>
+                {errors.detailed_log && <div className="error">{errors.detailed_log}</div>}
+              </Form.Field>
+              <Form.Field
+                disabled={loading}
                 error={!!errors.interval_ms}
               >
                 <label>Interval</label>

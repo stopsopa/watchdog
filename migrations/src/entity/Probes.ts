@@ -48,6 +48,12 @@ export class Probes {
     })
     enabled: boolean;
 
+    @Column({
+        precision:1 ,
+        default: () => 0
+    })
+    detailed_log: boolean;
+
     @Column()
     interval_ms: number;
 
