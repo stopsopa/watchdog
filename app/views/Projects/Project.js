@@ -91,7 +91,7 @@ export default function Project() {
       setSending(false);
     }
 
-    const [a, b] = all([d => d, () => {}], onLoad);
+    const [a, b] = all([a => a, () => {}], onLoad);
 
     const probesUnbind = actionProbesListPopulate({
       project_id: id,

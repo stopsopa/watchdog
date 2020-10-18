@@ -135,7 +135,7 @@ export default function ProbeEdit() {
       }
     }
 
-    const [a, b] = all([d => d, () => {}], onLoad);
+    const [a, b] = all([a => a, () => {}], onLoad);
 
     const probesUnbind = actionProbesFormPopulate({
       project_id,
