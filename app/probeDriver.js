@@ -100,7 +100,6 @@ const tool = async function (opt = {}) {
     throw th(`couldn't fetch probes from db: ${e}`);
   }
 
-
   ({
     knex,
     es
@@ -148,5 +147,12 @@ tool.getProbes = () => probes;
 tool.register = db => register(db);
 
 tool.unregister = id => unregister(id);
+
+tool.update = db => {
+
+  unregister(db.id);
+
+  register(db)
+}
 
 module.exports = tool;

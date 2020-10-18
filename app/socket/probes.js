@@ -11,6 +11,8 @@ const se = require('nlab/se');
 
 const probeClass       = require('../probeClass');
 
+const driver = require('../probeDriver');
+
 module.exports = ({
   io,
   socket,
@@ -139,6 +141,9 @@ module.exports = ({
             error: `Database state conflict: updated/created entity doesn't exist`,
           })
         }
+
+
+        await driver.update(form);
 
         await probes_list_populate(io, form.project_id);
       }
