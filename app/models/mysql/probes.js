@@ -357,6 +357,7 @@ module.exports = knex => extend(knex, prototype, {
                         })
                     );
                 }(generate({m: 1})))
+                // }(generate({s: 5})))
             ]),
             project_id: new Required([
                 new Type('int'),
