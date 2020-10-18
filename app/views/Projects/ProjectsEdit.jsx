@@ -8,6 +8,8 @@ import React, {
 
 import './ProjectsEdit.scss';
 
+import Textarea from '../../components/Textarea';
+
 import log from 'inspc';
 
 import {
@@ -132,6 +134,20 @@ export default function ProjectsEdit() {
                      autoComplete="nope"
               />
               {errors.name && <div className="error">{errors.name}</div>}
+            </Form.Field>
+            <Form.Field
+              disabled={loading}
+              error={!!errors.description}
+            >
+              <label>Description</label>
+              <Textarea
+                autoComplete="nope"
+                value={form.description || ""}
+                onChange={e => actionProjectsFormFieldEdit('description', e.target.value)}
+                spellCheck={false}
+                correct={10}
+              />
+              {errors.description && <div className="error">{errors.description}</div>}
             </Form.Field>
             <Form.Field disabled={sending}>
               <Button type='submit'

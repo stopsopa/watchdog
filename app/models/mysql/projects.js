@@ -238,13 +238,22 @@ module.exports = knex => extend(knex, prototype, {
 
         return data;
     },
-    getValidators: function () {
-        return new Collection({
+    getValidators: function (mode, id, entityPrepared) {
+
+        const collection = {
             id: new Optional(),
             name: new Required([
                 new NotBlank(),
                 new Length({max: 255}),
             ]),
-        });
+            description: new Optional(),
+        };
+
+        if (typeof entityPrepared.description !== 'undefined' && entityPrepared.description !== null) {
+
+            collection.description = new Optional(new Type('string'));
+        }
+
+        return new Collection(collection)
     },
 }, table, id);

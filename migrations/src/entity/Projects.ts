@@ -25,6 +25,11 @@ export class Projects {
     })
     name: string;
 
+    @Column("mediumtext", {
+        nullable: true,
+    })
+    description: null;
+
     @Column("datetime", {
         default: () => 'CURRENT_TIMESTAMP',
     })
