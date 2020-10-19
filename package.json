@@ -4,6 +4,7 @@
     "cache-loader": "^4.1.0",
     "classnames": "^2.2.6",
     "compression": "^1.7.4",
+    "date-fns-timezone": "^0.1.4",
     "dotenv-up": "^1.0.30",
     "express": "^4.17.1",
     "inspc": "^0.0.19",
