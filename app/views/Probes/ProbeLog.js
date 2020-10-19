@@ -387,16 +387,12 @@ export default function ProbeLog() {
     setStoreAssocDelete(assocKeyFullRange);
     setStoreAssocDelete(assocKeySelection);
   };
+
   useEffect(eraseStats, []);
 
   useEffect(() => {
 
     eraseStats();
-
-    // setTimeout(() => {
-    //
-    //   setStoreAssoc(assocKeyFullRange, _data);
-    // }, 1000);
 
     const endDate = offsetDay(startDate, offset - 1);
 
@@ -414,10 +410,10 @@ export default function ProbeLog() {
 
   const assocSelection = getStoreAssoc(assocKeySelection);
 
-  log.dump({
-    assocFullRange,
-    assocSelection,
-  });
+  // log.dump({
+  //   assocFullRange,
+  //   assocSelection,
+  // });
 
   return (
     <div>
@@ -565,7 +561,7 @@ selected.end__:${selected && selected.end && selected.end.date.toISOString()}
                       onMouseMove={e => {
                         setXY({ x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY })
                         if ( ! selected || ! selected.start || selected.locked ) {
-                          log('onMouseMove return')
+                          // log('onMouseMove return')
                           return
                         }
 
@@ -580,7 +576,7 @@ selected.end__:${selected && selected.end && selected.end.date.toISOString()}
                           key = 'start';
                         }
 
-                        log('onMouseOver', key)
+                        // log('onMouseOver', key)
                         return setSelected({
                           ...s,
                           [key]: {
@@ -610,7 +606,7 @@ selected.end__:${selected && selected.end && selected.end.date.toISOString()}
                             y="20"
 
                             x={x}
-                            fill={d.p ? '#65dcb5' : '#e6682d'}
+                            fill={d.p ? '#65dcb5' : '#e65424'}
                           />
                         );
                       })}
