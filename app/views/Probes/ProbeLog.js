@@ -6,6 +6,7 @@ import React, {
   useContext,
   useReducer,
   useCallback,
+  Fragment,
 } from 'react';
 
 import './ProbeLog.scss';
@@ -14,6 +15,8 @@ import log from 'inspc';
 
 import all from 'nlab/all';
 
+import format from 'date-fns/format';
+
 import Textarea from '../../components/Textarea';
 
 import NoInput from '../../components/NoInput/NoInput';
@@ -21,7 +24,6 @@ import NoInput from '../../components/NoInput/NoInput';
 import IntervalInput from '../../components/IntervalInput/IntervalInput';
 
 import DatePicker from "react-datepicker";
-
 // https://usehooks.com/useWindowSize/
 function useWindowSize() {
   // Initialize state with undefined width/height so server and client renders match
@@ -101,13 +103,18 @@ import {
   notificationsAdd,
 } from '../../components/Notifications/storeNotifications';
 
+
+
+function offsetDay(date, days) {
+  return new Date( date.getTime() + ( 60 * 60 * 24 * days * 1000)   )
+}
 function range(date, offsetDays) {
 
   const abs = Math.abs(offsetDays);
 
   if (offsetDays < 0) {
 
-    date = new Date( date.getTime() - ( 60 * 60 * 24 * abs * 1000)   )
+    date = offsetDays(date, abs)
   }
 
   const list = [];
@@ -121,10 +128,21 @@ function range(date, offsetDays) {
       offset += 1;
     }
 
-    list.push(new Date( date.getTime() + ( 60 * 60 * 24 * offset * 1000)   ))
+    list.push({
+      d: offsetDay(date, offset),
+      o: offset,
+    })
   }
 
   return list;
+}
+
+function ratio(viewBoxX, width) {
+  return x => {
+    // return (viewBoxX * (d.o * dayWidth)) / width
+    return (viewBoxX * x) / width
+  }
+
 }
 
 export default function ProbeLog() {
@@ -235,35 +253,21 @@ export default function ProbeLog() {
 
   const viewBoxRatio = 0.05;
 
-  // const svgDOM = useRef(null);
-
-
-  const [height, setHeight] = useState(0);
-
   const [startDate, setStartDate] = useState(new Date());
 
-  const [endDate, setEndDate] = useState(new Date( (new Date()).getTime() + ( 60 * 60 * 24 * 1000)   ));
+  const [offset, setOffset] = useState(1);
 
-  useEffect(() => {
-
-    setEndDate(new Date( startDate.getTime() + ( 60 * 60 * 24 * 1000)   ))
-  }, [startDate]);
-
-  log.dump({
-    startDate: startDate
-  })
+  const endDate = offsetDay(startDate, offset);
 
   const windowSize = useWindowSize();
 
-  const svgDOM = useCallback(svgDOM => {
+  const [width, setWidth] = useState(0);
+
+  const svgDOM = useCallback(svgDOM => { // https://reactjs.org/docs/hooks-faq.html#how-can-i-measure-a-dom-node
     if (svgDOM !== null) {
-      setHeight(svgDOM.getBoundingClientRect().width);
-      log.dump({
-        ddd: svgDOM.getBoundingClientRect()
-      })
+      setWidth(svgDOM.getBoundingClientRect().width);
     }
   }, [windowSize]);
-
 
   return (
     <div>
@@ -305,31 +309,93 @@ export default function ProbeLog() {
               />
 
               <br />
-              <DatePicker selected={startDate} onChange={date => setStartDate(date)}
-                          dateFormat="yyyy-MM-dd"
-              /> {endDate.toISOString()}
+              <table>
+                <tbody>
+                <tr>
+                  <td>
+                    <Button size="mini" primary className="arrow" onClick={e => {e.preventDefault();
+                      setStartDate(offsetDay(startDate, -1))
+                    }}>
+                      <Icon name='chevron left' />
+                    </Button>
+                  </td>
+                  <td>
+                    <DatePicker
+                      selected={startDate}
+                      onChange={date => setStartDate(date)}
+                      dateFormat="yyyy-MM-dd iiii"
+                    />
+                  </td>
+                  <td>
+                    <Button size="mini" primary className="arrow right" onClick={e => {e.preventDefault();
+                      setStartDate(offsetDay(startDate, 1))
+                    }}>
+                      <Icon name='chevron right' />
+                    </Button>
+                  </td>
+                  {range(startDate, 7).map(d => (
+                    <Button
+                      size="mini"
+                      primary={d.o <= offset}
+                      key={d.o}
+                      onClick={e => {e.preventDefault();
+                        setOffset(d.o)
+                      }}
+                    >
+                      {format(d.d, 'd iiii')}
+                    </Button>
+                  ))}
+                </tr>
+                </tbody>
+              </table>
               <pre>
 {viewBoxX} {parseInt(viewBoxX * viewBoxRatio, 10)} {`\n`}
 {xy.x} - {xy.y} {`\n`}
-[height:{height}] {`\n`}
-parseInt((viewBoxX * xy.x) / height, 10):{parseInt((viewBoxX * xy.x) / height, 10)}  {`\n`}
+[width:{width}] {`\n`}
+[offset:{offset}] {`\n`}
+[dayWidth:{parseInt(width / offset, 10)}] {`\n`}
+parseInt((viewBoxX * xy.x) / width, 10):{parseInt((viewBoxX * xy.x) / width, 10)}  {`\n`}
                 {`\n${startDate.toISOString()}---\n`}
-                {range(startDate, 7).map(d => d.toISOString()).join("\n")}
+                {`\n${endDate.toISOString()}---\n`}
               </pre>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox={`0 0 ${viewBoxX} ${parseInt(viewBoxX * viewBoxRatio, 10)}`} style={{border: '1px solid gray'}}
-                   onMouseMove={e => setXY({ x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY })}
-                   ref={svgDOM}
-              >
-
-                <rect
-                  width="10"
-                  height="400"
-                  x={parseInt((viewBoxX * xy.x) / height, 10)}
-                  y="20"
-                  fill="red"
-                />
-              </svg>
-
+              {(function ({
+                viewBoxX,
+                viewBoxY,
+                dayWidth,
+                ratio,
+              }) {
+                return (
+                  <>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      // viewBox={`0 0 ${viewBoxX} ${parseInt(viewBoxX * viewBoxRatio, 10)}`}
+                      viewBox={`0 0 ${viewBoxX} ${viewBoxY}`}
+                      style={{border: '1px solid gray'}}
+                      onMouseMove={e => setXY({ x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY })}
+                      ref={svgDOM}
+                    >
+                      <rect
+                        width="10"
+                        height="400"
+                        x={parseInt((viewBoxX * xy.x) / width, 10) || 0}
+                        y="20"
+                        fill="red"
+                      />
+                      {range(startDate, offset).map(d => (
+                        <Fragment key={d.d.toISOString()}>
+                          <rect width="5" height="70" x={ratio((d.o - 1) * dayWidth) - 5} y="420" fill="black" data-key={d.o}></rect>
+                          <text x={ratio((d.o - 1) * dayWidth) - 5} y="470"> &nbsp; {format(d.d, 'd iiii')}</text>
+                        </Fragment>
+                      ))}
+                    </svg>
+                  </>
+                )
+              }({
+                viewBoxX,
+                viewBoxY: 500,
+                dayWidth: parseInt(width / offset, 10),
+                ratio: ratio(viewBoxX, width),
+              }))}
             </div>
 
 
