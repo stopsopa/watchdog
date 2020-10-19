@@ -1,4 +1,6 @@
 
+const _data = require('./data');
+
 import React, {
   useEffect,
   useState,
@@ -13,19 +15,35 @@ import './ProbeLog.scss';
 
 import log from 'inspc';
 
+const ms        = require('nlab/ms');
+
+const generate  = ms.generate;
+
+const raw       = ms.raw;
+
 import all from 'nlab/all';
 
 import format from 'date-fns/format';
 
 import { parseFromTimeZone, formatToTimeZone } from 'date-fns-timezone';
 
-window.tz = formatToTimeZone;
-
 import Textarea from '../../components/Textarea';
 
 import NoInput from '../../components/NoInput/NoInput';
 
 import IntervalInput from '../../components/IntervalInput/IntervalInput';
+
+import {
+  StoreContext as StoreContextAssoc,
+  getStoreAssoc,
+  setStoreAssoc,
+  setStoreAssocDelete,
+
+  actionFetchFullRangeStats,
+} from '../../_storage/storeAssoc'
+
+const assocKeyFullRange = 'log_full_range';
+const assocKeySelection = 'log_selection';
 
 import DatePicker from "react-datepicker";
 // https://usehooks.com/useWindowSize/
@@ -107,12 +125,11 @@ import {
   notificationsAdd,
 } from '../../components/Notifications/storeNotifications';
 
-
-
 function offsetDay(date, days) {
   return new Date( date.getTime() + ( 60 * 60 * 24 * days * 1000)   )
 }
-function range(date, offsetDays, dateAdjustment = 0) {
+window.offsetDay = offsetDay;
+function range(date, offsetDays) {
 
   const abs = Math.abs(offsetDays);
 
@@ -125,16 +142,9 @@ function range(date, offsetDays, dateAdjustment = 0) {
 
   for (var i = 0 ; i < abs ; i += 1 ) {
 
-    var offset = i;
-
-    if (offsetDays > 0) {
-
-      offset += 1;
-    }
-
     list.push({
-      d: offsetDay(date, offset + dateAdjustment),
-      o: offset,
+      d: offsetDay(date, i),
+      o: i + 1,
     })
   }
 
@@ -152,6 +162,26 @@ function percent(width) {
   return x => {
     // return (viewBoxX * (d.o * dayWidth)) / width
     return (x / width) || 0;
+  }
+}
+
+function widthBasedOnDateBuilder(rangeSeconds, width, rangeStartDate) {
+
+  // log('rangeSeconds',rangeSeconds,'width',width,'rangeStartDate', rangeStartDate);
+
+  const rangeStartDateTime = rangeStartDate.getTime();
+
+  return function (givenDateString) {
+
+    const xsec = parseInt(((new Date(givenDateString)).getTime() - rangeStartDateTime) / 1000, 10);
+
+    return parseInt((xsec * width) / rangeSeconds, 10);
+
+    // const final = parseInt((xsec * width) / rangeSeconds, 10);
+    //
+    // // log('w type', typeof givenDateString, 'givenDateString', givenDateString, 'xsec', xsec, 'width', width, '(xsec * width)',(xsec * width), 'final', final);
+    //
+    // return final;
   }
 }
 
@@ -180,6 +210,19 @@ function flip(s = {}) {
   return s;
 }
 
+function DateColour({
+  date,
+  char= ':',
+}) {
+  return (
+    <>
+      <span className="date">{formatToTimeZone(date, 'YYYY-MM-DD', {timeZone:'UTC'})}</span>
+      {` `}
+      <span className="hour">{formatToTimeZone(date, 'HH:mm:ss', {timeZone:'UTC'}).replace(/:/g, char)}</span>
+    </>
+  )
+}
+
 function UTCClock() {
   const [time, setTime] = useState({
     char: ':',
@@ -197,11 +240,15 @@ function UTCClock() {
     return () => clearInterval(handler);
   }, []);
   return (
-    <span style={{fontFamily:'monospace'}}>[UTC time {formatToTimeZone(time.time, 'YYYY-MM-DD HH:mm:ss', {timeZone:'UTC'}).replace(/:/g, time.char)}]</span>
+    <span style={{fontFamily:'monospace'}}>[UTC time {<DateColour date={time.time} char={time.char}/>}]</span>
   )
 }
 
 export default function ProbeLog() {
+
+  useContext(StoreContextAssoc);
+
+  useContext(StoreContextProjects);
 
   let {
     project_id,
@@ -218,8 +265,6 @@ export default function ProbeLog() {
 
     probe_id = parseInt(probe_id, 10);
   }
-
-  useContext(StoreContextProjects);
 
   const [ loading, setLoading ] = useState(true);
 
@@ -325,16 +370,54 @@ export default function ProbeLog() {
     }
   }, [windowSize]);
 
-  const r = ratio(viewBoxX, width);
-
-  const p = percent(width);
-
   const rangeSeconds = (60 * 60 * 24 * offset);
 
   const startDateMidnight = new Date(startDate);
   startDateMidnight.setUTCHours(0,0,0,0);
 
   const [selected , setSelected] = useState({});
+
+  const r = ratio(viewBoxX, width);
+
+  const p = percent(width);
+
+  const w = widthBasedOnDateBuilder(rangeSeconds, viewBoxX, startDateMidnight);
+
+  const eraseStats = () => {
+    setStoreAssocDelete(assocKeyFullRange);
+    setStoreAssocDelete(assocKeySelection);
+  };
+  useEffect(eraseStats, []);
+
+  useEffect(() => {
+
+    eraseStats();
+
+    // setTimeout(() => {
+    //
+    //   setStoreAssoc(assocKeyFullRange, _data);
+    // }, 1000);
+
+    const endDate = offsetDay(startDate, offset - 1);
+
+    endDate.setUTCHours(23, 59, 59, 0);
+
+    actionFetchFullRangeStats({
+      probe_id,
+      startDate: startDateMidnight,
+      endDate,
+      key: assocKeyFullRange
+    });
+  }, [startDate, offset]);
+
+  const assocFullRange = getStoreAssoc(assocKeyFullRange);
+
+  const assocSelection = getStoreAssoc(assocKeySelection);
+
+  log.dump({
+    assocFullRange,
+    assocSelection,
+  });
 
   return (
     <div>
@@ -388,7 +471,7 @@ export default function ProbeLog() {
                     </Button>
                   </td>
                   <td>
-                    <DatePicker
+                   <DatePicker
                       selected={startDate}
                       onChange={date => setStartDate(date)}
                       dateFormat="yyyy-MM-dd iiii"
@@ -402,18 +485,20 @@ export default function ProbeLog() {
                       <Icon name='chevron right' />
                     </Button>
                   </td>
-                  {range(startDate, 7).map(d => (
-                    <Button
-                      size="mini"
-                      primary={d.o <= offset}
-                      key={d.o}
-                      onClick={e => {e.preventDefault();
-                        setOffset(d.o)
-                        setSelected({})
-                      }}
-                    >
-                      {formatToTimeZone(d.d, 'D dddd', {timeZone:'UTC'})}
-                    </Button>
+                  {range(startDate, 7, -1).map(d => (
+                    <td key={d.o}>
+                      <Button
+                        size="mini"
+                        primary={d.o <= offset}
+
+                        onClick={e => {e.preventDefault();
+                          setOffset(d.o)
+                          setSelected({})
+                        }}
+                      >
+                        {formatToTimeZone(d.d, 'D dddd', {timeZone:'UTC'})}
+                      </Button>
+                    </td>
                   ))}
                 </tr>
                 </tbody>
@@ -441,20 +526,20 @@ selected.end__:${selected && selected.end && selected.end.date.toISOString()}
                 <tr>
                   <td>
                     <UTCClock />
-                    {xy && xy.x && formatToTimeZone(timeOffset(startDateMidnight, parseInt(rangeSeconds * p(xy.x), 10) || 0), 'YYYY-MM-DD HH:mm:ss', {timeZone:'UTC'})}
+                    {` `}
+                    {xy && xy.x && <DateColour date={timeOffset(startDateMidnight, parseInt(rangeSeconds * p(xy.x), 10) || 0)}/>}
                   </td>
+                  <td></td>
                   <td>
-                    {selected && selected.start && formatToTimeZone(selected.start.date, 'YYYY-MM-DD HH:mm:ss', {timeZone:'UTC'})}
+                    {selected && selected.start && <DateColour date={selected.start.date}/>}
                     {selected.end && ` - `}
-                    {selected && selected.end && formatToTimeZone(selected.end.date, 'YYYY-MM-DD HH:mm:ss', {timeZone:'UTC'})}
+                    {selected && selected.end && <DateColour date={selected.end.date}/>}
                   </td>
-                  <td>
-
-                  </td>
+                  <td></td>
+                  <td>{selected && selected.start && selected.end && ms(Math.abs(selected.start.date - selected.end.date))}</td>
                 </tr>
                 </tbody>
               </table>
-
               {(function ({
                 viewBoxX,
                 viewBoxY,
@@ -470,7 +555,6 @@ selected.end__:${selected && selected.end && selected.end.date.toISOString()}
                       viewBox={`0 0 ${viewBoxX} ${viewBoxY}`}
                       ref={svgDOM}
                       onMouseDown={e => {
-                        log('onMouseDown')
                         var s = {};
                         s.start = s.end = {
                           date: timeOffset(startDateMidnight, parseInt(rangeSeconds * p(xy.x), 10) || 0),
@@ -506,30 +590,36 @@ selected.end__:${selected && selected.end && selected.end.date.toISOString()}
                         })
                       }}
                       onMouseUp={e => {
-
                         if ( selected.start && selected.end && selected.start.date == selected.end.date) {
-                          log('onMouseUp clear')
-
-                          setSelected({})
+                          return setSelected({})
                         }
-                        else {
-
-                          const s = {
-                            ...flip(selected),
-                            locked: true,
-                          }
-
-                          setSelected(s)
-                          log('onMouseUp trigger', s)
-                        }
+                        setSelected({
+                          ...flip(selected),
+                          locked: true,
+                        })
                       }}
                     >
+                      {assocFullRange && assocFullRange.map((d, i) => {
+                        const x = w(d.f);
+                        return (
+                          <rect
+                            key={i}
+                            width={w(d.t) - x}
+
+                            height="380"
+                            y="20"
+
+                            x={x}
+                            fill={d.p ? '#65dcb5' : '#e6682d'}
+                          />
+                        );
+                      })}
                       {s.start && s.end && (
                         <rect
                           width={r(s.end.x - s.start.x)}
-                          height="380"
+                          height="230"
+                          y="170"
                           x={r(s.start.x)}
-                          y="20"
                           // fill="blue"
                           stroke="#3e7c48"
                           fill="url(#brush_pattern)"
@@ -543,21 +633,21 @@ selected.end__:${selected && selected.end && selected.end.date.toISOString()}
                       ))}
                       <rect
                         width="10"
-                        height="380"
+
+                        // height="380"
+                        // y="20"
+
+                        height="230"
+                        y="170"
                         x={r(xy.x)}
-                        y="20"
-                        fill="red"
+                        fill="green"
                       />
 
                       <defs>
-
                         <pattern id="brush_pattern" width="60" height="60" patternUnits="userSpaceOnUse">
-                          <path className="visx-pattern-line" d="M 0,60 l 60,-60 " stroke="#3e7c48" stroke-width="3"
-                                stroke-linecap="square" shape-rendering="auto"></path>
-
-                          {/*<path className="visx-pattern-line" d="M 0,8 l 8,-8 M -2,2 l 4,-4 M 6,10 l 4,-4"*/}
-                          {/*      stroke="red" stroke-width="1" stroke-linecap="square" shape-rendering="auto"*/}
-                          {/*></path>*/}
+                          <path className="visx-pattern-line" d="M 0,60 l 60,-60" stroke="#3e7c48" strokeWidth="3"
+                                strokeLinecap="square" shapeRendering="auto"></path>
+                          {/*https://airbnb.io/visx/brush*/}
                         </pattern>
                       </defs>
                     </svg>

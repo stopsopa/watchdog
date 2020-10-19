@@ -1,14 +1,24 @@
 
 
 #app .probe-log {
+    .date {
+        color: blue;
+        font-family: monospace;
+    }
+    .hour {
+        color: #ff1515;
+        font-family: monospace;
+    }
     .timetable {
         width: 100%;
+        & > tbody > tr > :nth-child(2),
+        & > tbody > tr > :nth-child(4) {
+            width: 50px;
+        }
         & > tbody > tr > :last-child {
             width: 200px;
         }
-        & > tbody > tr > :nth-child(2) {
-            text-align: center;
-        }
+
     }
     svg {
         box-shadow: 0 0 4px black;

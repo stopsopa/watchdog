@@ -2,6 +2,7 @@
 import React, {
   createContext,
   useReducer,
+  useContext,
 } from 'react';
 
 import log from 'inspc';
@@ -26,7 +27,7 @@ import log from 'inspc';
  *
   import {
     StoreContext as StoreContextAssoc,
-    setStoreAssocSet,
+    setStoreAssoc,
   } from './_storage/storeAssoc';
 
   const {
@@ -39,7 +40,7 @@ import log from 'inspc';
 
  const {
     state: stateAssoc,
-    setStoreAssocSet,
+    setStoreAssoc,
   } = React.useContext(storeAssoc.StoreContext);
  */
 
@@ -62,14 +63,20 @@ const initialState = {
 
 let state, dispatch;
 
+  import * as storeSocket from '../_storage/storeSocket';
+
+  let socket;
+
 export function StoreAssocProvider(props) {
+
+      ({ state: socket } = useContext(storeSocket.StoreContext));
 
   [state, dispatch] = useReducer(reducer, initialState);
 
   return (<StoreContext.Provider value={{
     state,
     dispatch,
-    setStoreAssocSet,
+    setStoreAssoc,
   }}>{props.children}</StoreContext.Provider>);
 }
 
@@ -88,13 +95,27 @@ function reducer(state, action) {
     case ASSOC_SET:
       if ( typeof action.key !== 'string' ) {
 
-        throw th(`action.key !== 'string'`, action.key);
+        throw th(`ASSOC_SET action.key !== 'string'`, action.key);
       }
       if ( ! action.key.trim() ) {
 
-        throw th(`action.key is an empty 'string'`, action.key);
+        throw th(`ASSOC_SET action.key is an empty 'string'`, action.key);
       }
       return { ...state, assoc: { ...state.assoc, [action.key]: action.value } };
+    case ASSOC_DELETE:
+      if ( typeof action.key !== 'string' ) {
+
+        throw th(`ASSOC_DELETE action.key !== 'string'`, action.key);
+      }
+      if ( ! action.key.trim() ) {
+
+        throw th(`ASSOC_DELETE action.key is an empty 'string'`, action.key);
+      }
+      state = { ...state, assoc: { ...state.assoc } };
+
+      delete state.assoc[action.key];
+
+      return state;
     default:
       return state;
   }
@@ -102,7 +123,17 @@ function reducer(state, action) {
 
 // actions && selectors:
 
-export const setStoreAssocSet = async (key, value) => {
+export const setStoreAssoc = (key, value) => {
+
+  if ( typeof key !== 'string') {
+
+    throw th(`setStoreAssoc key is not a string`);
+  }
+
+  if ( ! key.trim() ) {
+
+    throw th(`setStoreAssoc key.trim() is an empty string`);
+  }
 
   dispatch({
     type: ASSOC_SET,
@@ -110,3 +141,91 @@ export const setStoreAssocSet = async (key, value) => {
     value,
   });
 }
+
+export const setStoreAssocDelete = key => {
+
+  if ( typeof key !== 'string') {
+
+    throw th(`setStoreAssocDelete key is not a string`);
+  }
+
+  if ( ! key.trim() ) {
+
+    throw th(`setStoreAssocDelete key.trim() is an empty string`);
+  }
+
+  dispatch({
+    type: ASSOC_DELETE,
+    key,
+  });
+}
+
+export const getStoreAssoc = key => {
+
+  if ( typeof key !== 'string') {
+
+    throw th(`getStoreAssoc key is not a string`);
+  }
+
+  if ( ! key.trim() ) {
+
+    throw th(`getStoreAssoc key.trim() is an empty string`);
+  }
+
+  return state.assoc[key];
+}
+
+/// from this point all below is customised for this project
+/// from this point all below is customised for this project
+/// from this point all below is customised for this project
+
+
+export const actionFetchFullRangeStats = ({
+  probe_id,
+  startDate,
+  endDate,
+  key,
+  onLoad = () => {},
+}) => {
+
+  log.dump({
+    actionFetchFullRangeStats: {
+      probe_id,
+      startDate,
+      endDate,
+    }
+  });
+
+  socket.emit('probes_logs_full', {
+    probe_id,
+    startDate,
+    endDate,
+  });
+
+  const probes_logs_full = data => {
+
+    const {
+      list,
+    } = data ||  {}
+
+    setStoreAssoc(key, list);
+
+    // onLoad(data);
+  }
+
+  socket.on('probes_logs_full', probes_logs_full);
+
+  // const probes_run_code = data => actionProbesSetTestResult(data);
+  //
+  // socket.on('probes_run_code', probes_run_code);
+
+  return () => {
+
+    if (socket) {
+
+      socket.off('probes_logs_full', probes_logs_full);
+
+      // socket.off('probes_run_code', probes_run_code);
+    }
+  }
+};

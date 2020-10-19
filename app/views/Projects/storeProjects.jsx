@@ -49,13 +49,13 @@ const initialState = {
 
 let state, dispatch;
 
-import * as storeSocket from '../../_storage/storeSocket';
+  import * as storeSocket from '../../_storage/storeSocket';
 
-let socket;
+  let socket;
 
 export function StoreProjectsProvider(props) {
 
-  ({ state: socket } = useContext(storeSocket.StoreContext));
+      ({ state: socket } = useContext(storeSocket.StoreContext));
 
   [state, dispatch] = useReducer(reducer, initialState);
 

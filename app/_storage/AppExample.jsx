@@ -41,7 +41,7 @@ export default function AppExample() {
 
   const {
     state: stateAssoc,
-    setStoreAssocSet,
+    setStoreAssoc,
   } = useContext(storeAssoc.StoreContext);
 
   const {
@@ -98,7 +98,7 @@ export default function AppExample() {
           <br />
         </>
       )}
-      <Button onClick={() => setStoreAssocSet(`key${i}`, `val${i++}`)}>setStoreAssocSet</Button>
+      <Button onClick={() => setStoreAssoc(`key${i}`, `val${i++}`)}>setStoreAssoc</Button>
       <br />
       {basic && <Textarea
         defaultValue={(`
