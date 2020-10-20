@@ -179,7 +179,6 @@ export const getStoreAssoc = key => {
 /// from this point all below is customised for this project
 /// from this point all below is customised for this project
 
-
 export const actionFetchFullRangeStats = ({
   probe_id,
   startDate,
@@ -188,13 +187,13 @@ export const actionFetchFullRangeStats = ({
   onLoad = () => {},
 }) => {
 
-  // log.dump({
-  //   actionFetchFullRangeStats: {
-  //     probe_id,
-  //     startDate,
-  //     endDate,
-  //   }
-  // });
+  log.dump({
+    actionFetchFullRangeStats: {
+      probe_id,
+      startDate,
+      endDate,
+    }
+  });
 
   socket.emit('probes_logs_full', {
     probe_id,
@@ -213,7 +212,39 @@ export const actionFetchFullRangeStats = ({
     // onLoad(data);
   }
 
+  const probes_logs_selection = data => {
+
+    const {
+      list,
+      key,
+    } = data ||  {}
+
+    setStoreAssoc(key, list);
+
+    // onLoad(data);
+  }
+
+  const probes_logs_selected_log = data => {
+
+    log.dump({
+      probes_logs_selected_log: data,
+    })
+
+    const {
+      log: logg,
+      key,
+    } = data ||  {}
+
+    setStoreAssoc(key, logg);
+
+    // onLoad(data);
+  }
+
   socket.on('probes_logs_full', probes_logs_full);
+
+  socket.on('probes_logs_selection', probes_logs_selection);
+
+  socket.on('probes_logs_selected_log', probes_logs_selected_log);
 
   // const probes_run_code = data => actionProbesSetTestResult(data);
   //
@@ -225,7 +256,43 @@ export const actionFetchFullRangeStats = ({
 
       socket.off('probes_logs_full', probes_logs_full);
 
+      socket.off('probes_logs_selection', probes_logs_selection);
+
+      socket.off('probes_logs_selected_log', probes_logs_selected_log);
+
       // socket.off('probes_run_code', probes_run_code);
     }
   }
+};
+
+export const actionFetchSelectionStats = ({
+  probe_id,
+  startDate,
+  endDate,
+  key,
+}) => {
+
+  setStoreAssoc(key, null);
+
+  socket.emit('probes_logs_selection', {
+    probe_id,
+    startDate,
+    endDate,
+    key,
+  });
+};
+
+
+
+export const actionFetchSelectedLog = ({
+  log_id,
+  key,
+}) => {
+
+  setStoreAssoc(key, null);
+
+  socket.emit('probes_logs_selected_log', {
+    log_id,
+    key,
+  });
 };

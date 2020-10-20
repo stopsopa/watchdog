@@ -13,6 +13,8 @@ import React, {
 
 import './ProbeLog.scss';
 
+import classnames from 'classnames';
+
 import log from 'inspc';
 
 const ms        = require('nlab/ms');
@@ -40,10 +42,14 @@ import {
   setStoreAssocDelete,
 
   actionFetchFullRangeStats,
+  actionFetchSelectionStats,
+  actionFetchSelectedLog,
+
 } from '../../_storage/storeAssoc'
 
-const assocKeyFullRange = 'log_full_range';
-const assocKeySelection = 'log_selection';
+const assocKeyFullRange     = 'log_full_range';
+const assocKeySelection     = 'log_selection';
+const assocKeySelectedLog   = 'log_selected_log';
 
 import DatePicker from "react-datepicker";
 // https://usehooks.com/useWindowSize/
@@ -128,7 +134,7 @@ import {
 function offsetDay(date, days) {
   return new Date( date.getTime() + ( 60 * 60 * 24 * days * 1000)   )
 }
-window.offsetDay = offsetDay;
+
 function range(date, offsetDays) {
 
   const abs = Math.abs(offsetDays);
@@ -192,9 +198,7 @@ function timeOffset(date, seconds) {
     seconds = 0
   }
 
-  var tmp = new Date(date.getTime() + (seconds * 1000));
-
-  return tmp;
+  return new Date(date.getTime() + (seconds * 1000));
 }
 
 function flip(s = {}) {
@@ -334,20 +338,6 @@ export default function ProbeLog() {
 
   }, []);
 
-  function onSubmit() {
-
-    setSending(true);
-
-    actionProbesFormSubmit({
-      form,
-    });
-  }
-
-  const onModalClose = () => {
-    setTestModal(false);
-    actionProbesSetTestResult(null);
-  }
-
   const [ viewBoxX, setViewBoxX ] = useState(10080);
 
   const [ xy, setXY ] = useState({x: 0, y: 0})
@@ -386,6 +376,7 @@ export default function ProbeLog() {
   const eraseStats = () => {
     setStoreAssocDelete(assocKeyFullRange);
     setStoreAssocDelete(assocKeySelection);
+    setStoreAssocDelete(assocKeySelectedLog);
   };
 
   useEffect(eraseStats, []);
@@ -398,7 +389,7 @@ export default function ProbeLog() {
 
     endDate.setUTCHours(23, 59, 59, 0);
 
-    actionFetchFullRangeStats({
+    return actionFetchFullRangeStats({
       probe_id,
       startDate: startDateMidnight,
       endDate,
@@ -406,14 +397,31 @@ export default function ProbeLog() {
     });
   }, [startDate, offset]);
 
-  const assocFullRange = getStoreAssoc(assocKeyFullRange);
+  const assocFullRange    = getStoreAssoc(assocKeyFullRange);
 
-  const assocSelection = getStoreAssoc(assocKeySelection);
+  const assocSelection    = getStoreAssoc(assocKeySelection);
 
-  // log.dump({
-  //   assocFullRange,
-  //   assocSelection,
-  // });
+  const assocSelectedLog  = getStoreAssoc(assocKeySelectedLog);
+
+  function fetchSelectionData(s) {
+    actionFetchSelectionStats({
+      probe_id,
+      startDate: s.start.date,
+      endDate: s.end.date,
+      key: assocKeySelection,
+    })
+  }
+
+  function fetchSelectedLog(log_id) {
+    actionFetchSelectedLog({
+      log_id,
+      key: assocKeySelectedLog,
+    })
+  }
+
+  const onModalClose = () => {
+    setStoreAssocDelete(assocKeySelectedLog)
+  }
 
   return (
     <div>
@@ -447,14 +455,14 @@ export default function ProbeLog() {
 
             <div className="chart">
 
-              <input type="range"
-                     min="200" max="10080"
-                     value={viewBoxX}
-                     style={{width: '500px'}}
-                     onChange={e => setViewBoxX(e.target.value)}
-              />
+              {/*<input type="range"*/}
+              {/*       min="200" max="10080"*/}
+              {/*       value={viewBoxX}*/}
+              {/*       style={{width: '500px'}}*/}
+              {/*       onChange={e => setViewBoxX(e.target.value)}*/}
+              {/*/>*/}
 
-              <br />
+              {/*<br />*/}
               <table>
                 <tbody>
                 <tr>
@@ -499,31 +507,31 @@ export default function ProbeLog() {
                 </tr>
                 </tbody>
               </table>
-              <pre>{`
-${viewBoxX} ${parseInt(viewBoxX * viewBoxRatio, 10)}
-${xy.x} - ${xy.y}
-[width:${width}]
-[offset:${offset}]
-[ratio:${r(xy.x)}]
-[%:${p(xy.x)}]
-[rangeSeconds:${rangeSeconds}]
-[rangeSeconds * %:${parseInt(rangeSeconds * p(xy.x), 10)}] 
-[dayWidth:${parseInt(width / offset, 10)}] 
-[startDateMidnight:${startDateMidnight.toISOString()}] 
-[offsetdate_______:${timeOffset(startDateMidnight, parseInt(rangeSeconds * p(xy.x), 10) || 0).toISOString()}] 
-parseInt((viewBoxX * xy.x) / width, 10):${parseInt((viewBoxX * xy.x) / width, 10)}  
-startDate:${startDate.toISOString()}
-endDate__:${endDate.toISOString()}             
-selected.start:${selected && selected.start && selected.start.date.toISOString()}     
-selected.end__:${selected && selected.end && selected.end.date.toISOString()} 
-              `}</pre>
+{/*              <pre>{`*/}
+{/*${viewBoxX} ${parseInt(viewBoxX * viewBoxRatio, 10)}*/}
+{/*${xy.x} - ${xy.y}*/}
+{/*[width:${width}]*/}
+{/*[offset:${offset}]*/}
+{/*[ratio:${r(xy.x)}]*/}
+{/*[%:${p(xy.x)}]*/}
+{/*[rangeSeconds:${rangeSeconds}]*/}
+{/*[rangeSeconds * %:${parseInt(rangeSeconds * p(xy.x), 10)}] */}
+{/*[dayWidth:${parseInt(width / offset, 10)}] */}
+{/*[startDateMidnight:${startDateMidnight.toISOString()}] */}
+{/*[offsetdate_______:${timeOffset(startDateMidnight, parseInt(rangeSeconds * p(xy.x), 10) || 0).toISOString()}] */}
+{/*parseInt((viewBoxX * xy.x) / width, 10):${parseInt((viewBoxX * xy.x) / width, 10)}  */}
+{/*startDate:${startDate.toISOString()}*/}
+{/*endDate__:${endDate.toISOString()}             */}
+{/*selected.start:${selected && selected.start && selected.start.date.toISOString()}     */}
+{/*selected.end__:${selected && selected.end && selected.end.date.toISOString()} */}
+{/*              `}</pre>*/}
               <table className="timetable">
                 <tbody>
                 <tr>
                   <td>
                     <UTCClock />
                     {` `}
-                    {xy && xy.x && <DateColour date={timeOffset(startDateMidnight, parseInt(rangeSeconds * p(xy.x), 10) || 0)}/>}
+                    <DateColour date={timeOffset(startDateMidnight, parseInt(rangeSeconds * p(xy.x), 10))} />
                   </td>
                   <td></td>
                   <td>
@@ -589,10 +597,15 @@ selected.end__:${selected && selected.end && selected.end.date.toISOString()}
                         if ( selected.start && selected.end && selected.start.date == selected.end.date) {
                           return setSelected({})
                         }
-                        setSelected({
+
+                        const s = {
                           ...flip(selected),
                           locked: true,
-                        })
+                        };
+
+                        setSelected(s)
+
+                        fetchSelectionData(s)
                       }}
                     >
                       {assocFullRange && assocFullRange.map((d, i) => {
@@ -657,6 +670,65 @@ selected.end__:${selected && selected.end && selected.end.date.toISOString()}
                 s: (flip(selected))
               }))}
             </div>
+
+            <div className="list">
+              {assocSelection === null && (<div style={{textAlign:'center'}}>Loading...</div>)}
+
+              {Array.isArray(assocSelection) && (
+                <table className="probes_logs_selection">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>Id</th>
+                      <th>Date</th>
+                      <th>probe</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {assocSelection.map((r, i) => {
+                    return (
+                      <tr key={i} className={classnames({
+                        error: !r.p,
+                      })}>
+                        <th>{i + 1}</th>
+                        <td onClick={() => fetchSelectedLog(r.id)} className="select_log">{r.id}</td>
+                        <td>
+                          <DateColour date={r.f}/>
+                        </td>
+                        <td>
+                          <Icon color={r.p ? `green` : `red`} name={r.p ? `check` : `x`}/>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                  </tbody>
+                </table>
+              )}
+            </div>
+
+
+            <Modal
+              onClose={onModalClose}
+              // onOpen={e => {
+              //   e && e.preventDefault();
+              //   setTestModal(true)
+              // }}
+              open={Boolean(assocSelectedLog)}
+              closeOnEscape={true}
+              closeOnDimmerClick={true}
+              // trigger={<Button className="test-code">Run code</Button>}
+              // size="fullscreen"
+            >
+              <Modal.Header>Log</Modal.Header>
+              <Modal.Content scrolling>
+                <pre className="code-test-result">{JSON.stringify((assocSelectedLog || "No result yet"), null, 4)}</pre>
+              </Modal.Content>
+              <Modal.Actions>
+                <Button color='black' onClick={onModalClose}>
+                  Close
+                </Button>
+              </Modal.Actions>
+            </Modal>
 
 
           </div>

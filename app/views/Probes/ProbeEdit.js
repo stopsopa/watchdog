@@ -289,61 +289,6 @@ export default function ProbeEdit() {
                   correct={10}
                 />
                 {errors.code && <pre className="error">{errors.code}</pre>}
-                {(type === 'active') && (<Modal
-                  onClose={onModalClose}
-                  onOpen={e => {
-                    e && e.preventDefault();
-                    setTestModal(true)
-                  }}
-                  open={testModal}
-                  closeOnEscape={true}
-                  closeOnDimmerClick={true}
-                  trigger={<Button className="test-code">Run code</Button>}
-                  // size="fullscreen"
-                >
-                  <Modal.Header>Run code</Modal.Header>
-                  <Modal.Content scrolling>
-                    {(testResult === 'executing') ? (
-                      <div>Executing...</div>
-                    ) : (
-                      <>
-                        {(testResult) && (
-                          <table>
-                            <tbody>
-                            <tr>
-                              <td>Is code working properly and return valid object:</td>
-                              <td><span style={{
-                                color: (isObject(testResult) && typeof testResult.probe === 'boolean') ? 'green' : 'red'
-                              }}>{String((isObject(testResult) && typeof testResult.probe === 'boolean'))}</span></td>
-                            </tr>
-                            <tr>
-                              <td>Probe passed:</td>
-                              <td><span style={{
-                                color: isObject(testResult) && testResult.probe ? 'green' : 'red'
-                              }}>{(isObject(testResult) && testResult.probe ? 'passed' : 'failed')}</span></td>
-                            </tr>
-                            </tbody>
-                          </table>
-                        )}
-                        <pre className="code-test-result">{JSON.stringify((testResult || "No result yet"), null, 4)}</pre>
-                      </>
-                    )}
-                  </Modal.Content>
-                  <Modal.Actions>
-                    <Button
-                      content="Run"
-                      labelPosition='right'
-                      icon='checkmark'
-                      disabled={testResult === 'executing'}
-                      onClick={() => actionProbesRunCode(form.code, type)}
-                      positive
-                    />
-                    <Button color='black' onClick={onModalClose}>
-                      Close
-                    </Button>
-                  </Modal.Actions>
-                </Modal>
-              )}
               </Form.Field>
               <Form.Field disabled={sending}>
                 <Button type='submit'
@@ -353,6 +298,61 @@ export default function ProbeEdit() {
                 </Button> {sending && `Sending data...`}
               </Form.Field>
             </Form>
+            {(type === 'active') && (<Modal
+                onClose={onModalClose}
+                onOpen={e => {
+                  e && e.preventDefault();
+                  setTestModal(true)
+                }}
+                open={testModal}
+                closeOnEscape={true}
+                closeOnDimmerClick={true}
+                trigger={<Button className="test-code">Run code</Button>}
+                // size="fullscreen"
+              >
+                <Modal.Header>Run code</Modal.Header>
+                <Modal.Content scrolling>
+                  {(testResult === 'executing') ? (
+                    <div>Executing...</div>
+                  ) : (
+                    <>
+                      {(testResult) && (
+                        <table>
+                          <tbody>
+                          <tr>
+                            <td>Is code working properly and return valid object:</td>
+                            <td><span style={{
+                              color: (isObject(testResult) && typeof testResult.probe === 'boolean') ? 'green' : 'red'
+                            }}>{String((isObject(testResult) && typeof testResult.probe === 'boolean'))}</span></td>
+                          </tr>
+                          <tr>
+                            <td>Probe passed:</td>
+                            <td><span style={{
+                              color: isObject(testResult) && testResult.probe ? 'green' : 'red'
+                            }}>{(isObject(testResult) && testResult.probe ? 'passed' : 'failed')}</span></td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      )}
+                      <pre className="code-test-result">{JSON.stringify((testResult || "No result yet"), null, 4)}</pre>
+                    </>
+                  )}
+                </Modal.Content>
+                <Modal.Actions>
+                  <Button
+                    content="Run"
+                    labelPosition='right'
+                    icon='checkmark'
+                    disabled={testResult === 'executing'}
+                    onClick={() => actionProbesRunCode(form.code, type)}
+                    positive
+                  />
+                  <Button color='black' onClick={onModalClose}>
+                    Close
+                  </Button>
+                </Modal.Actions>
+              </Modal>
+            )}
           </div>
         )}
       </div>

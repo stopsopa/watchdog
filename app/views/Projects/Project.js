@@ -79,8 +79,6 @@ export default function Project() {
 
   const form = getProjectForm();
 
-  const errors = getProjectFormErrors();
-
   useEffect(() => {
 
     const onLoad = ([{
@@ -109,15 +107,6 @@ export default function Project() {
     }
 
   }, []);
-
-  function onSubmit() {
-
-    setSending(true);
-
-    actionProjectsFormSubmit({
-      form,
-    });
-  }
 
   return (
     <div>

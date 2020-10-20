@@ -13,6 +13,8 @@ const probeClass       = require('../probeClass');
 
 const driver = require('../probeDriver');
 
+const th = msg => new Error(`probes.js error: ${msg}`);
+
 module.exports = ({
   io,
   socket,

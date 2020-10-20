@@ -1,6 +1,37 @@
 
 
 #app .probe-log {
+    .probes_logs_selection {
+
+        width: 100%;
+        & > thead {
+            & > tr {
+
+                th {
+                    text-align: left;
+                }
+            }
+        }
+        & > tbody {
+            & > tr {
+                td:first-child {
+                    width: 183px;
+                }
+                &:nth-child(2n+1) {
+                    background-color: #f8f8f8;
+                }
+                &.error {
+                    background-color: #fdd1d0;
+                }
+                & > td {
+                    font-family: monospace;
+                }
+            }
+        }
+        .select_log {
+            cursor: pointer;
+        }
+    }
     .date {
         color: blue;
         font-family: monospace;
@@ -108,6 +139,7 @@
             & > div:last-child {
 
             }
+
         }
     }
     [type='submit'] {
@@ -143,3 +175,39 @@
 .code-test-result {
     white-space: pre-wrap;
 }
+
+
+#app .probe-log .list {
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 10px;
+    box-shadow: 0 0 3px black inset;
+
+    margin-top: 10px;
+    &::-webkit-scrollbar {
+        width: 15px;
+    }
+
+    /* Track */
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 0;
+    }
+
+    /* Handle on hover */
+    &::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+}
+
+
+
+/* http://localhost:1045/cssmedia#InQiOiIxMCIsIm8iOiIwIiwiYSI6IjEwMCIsInoiOiIxMDAwIiwicyI6IiNhcHAgLnByb2JlLWxvZyAubGlzdCIsImQiOiJoZWlnaHQiLCJjIjoiaGVpZ2h0XyIsInIiOiJoZWlnaHQ6IDwlPSBtYXggLSAyODUgJT5weDsi */
+@media (min-height: 101px) and (max-height: 110px) { #app .probe-log .list {height: -175px;} }@media (min-height: 111px) and (max-height: 120px) { #app .probe-log .list {height: -165px;} }@media (min-height: 121px) and (max-height: 130px) { #app .probe-log .list {height: -155px;} }@media (min-height: 131px) and (max-height: 140px) { #app .probe-log .list {height: -145px;} }@media (min-height: 141px) and (max-height: 150px) { #app .probe-log .list {height: -135px;} }@media (min-height: 151px) and (max-height: 160px) { #app .probe-log .list {height: -125px;} }@media (min-height: 161px) and (max-height: 170px) { #app .probe-log .list {height: -115px;} }@media (min-height: 171px) and (max-height: 180px) { #app .probe-log .list {height: -105px;} }@media (min-height: 181px) and (max-height: 190px) { #app .probe-log .list {height: -95px;} }@media (min-height: 191px) and (max-height: 200px) { #app .probe-log .list {height: -85px;} }@media (min-height: 201px) and (max-height: 210px) { #app .probe-log .list {height: -75px;} }@media (min-height: 211px) and (max-height: 220px) { #app .probe-log .list {height: -65px;} }@media (min-height: 221px) and (max-height: 230px) { #app .probe-log .list {height: -55px;} }@media (min-height: 231px) and (max-height: 240px) { #app .probe-log .list {height: -45px;} }@media (min-height: 241px) and (max-height: 250px) { #app .probe-log .list {height: -35px;} }@media (min-height: 251px) and (max-height: 260px) { #app .probe-log .list {height: -25px;} }@media (min-height: 261px) and (max-height: 270px) { #app .probe-log .list {height: -15px;} }@media (min-height: 271px) and (max-height: 280px) { #app .probe-log .list {height: -5px;} }@media (min-height: 281px) and (max-height: 290px) { #app .probe-log .list {height: 5px;} }@media (min-height: 291px) and (max-height: 300px) { #app .probe-log .list {height: 15px;} }@media (min-height: 301px) and (max-height: 310px) { #app .probe-log .list {height: 25px;} }@media (min-height: 311px) and (max-height: 320px) { #app .probe-log .list {height: 35px;} }@media (min-height: 321px) and (max-height: 330px) { #app .probe-log .list {height: 45px;} }@media (min-height: 331px) and (max-height: 340px) { #app .probe-log .list {height: 55px;} }@media (min-height: 341px) and (max-height: 350px) { #app .probe-log .list {height: 65px;} }@media (min-height: 351px) and (max-height: 360px) { #app .probe-log .list {height: 75px;} }@media (min-height: 361px) and (max-height: 370px) { #app .probe-log .list {height: 85px;} }@media (min-height: 371px) and (max-height: 380px) { #app .probe-log .list {height: 95px;} }@media (min-height: 381px) and (max-height: 390px) { #app .probe-log .list {height: 105px;} }@media (min-height: 391px) and (max-height: 400px) { #app .probe-log .list {height: 115px;} }@media (min-height: 401px) and (max-height: 410px) { #app .probe-log .list {height: 125px;} }@media (min-height: 411px) and (max-height: 420px) { #app .probe-log .list {height: 135px;} }@media (min-height: 421px) and (max-height: 430px) { #app .probe-log .list {height: 145px;} }@media (min-height: 431px) and (max-height: 440px) { #app .probe-log .list {height: 155px;} }@media (min-height: 441px) and (max-height: 450px) { #app .probe-log .list {height: 165px;} }@media (min-height: 451px) and (max-height: 460px) { #app .probe-log .list {height: 175px;} }@media (min-height: 461px) and (max-height: 470px) { #app .probe-log .list {height: 185px;} }@media (min-height: 471px) and (max-height: 480px) { #app .probe-log .list {height: 195px;} }@media (min-height: 481px) and (max-height: 490px) { #app .probe-log .list {height: 205px;} }@media (min-height: 491px) and (max-height: 500px) { #app .probe-log .list {height: 215px;} }@media (min-height: 501px) and (max-height: 510px) { #app .probe-log .list {height: 225px;} }@media (min-height: 511px) and (max-height: 520px) { #app .probe-log .list {height: 235px;} }@media (min-height: 521px) and (max-height: 530px) { #app .probe-log .list {height: 245px;} }@media (min-height: 531px) and (max-height: 540px) { #app .probe-log .list {height: 255px;} }@media (min-height: 541px) and (max-height: 550px) { #app .probe-log .list {height: 265px;} }@media (min-height: 551px) and (max-height: 560px) { #app .probe-log .list {height: 275px;} }@media (min-height: 561px) and (max-height: 570px) { #app .probe-log .list {height: 285px;} }@media (min-height: 571px) and (max-height: 580px) { #app .probe-log .list {height: 295px;} }@media (min-height: 581px) and (max-height: 590px) { #app .probe-log .list {height: 305px;} }@media (min-height: 591px) and (max-height: 600px) { #app .probe-log .list {height: 315px;} }@media (min-height: 601px) and (max-height: 610px) { #app .probe-log .list {height: 325px;} }@media (min-height: 611px) and (max-height: 620px) { #app .probe-log .list {height: 335px;} }@media (min-height: 621px) and (max-height: 630px) { #app .probe-log .list {height: 345px;} }@media (min-height: 631px) and (max-height: 640px) { #app .probe-log .list {height: 355px;} }@media (min-height: 641px) and (max-height: 650px) { #app .probe-log .list {height: 365px;} }@media (min-height: 651px) and (max-height: 660px) { #app .probe-log .list {height: 375px;} }@media (min-height: 661px) and (max-height: 670px) { #app .probe-log .list {height: 385px;} }@media (min-height: 671px) and (max-height: 680px) { #app .probe-log .list {height: 395px;} }@media (min-height: 681px) and (max-height: 690px) { #app .probe-log .list {height: 405px;} }@media (min-height: 691px) and (max-height: 700px) { #app .probe-log .list {height: 415px;} }@media (min-height: 701px) and (max-height: 710px) { #app .probe-log .list {height: 425px;} }@media (min-height: 711px) and (max-height: 720px) { #app .probe-log .list {height: 435px;} }@media (min-height: 721px) and (max-height: 730px) { #app .probe-log .list {height: 445px;} }@media (min-height: 731px) and (max-height: 740px) { #app .probe-log .list {height: 455px;} }@media (min-height: 741px) and (max-height: 750px) { #app .probe-log .list {height: 465px;} }@media (min-height: 751px) and (max-height: 760px) { #app .probe-log .list {height: 475px;} }@media (min-height: 761px) and (max-height: 770px) { #app .probe-log .list {height: 485px;} }@media (min-height: 771px) and (max-height: 780px) { #app .probe-log .list {height: 495px;} }@media (min-height: 781px) and (max-height: 790px) { #app .probe-log .list {height: 505px;} }@media (min-height: 791px) and (max-height: 800px) { #app .probe-log .list {height: 515px;} }@media (min-height: 801px) and (max-height: 810px) { #app .probe-log .list {height: 525px;} }@media (min-height: 811px) and (max-height: 820px) { #app .probe-log .list {height: 535px;} }@media (min-height: 821px) and (max-height: 830px) { #app .probe-log .list {height: 545px;} }@media (min-height: 831px) and (max-height: 840px) { #app .probe-log .list {height: 555px;} }@media (min-height: 841px) and (max-height: 850px) { #app .probe-log .list {height: 565px;} }@media (min-height: 851px) and (max-height: 860px) { #app .probe-log .list {height: 575px;} }@media (min-height: 861px) and (max-height: 870px) { #app .probe-log .list {height: 585px;} }@media (min-height: 871px) and (max-height: 880px) { #app .probe-log .list {height: 595px;} }@media (min-height: 881px) and (max-height: 890px) { #app .probe-log .list {height: 605px;} }@media (min-height: 891px) and (max-height: 900px) { #app .probe-log .list {height: 615px;} }@media (min-height: 901px) and (max-height: 910px) { #app .probe-log .list {height: 625px;} }@media (min-height: 911px) and (max-height: 920px) { #app .probe-log .list {height: 635px;} }@media (min-height: 921px) and (max-height: 930px) { #app .probe-log .list {height: 645px;} }@media (min-height: 931px) and (max-height: 940px) { #app .probe-log .list {height: 655px;} }@media (min-height: 941px) and (max-height: 950px) { #app .probe-log .list {height: 665px;} }@media (min-height: 951px) and (max-height: 960px) { #app .probe-log .list {height: 675px;} }@media (min-height: 961px) and (max-height: 970px) { #app .probe-log .list {height: 685px;} }@media (min-height: 971px) and (max-height: 980px) { #app .probe-log .list {height: 695px;} }@media (min-height: 981px) and (max-height: 990px) { #app .probe-log .list {height: 705px;} }
+
+

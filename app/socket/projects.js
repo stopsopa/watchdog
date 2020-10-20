@@ -7,6 +7,8 @@ const delay = require('nlab/delay');
 
 const validator = require('@stopsopa/validator');
 
+const th = msg => new Error(`projects.js error: ${msg}`);
+
 module.exports = ({
   io,
   socket,
