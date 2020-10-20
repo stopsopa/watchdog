@@ -1,9 +1,31 @@
 /**
 
-  Usage:
+ Usage:
+
+  short version:
+
+    import { NotificationsProvider } from './components/Notifications/Notifications';
+
+    const Main = () => {
+
+      return (
+        <>
+          <NotificationsProvider />
+          <App />
+        </>
+      )
+    }
+
+    render(
+      <Main />,
+      document.getElementById('app')
+    );
+
+
+ long version
 
     import { StoreNotificationsProvider } from './components/Notifications/storeNotifications';
-    import Notifications from './components/Notifications/Notifications';
+    import { Notifications } from './components/Notifications/Notifications';
 
     const Main = () => {
       return (
@@ -50,7 +72,7 @@ import {
     notificationsRemove,
 } from './storeNotifications';
 
-const Notifications = () => {
+export const Notifications = () => {
 
     useContext(StoreContext);
 
@@ -71,4 +93,10 @@ const Notifications = () => {
     );
 };
 
-export default Notifications;
+import { StoreNotificationsProvider } from './storeNotifications'
+
+export const NotificationsProvider = () => (
+  <StoreNotificationsProvider>
+    <Notifications />
+  </StoreNotificationsProvider>
+)

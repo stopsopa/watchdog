@@ -2,23 +2,45 @@
 
  Usage:
 
-    import { StoreGlobalLoaderProvider } from './components/GlobalLoader/storeGlobalLoader';
-    import GlobalLoader from './components/GlobalLoader/GlobalLoader';
+    short version:
 
-    const Main = () => {
+      import { GlobalLoaderProvider } from './components/GlobalLoader/GlobalLoader';
+
+      const Main = () => {
 
         return (
-            <StoreGlobalLoaderProvider>
-                <GlobalLoader/>
-                <App />
-            </StoreGlobalLoaderProvider>
+          <>
+            <GlobalLoaderProvider />
+            <App />
+          </>
         )
-    }
+      }
 
-    render(
+      render(
         <Main />,
         document.getElementById('app')
-    );
+      );
+
+
+    long version
+
+      import { StoreGlobalLoaderProvider } from './components/GlobalLoader/storeGlobalLoader';
+      import GlobalLoader from './components/GlobalLoader/GlobalLoader';
+
+      const Main = () => {
+
+          return (
+              <StoreGlobalLoaderProvider>
+                  <GlobalLoader/>
+                  <App />
+              </StoreGlobalLoaderProvider>
+          )
+      }
+
+      render(
+          <Main />,
+          document.getElementById('app')
+      );
 */
 
 
@@ -39,7 +61,7 @@ import {
     actionGlobalLoaderButtonsHide,
 } from './storeGlobalLoader';
 
-export default function GlobalLoader() {
+export const GlobalLoader = () => {
 
     useContext(StoreContext);
 
@@ -71,3 +93,11 @@ export default function GlobalLoader() {
       </div>
     );
 };
+
+import { StoreGlobalLoaderProvider } from './storeGlobalLoader'
+
+export const GlobalLoaderProvider = () => (
+  <StoreGlobalLoaderProvider>
+    <GlobalLoader/>
+  </StoreGlobalLoaderProvider>
+)

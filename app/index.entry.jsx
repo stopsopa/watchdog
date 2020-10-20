@@ -15,11 +15,9 @@ import { StoreProjectsProvider } from './views/Projects/storeProjects';
 import { StoreAssocProvider } from './_storage/storeAssoc';
 import { StoreSocketProvider } from './_storage/storeSocket';
 
-import { StoreGlobalLoaderProvider } from './components/GlobalLoader/storeGlobalLoader';
-import GlobalLoader from './components/GlobalLoader/GlobalLoader';
+import { GlobalLoaderProvider } from './components/GlobalLoader/GlobalLoader';
 
-import { StoreNotificationsProvider } from './components/Notifications/storeNotifications';
-import Notifications from './components/Notifications/Notifications';
+import { NotificationsProvider } from './components/Notifications/Notifications';
 
 import App from './App';
 
@@ -27,30 +25,21 @@ import {
   BrowserRouter as Router,
 } from "react-router-dom";
 
-const Main = () => {
-
-  // const [ show, setShow ] = useState(true);
-
-  return (
+const Main = () => (
+  <>
+    <GlobalLoaderProvider />
+    <NotificationsProvider />
     <Router>
-      <StoreGlobalLoaderProvider>
-        <StoreSocketProvider>
-          <StoreProjectsProvider>
-            <StoreAssocProvider>
-              <StoreNotificationsProvider>
-                  <GlobalLoader/>
-                  <Notifications />
-                  {/*<button onClick={() => setShow(!show)}>toggle</button>*/}
-                  {/*{show && <App />}*/}
-                  <App />
-              </StoreNotificationsProvider>
-            </StoreAssocProvider>
-          </StoreProjectsProvider>
-        </StoreSocketProvider>
-      </StoreGlobalLoaderProvider>
+      <StoreSocketProvider>
+        <StoreProjectsProvider>
+          <StoreAssocProvider>
+            <App />
+          </StoreAssocProvider>
+        </StoreProjectsProvider>
+      </StoreSocketProvider>
     </Router>
-  )
-}
+  </>
+)
 
 render(
   <Main />,
