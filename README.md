@@ -9,7 +9,9 @@
 - [x] deleteing projects with probes
 - [ ] favicon
 - [ ] @todo - let callNext = await es(); // fetch and calculate it based on es data logs
-- [ ] probeClass()->status() - add/calculate next trigger time
+- [x] probeClass()->status() - add/calculate next trigger time
+- [ ] Flip days selectors next to the datepicker
+- [ ] log stats page, listen to get parameters
 
 
 

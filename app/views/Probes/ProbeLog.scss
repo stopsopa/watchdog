@@ -26,6 +26,9 @@
                 & > td {
                     font-family: monospace;
                 }
+                &:hover {
+                    background-color: #e5a63e;
+                }
             }
         }
         .select_log {
