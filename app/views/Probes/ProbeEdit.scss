@@ -1,6 +1,9 @@
 
 
 #app .probe {
+    .right {
+        float: right;
+    }
     .noinput-checkbox.checked.warning>div>div {
         background-color: #ff1515;
     }

@@ -464,6 +464,14 @@ export default function ProbeLog() {
             <h1>
               <Icon name={(type === 'active') ? `paper plane` : `assistive listening systems`} />
               Logs of {type} probe "{form.name}"
+
+              <Button
+                icon="edit"
+                content="Edit"
+                as={Link}
+                to={`/${pform.id}/probe/edit/${form.id}`}
+                className="right"
+              />
             </h1>
 
             <div className="chart">
