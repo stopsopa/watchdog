@@ -250,6 +250,8 @@ function UTCClock() {
 
 export default function ProbeLog() {
 
+  const deletemode = new URLSearchParams(location.search).has('deletemode');
+
   useContext(StoreContextAssoc);
 
   useContext(StoreContextProjects);
@@ -674,15 +676,16 @@ export default function ProbeLog() {
             <div className="list">
               {assocSelection === null && (<div style={{textAlign:'center'}}>Loading...</div>)}
 
-              {Array.isArray(assocSelection) && (
+              {Array.isArray(assocSelection) && (assocSelection.length ? (
                 <table className="probes_logs_selection">
                   <thead>
-                    <tr>
-                      <th></th>
-                      <th>Id</th>
-                      <th>Date</th>
-                      <th>probe</th>
-                    </tr>
+                  <tr>
+                    <th></th>
+                    <th>Id</th>
+                    <th>Date</th>
+                    <th>probe</th>
+                    {deletemode && <th>actions</th>}
+                  </tr>
                   </thead>
                   <tbody>
                   {assocSelection.map((r, i) => {
@@ -698,13 +701,27 @@ export default function ProbeLog() {
                         <td>
                           <Icon color={r.p ? `green` : `red`} name={r.p ? `check` : `x`}/>
                         </td>
+                        {deletemode && <td className="actions">
+                          <Button size="mini" color="red" icon="trash" />
+                        </td>}
                       </tr>
                     )
                   })}
                   </tbody>
                 </table>
-              )}
+              ) : 'No results found')}
             </div>
+
+            <a href="javascript:void(0)" onClick={() => {
+
+              var k = (function (p, h, k) {
+                p.has(k) ? p.delete(k) : p.set(k, '');
+                p = String(p);
+                p ? (p = '?' + p) : (p = '');
+                location.href = (location.href.split('#')[0]).split('?')[0] + p + h;
+              }(new URLSearchParams(location.search), location.hash, 'deletemode'))
+              
+            }}>delete mode</a>
 
 
             <Modal

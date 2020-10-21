@@ -44,6 +44,10 @@ import log from 'inspc';
   } = React.useContext(storeAssoc.StoreContext);
  */
 
+import {
+  notificationsAdd,
+} from '../components/Notifications/storeNotifications';
+
 export const StoreContext = createContext();
 
 const th = (function () {
@@ -215,10 +219,22 @@ export const actionFetchFullRangeStats = ({
   const probes_logs_selection = data => {
 
     const {
-      list,
+      list = [],
       key,
+      error,
     } = data ||  {}
 
+    if (error) {
+
+      notificationsAdd(String(error), 'error');
+    }
+
+    log.dump({
+      probes_logs_selection: {
+        key,
+        list,
+      }
+    })
     setStoreAssoc(key, list);
 
     // onLoad(data);
