@@ -1,6 +1,4 @@
 
-const _data = require('./data');
-
 import React, {
   useEffect,
   useState,
@@ -19,21 +17,9 @@ import log from 'inspc';
 
 const ms        = require('nlab/ms');
 
-const generate  = ms.generate;
-
-const raw       = ms.raw;
-
 import all from 'nlab/all';
 
-import format from 'date-fns/format';
-
-import { parseFromTimeZone, formatToTimeZone } from 'date-fns-timezone';
-
-import Textarea from '../../components/Textarea';
-
-import NoInput from '../../components/NoInput/NoInput';
-
-import IntervalInput from '../../components/IntervalInput/IntervalInput';
+import { formatToTimeZone } from 'date-fns-timezone';
 
 import {
   StoreContext as StoreContextAssoc,
@@ -109,26 +95,15 @@ import {
   StoreContext as StoreContextProjects,
 
   actionProjectsFormPopulate,
-  actionProjectsFormFieldEdit,
-  actionProjectsFormSubmit,
-
   actionProbesFormPopulate,
-  actionProbesFormFieldEdit,
-  actionProbesFormSubmit,
-
-  actionProbesRunCode,
-
   getProbesTestResult,
 
   getProjectForm,
-  getProjectFormErrors,
   getProbesForm,
-  getProbesFormErrors, actionProbesSetTestResult,
+  getProbesFormErrors,
 } from '../../views/Projects/storeProjects'
 
 import {
-  StoreContext as StoreContextNotifications,
-
   notificationsAdd,
 } from '../../components/Notifications/storeNotifications';
 
@@ -275,10 +250,6 @@ export default function ProbeLog() {
 
   const [ loading, setLoading ] = useState(true);
 
-  const [ sending, setSending ] = useState(false);
-
-  const [ testModal, setTestModal ] = useState(false);
-
   const history = useHistory();
 
   const pform = getProjectForm();
@@ -290,10 +261,6 @@ export default function ProbeLog() {
     type = form.type
   }
 
-  const errors = getProbesFormErrors();
-
-  const testResult = getProbesTestResult();
-
   useEffect(() => {
 
     const onLoad = ([{
@@ -301,9 +268,6 @@ export default function ProbeLog() {
       errors = {},
       submitted,
     }]) => {
-
-      setLoading(false);
-      setSending(false);
 
       if (submitted) {
 
@@ -345,13 +309,13 @@ export default function ProbeLog() {
 
   const [ xy, setXY ] = useState({x: 0, y: 0})
 
-  const viewBoxRatio = 0.05;
+  // const viewBoxRatio = 0.05;
 
   const [startDate, setStartDate] = useState(new Date());
 
   const [offset, setOffset] = useState(1);
 
-  const endDate = offsetDay(startDate, offset);
+  // const endDate = offsetDay(startDate, offset);
 
   const windowSize = useWindowSize();
 
