@@ -81,7 +81,7 @@ const tool = async function (opt = {}) {
 
     man = opt.knex.model.probes;
 
-    list = await man.fetch(`select * from :table: where enabled = 1 or type = 'passive'`);
+    list = await man.fetch(`select * from :table:`);
 
     // log.dump({
     //   list_all_probes: list.map(r => {
@@ -140,6 +140,24 @@ const tool = async function (opt = {}) {
   await promiseall(all);
 
   init = opt;
+}
+
+tool.getProbe = (id, _throw = true) => {
+
+  if ( ! intreg.test(id) ) {
+
+    throw th(`getProbe() error: id don't match ${intreg}`);
+  }
+
+  if (_throw) {
+
+    if ( ! probes[id] ) {
+
+      throw th(`getProbe() error: probe not found by id ${id}`);
+    }
+  }
+
+  return probes[id];
 }
 
 tool.getProbes = () => probes;

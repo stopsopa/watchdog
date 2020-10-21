@@ -709,7 +709,7 @@ export default function ProbeLog() {
                   })}
                   </tbody>
                 </table>
-              ) : 'No results found')}
+              ) : <span><Icon name="search"/> No results found</span>)}
             </div>
 
             <a href="javascript:void(0)" onClick={() => {
