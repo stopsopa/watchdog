@@ -687,13 +687,13 @@ export default function ProbeLog() {
                   <tbody>
                   {assocSelection.map((r, i) => {
                     return (
-                      <tr key={i} className={classnames({
+                      <tr key={i} className={classnames('select_log', {
                         error: !r.p,
-                      })}>
+                      })} onClick={() => fetchSelectedLog(r.id)}>
                         <th>{i + 1}</th>
-                        <td onClick={() => fetchSelectedLog(r.id)} className="select_log">{r.id}</td>
+                        <td>{r.id}</td>
                         <td>
-                          <DateColour date={r.f}/>
+                          <DateColour date={r.f} />
                         </td>
                         <td>
                           <Icon color={r.p ? `green` : `red`} name={r.p ? `check` : `x`}/>

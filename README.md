@@ -16,3 +16,6 @@
 
 
 https://github.com/stopsopa/pendulum
+
+
+https://www.geeksforgeeks.org/how-to-use-animation-on-favicon-image/#:~:text=An%20animated%20favicon%20is%20created,within%20a%20specific%20time%20frame.&text=Note%3A%20Animated%20images%20of%20type%20GIF%20will%20work%20in%20Firefox%20browser.
