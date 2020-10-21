@@ -14,6 +14,9 @@
 - [ ] log stats page, listen to get parameters
 - [ ] fix resizing of the graph with selection
 - [ ] buttons to navigate from logs to edit probe and back
+- [ ] ctrl+s shrtcut
+- [ ] add ace editor
+- [ ] update live graph and list below
 
 
 

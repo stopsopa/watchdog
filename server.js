@@ -35,6 +35,55 @@ app.use(express.urlencoded({extended: false}));
 
 app.use(express.json());
 
+const requestIp = require('request-ip');
+
+app.use(requestIp.mw());
+
+// curl -XPOST -d '{"foo": "bar"}' -H 'content-type: application/json' http://localhost:1046/test?a=b&test=getval
+// var k = {
+//   "ip": "127.0.0.1",
+//   "query": {
+//     "a": "b"
+//   },
+//   "body": {
+//     "foo": "bar"
+//   },
+//   "method": "POST",
+//   "headers": {
+//     "host": "localhost:1046",
+//     "user-agent": "curl/7.64.1",
+//     "accept": "*/*",
+//     "content-type": "application/json",
+//     "content-length": "14"
+//   },
+//   "original": {
+//     "raw": "/test?a=b",
+//     "protocol": "http:",
+//     "hostname": "localhost",
+//     "port": 1046,
+//     "pathname": "/test",
+//     "search": "?a=b",
+//     "full": "http://localhost:1046/test?a=b"
+//   }
+// }
+
+// const originalUrl = require('original-url'); // yarn add original-url
+//
+// app.all('/test', async (req, res) => {
+//
+//   const original = originalUrl(req);
+//
+//   return res.json({
+//     // url: req.
+//     ip: req.clientIp,
+//     query: req.query,
+//     body: req.body,
+//     method: req.method,
+//     headers: req.headers,
+//     original,
+//   })
+// });
+
 const env = name => {
 
   if ( typeof process.env[name] !== 'string' ) {
