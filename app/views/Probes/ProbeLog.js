@@ -44,6 +44,7 @@ import {
   actionFetchFullRangeStats,
   actionFetchSelectionStats,
   actionFetchSelectedLog,
+  actionDeleteSelectedLog,
 
 } from '../../_storage/storeAssoc'
 
@@ -425,6 +426,16 @@ export default function ProbeLog() {
     setStoreAssocDelete(assocKeySelectedLog)
   }
 
+  const onDeleteLog = log_id => {
+    actionDeleteSelectedLog({
+      log_id,
+      probe_id,
+      startDate: selected.start.date,
+      endDate: selected.end.date,
+      key: assocKeySelection,
+    })
+  }
+
   return (
     <div>
       <Breadcrumb>
@@ -702,7 +713,12 @@ export default function ProbeLog() {
                           <Icon color={r.p ? `green` : `red`} name={r.p ? `check` : `x`}/>
                         </td>
                         {deletemode && <td className="actions">
-                          <Button size="mini" color="red" icon="trash" />
+                          <Button size="mini" color="red" icon="trash" onClick={e => {
+                            e.preventDefault();
+                            e.stopPropagation();
+
+                            onDeleteLog(r.id)
+                          }}/>
                         </td>}
                       </tr>
                     )

@@ -281,6 +281,23 @@ export const actionFetchFullRangeStats = ({
   }
 };
 
+
+
+export const actionFetchSelectedLog = ({
+  log_id,
+  key,
+}) => {
+
+  setStoreAssoc(key, null);
+
+  socket.emit('probes_logs_selected_log', {
+    log_id,
+    key,
+  });
+};
+
+
+
 export const actionFetchSelectionStats = ({
   probe_id,
   startDate,
@@ -298,17 +315,21 @@ export const actionFetchSelectionStats = ({
   });
 };
 
-
-
-export const actionFetchSelectedLog = ({
+export const actionDeleteSelectedLog = ({
   log_id,
+  probe_id,
+  startDate,
+  endDate,
   key,
 }) => {
 
   setStoreAssoc(key, null);
 
-  socket.emit('probes_logs_selected_log', {
+  socket.emit('probes_delete_selected_log', {
     log_id,
+    probe_id,
+    startDate,
+    endDate,
     key,
   });
 };
