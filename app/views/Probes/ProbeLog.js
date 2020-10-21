@@ -626,7 +626,9 @@ export default function ProbeLog() {
                         return (
                           <rect
                             key={i}
-                            width={w(d.t) - x}
+                            width={(function (x) {
+                              return x < 5 ? 5 : x;
+                            }(w(d.t) - x))}
 
                             height="380"
                             y="20"
