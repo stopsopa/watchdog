@@ -12,6 +12,8 @@
 - [x] probeClass()->status() - add/calculate next trigger time
 - [ ] Flip days selectors next to the datepicker
 - [ ] log stats page, listen to get parameters
+- [ ] fix resizing of the graph with selection
+- [ ] buttons to navigate from logs to edit probe and back
 
 
 

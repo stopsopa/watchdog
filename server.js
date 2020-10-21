@@ -77,7 +77,6 @@ const estool = (async function () {
 
   // await delay(1000);
 
-
   const ensureIndex = require('./app/es/ensureIndex');
 
   const es = estool();
@@ -189,7 +188,9 @@ const estool = (async function () {
 
     es = await es();
 
-    (function () {
+    const driver = require('./app/probeDriver');
+
+    await (async function () {
 
       (function () {
 
@@ -201,9 +202,7 @@ const estool = (async function () {
         });
       }());
 
-      setTimeout(async () => {
-
-        const driver = require('./app/probeDriver');
+      // setTimeout(async () => {
 
         try {
 
@@ -234,7 +233,7 @@ const estool = (async function () {
 
           process.exit(1);
         }
-      }, 1000);
+      // }, 1000);
 
       // fetch('/passive')
 
@@ -253,39 +252,126 @@ const estool = (async function () {
 
         const id = req.params.id;
 
-        let password = req.body.password;
+        try {
 
-        if ( ! password ) {
+          const probe = driver.getProbe(id);
 
-          password = req.query.password;
+          await probe.passiveEndpoint(req);
+
+          return res.send("logged").end();
         }
+        catch (e) {
 
-        if ( ! password ) {
+          log.dump({
+            passive_probe_endpoint_error: se(e)
+          });
 
-          password = req.headers['x-password'];
+          return res.status(500).json({
+            error: String(e),
+          });
         }
-
-        if ( ! password ) {
-
-          password = '';
-        }
-
-        const probe = await man.queryOne(`select * from :table: where id = :id and type = 'passive'`, {
-          id,
-        });
-
-        return res.json({
-          password,
-          params: req.params,
-          headers: req.headers,
-          json: req.body,
-          probe,
-        });
       });
 
     }());
 
     await knex().model.common.howMuchDbIsFasterThanNode(true); // crush if greater than 5 sec
+
+// see more: https://github.com/stopsopa/nlab/blob/master/src/express/extend-res.js
+    (function () {
+
+      const user = process.env.PROTECTED_BASIC_AUTH_USER;
+
+      const pass = process.env.PROTECTED_BASIC_AUTH_PASSWORD;
+
+      if ( typeof user === 'string' && typeof pass === 'string' && user.trim() && pass.trim() ) {
+
+        var auth = require('basic-auth');
+
+        app.use((req, res, next) => {
+
+          var credentials = auth(req);
+
+          if ( ! credentials || credentials.name !== user || credentials.pass !== pass) {
+
+            res.statusCode = 401;
+
+            res.setHeader('WWW-Authenticate', 'Basic realm="example"')
+
+            res.end('Access denied')
+
+          } else {
+
+            next();
+          }
+        });
+      }
+      else {
+
+        console.log('PROTECTED_BASIC_AUTH_USER or PROTECTED_BASIC_AUTH_PASSWORD or both are not defined - basic auth disabled')
+      }
+    }());
+
+    const web = path.resolve(__dirname, 'public');
+
+// app.all('/basic', (req, res) => {
+//
+//   res.json({
+//     Authorization: req.headers.authorization
+//   })
+// });
+
+    app.use(express.static(web, { // http://expressjs.com/en/resources/middleware/serve-static.html
+      // maxAge: 60 * 60 * 24 * 1000 // in milliseconds
+      maxAge: '356 days', // in milliseconds max-age=30758400
+      setHeaders: (res, path) => {
+
+        if (/\.bmp$/i.test(path)) { // for some reason by default express.static sets here Content-Type: image/x-ms-bmp
+
+          res.setHeader('Content-type', 'image/bmp')
+        }
+
+        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
+        // res.setHeader('Cache-Control', 'public, no-cache, max-age=30758400')
+        // res.setHeader('Cache-Control', 'public, only-if-cached')
+      },
+      index: path.resolve(web, 'index.html'),
+    }));
+
+    app.get('*', (req, res) => res.sendFile(path.resolve(web, 'index.html')));
+
+    let port = parseInt(env('NODE_PORT'), 10);
+
+    if ( port < 1 ) {
+
+      throw new Error(`port < 1`);
+    }
+
+    const host = env('NODE_HOST');
+
+// for sockets
+    server.listen( // ... we have to listen on server
+      port,
+      host,
+      undefined, // io -- this extra parameter
+      () => {
+        console.log(`\n 🌎  Server is running ` + ` ${host}:${port} ` + "\n")
+      }
+    );
+
+    (function () {
+
+      const io        = require('socket.io')(server); // io
+
+// https://stackoverflow.com/a/37159364/5560682
+      io.use(require('./app/lib/socketio-wildcard')());
+
+      require('./app/io').bind({
+        io,
+        bind: require('./app/socket'),
+      });
+
+    }());
+
   }
   catch (e) {
 
@@ -295,101 +381,5 @@ const estool = (async function () {
 
     process.exit(1);
   }
-
-}());
-
-// see more: https://github.com/stopsopa/nlab/blob/master/src/express/extend-res.js
-(function () {
-
-  const user = process.env.PROTECTED_BASIC_AUTH_USER;
-
-  const pass = process.env.PROTECTED_BASIC_AUTH_PASSWORD;
-
-  if ( typeof user === 'string' && typeof pass === 'string' && user.trim() && pass.trim() ) {
-
-    var auth = require('basic-auth');
-
-    app.use((req, res, next) => {
-
-      var credentials = auth(req);
-
-      if ( ! credentials || credentials.name !== user || credentials.pass !== pass) {
-
-        res.statusCode = 401;
-
-        res.setHeader('WWW-Authenticate', 'Basic realm="example"')
-
-        res.end('Access denied')
-
-      } else {
-
-        next();
-      }
-    });
-  }
-  else {
-
-    console.log('PROTECTED_BASIC_AUTH_USER or PROTECTED_BASIC_AUTH_PASSWORD or both are not defined - basic auth disabled')
-  }
-}());
-
-const web = path.resolve(__dirname, 'public');
-
-// app.all('/basic', (req, res) => {
-//
-//   res.json({
-//     Authorization: req.headers.authorization
-//   })
-// });
-
-app.use(express.static(web, { // http://expressjs.com/en/resources/middleware/serve-static.html
-                              // maxAge: 60 * 60 * 24 * 1000 // in milliseconds
-  maxAge: '356 days', // in milliseconds max-age=30758400
-  setHeaders: (res, path) => {
-
-    if (/\.bmp$/i.test(path)) { // for some reason by default express.static sets here Content-Type: image/x-ms-bmp
-
-      res.setHeader('Content-type', 'image/bmp')
-    }
-
-    // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
-    // res.setHeader('Cache-Control', 'public, no-cache, max-age=30758400')
-    // res.setHeader('Cache-Control', 'public, only-if-cached')
-  },
-  index: path.resolve(web, 'index.html'),
-}));
-
-app.get('*', (req, res) => res.sendFile(path.resolve(web, 'index.html')));
-
-let port = parseInt(env('NODE_PORT'), 10);
-
-if ( port < 1 ) {
-
-  throw new Error(`port < 1`);
-}
-
-const host = env('NODE_HOST');
-
-// for sockets
-server.listen( // ... we have to listen on server
-  port,
-  host,
-  undefined, // io -- this extra parameter
-  () => {
-    console.log(`\n 🌎  Server is running ` + ` ${host}:${port} ` + "\n")
-  }
-);
-
-(function () {
-
-  const io        = require('socket.io')(server); // io
-
-// https://stackoverflow.com/a/37159364/5560682
-  io.use(require('./app/lib/socketio-wildcard')());
-
-  require('./app/io').bind({
-    io,
-    bind: require('./app/socket'),
-  });
 
 }());
