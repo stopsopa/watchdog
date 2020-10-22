@@ -7,6 +7,10 @@ import React, {
 
 import log from 'inspc';
 
+import get from 'nlab/get';
+
+import set from 'nlab/set';
+
 /**
  *
  *
@@ -105,7 +109,15 @@ function reducer(state, action) {
 
         throw th(`ASSOC_SET action.key is an empty 'string'`, action.key);
       }
-      return { ...state, assoc: { ...state.assoc, [action.key]: action.value } };
+
+      state = {
+        ...state,
+        assoc: {...state.assoc},
+      }
+
+      set(state.assoc, action.key, action.value);
+
+      return state;
     case ASSOC_DELETE:
       if ( typeof action.key !== 'string' ) {
 
@@ -115,9 +127,13 @@ function reducer(state, action) {
 
         throw th(`ASSOC_DELETE action.key is an empty 'string'`, action.key);
       }
-      state = { ...state, assoc: { ...state.assoc } };
 
-      delete state.assoc[action.key];
+      state = {
+        ...state,
+        assoc: {...state.assoc},
+      }
+
+      set(state.assoc, action.key, undefined);
 
       return state;
     default:

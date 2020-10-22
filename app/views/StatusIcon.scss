@@ -6,6 +6,9 @@
     &.status-ok {
         background-color: green;
     }
+    &.status-disabled {
+        background-color: slategray;
+    }
     &.status-error {
         animation-name: backgroundColorPalette;
         animation-duration: 0.5s;
@@ -15,6 +18,7 @@
     }
 }
 
+// https://codepen.io/StrengthandFreedom/pen/PoqZRgM
 @keyframes backgroundColorPalette {
     0% {
         background: transparent;

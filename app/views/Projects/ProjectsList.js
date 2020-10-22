@@ -94,13 +94,7 @@ export default function ProjectsList() {
             <Link to={`/${p.id}`}>
               <FitText text={p.name} />
               <div>
-                #{p.id} - {p.name}
-              </div>
-              <div>
-
-              </div>
-              <div>
-  progress
+                <StatusIcon status="ok" />
               </div>
             </Link>
             <div className="helpers">
