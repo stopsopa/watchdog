@@ -54,7 +54,7 @@ import {
 import {
   StoreContext as StoreContextAssoc,
   getStoreAssoc,
-  getProbeStatus,
+  getStatusProbe,
 } from '../../_storage/storeAssoc'
 
 import {
@@ -160,7 +160,7 @@ export default function Project() {
                   <Link to={`/${form.id}/log/${p.id}`}>
                     <FitText text={p.name} />
                     <div>
-                      <StatusIcon status={getProbeStatus(p.id)}/>
+                      <StatusIcon status={getStatusProbe(p.id)}/>
                       {` `}
                       <Icon name={(p.type === 'active') ? `paper plane` : `assistive listening systems`} />
                     </div>

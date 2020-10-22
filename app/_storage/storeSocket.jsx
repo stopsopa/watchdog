@@ -49,6 +49,10 @@ import {
   actionGlobalLoaderOff,
 } from '../components/GlobalLoader/storeGlobalLoader';
 
+import {
+  setStatusReset,
+} from './storeAssoc'
+
 export const StoreContext = createContext();
 
 const th = (function () {
@@ -107,6 +111,8 @@ export function StoreSocketProvider(props) {
     socket.on('disconnect', () => {
 
       log.dump('disconnect from server')
+
+      setStatusReset();
 
       clearInterval(handler);
       i = 0;

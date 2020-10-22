@@ -39,6 +39,11 @@ import {
   notificationsAdd,
 } from '../../components/Notifications/storeNotifications';
 
+import {
+  StoreContext as StoreContextAssoc,
+  getStatusPoject,
+} from '../../_storage/storeAssoc'
+
 export default function ProjectsList() {
 
   const [ deleting, setDeleting ] = useState(false);
@@ -53,6 +58,8 @@ export default function ProjectsList() {
   }
 
   useContext(StoreContextProjects);
+
+  useContext(StoreContextAssoc);
 
   useEffect(() => {
 
@@ -94,7 +101,7 @@ export default function ProjectsList() {
             <Link to={`/${p.id}`}>
               <FitText text={p.name} />
               <div>
-                <StatusIcon />
+                <StatusIcon status={getStatusPoject(p.id)}/>
               </div>
             </Link>
             <div className="helpers">

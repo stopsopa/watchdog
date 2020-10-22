@@ -18,9 +18,18 @@ export default ({
   ...rest
 }) => {
 
+  let num = '';
+
+  if (Number.isInteger(status)) {
+
+    num = status;
+
+    status = 'error';
+  }
+
   return (
     <Tippy content={`${status} status`}>
-      <div className={classnames('status-icon', `status-${status}`)} {...rest} />
+      <div className={classnames('status-icon', `status-${status}`)} {...rest}>{num}</div>
     </Tippy>
   );
 }

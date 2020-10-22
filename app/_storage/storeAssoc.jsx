@@ -217,7 +217,7 @@ export const getStoreAssoc = key => {
 /// from this point all below is customised for this project
 /// from this point all below is customised for this project
 
-export const getProbeStatus = id => {
+export const getStatusProbe = id => {
 
   try {
 
@@ -226,18 +226,136 @@ export const getProbeStatus = id => {
       return 'disabled'
     }
 
-    return getStoreAssoc(`status.${id}.probe`) ? 'ok' : 'error';
+    const probe = getStoreAssoc(`status.${id}.probe`);
+
+    if (typeof probe === 'boolean') {
+
+      return probe ? 'ok' : 'error';
+    }
   }
   catch (e) {
 
     log.dump({
-      getProbeStatus_catch_error: e,
+      getStatusProbe_catch_error: e,
       probe_id: id,
     })
-
-    return 'unknown';
   }
+
+  return 'unknown';
 }
+
+export const getStatusPoject = id => {
+
+  // log.dump({
+  //   projects: getStoreAssoc(`status`)
+  // })
+
+  try {
+
+    const list = getStoreAssoc(`status`);
+
+    const keys = Object.keys(list);
+
+    let error = 0;
+
+    let probesInThisProject = 0;
+
+    for (let i = 0, l = keys.length, t ; i < l ; i += 1 ) {
+
+      t = list[keys[i]];
+
+      if (t.db.project_id !== id) {
+
+        continue;
+      }
+
+      probesInThisProject += 1;
+
+      if (t.db.enabled === false) {
+
+        continue;
+      }
+
+      if (typeof t.probe !== 'boolean') {
+
+        return 'error';
+      }
+
+      if ( !t.probe ) {
+
+        error += 1;
+      }
+    }
+
+    if (probesInThisProject && error) {
+
+      return error;
+    }
+
+    return 'ok'
+
+  }
+  catch (e) {
+
+    log.dump({
+      getStatusPoject_catch_error: e,
+      project_id: id,
+    });
+  }
+
+  return 'unknown';
+}
+
+export const getStatusPojectsAll = () => {
+
+  try {
+
+    const list = getStoreAssoc(`status`);
+
+    const keys = Object.keys(list);
+
+    let error = 0;
+
+    for (let i = 0, l = keys.length, t ; i < l ; i += 1 ) {
+
+      t = list[keys[i]];
+
+      if (t.db.enabled === false) {
+
+        continue;
+      }
+
+      if (typeof t.probe !== 'boolean') {
+
+        return 'error';
+      }
+
+      if ( ! t.probe ) {
+
+        error += 1;
+      }
+    }
+
+    if (error) {
+
+      return error;
+    }
+
+    return 'ok'
+
+  }
+  catch (e) {
+
+    log.dump({
+      getStatusPojectsAll_catch_error: e
+    });
+  }
+
+  return 'unknown';
+}
+
+export const setStatusReset = () => setStoreAssocDelete(`status`);
+
 
 export const actionFetchFullRangeStats = ({
   probe_id,
