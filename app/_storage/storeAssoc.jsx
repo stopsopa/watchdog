@@ -216,6 +216,11 @@ export const getStoreAssoc = key => {
 /// from this point all below is customised for this project
 /// from this point all below is customised for this project
 /// from this point all below is customised for this project
+/// from this point all below is customised for this project
+/// from this point all below is customised for this project
+/// from this point all below is customised for this project
+/// from this point all below is customised for this project
+/// from this point all below is customised for this project
 
 export const getStatusProbe = id => {
 
@@ -306,11 +311,19 @@ export const getStatusPoject = id => {
   return 'unknown';
 }
 
-export const getStatusPojectsAll = () => {
+export const getStatusFavicon = () => {
+
+  const list = getStoreAssoc(`status`);
+
+  if (list === undefined) {
+
+    return {
+      status: 'error', // ok, error
+      text: 'OFF', // offline
+    };
+  }
 
   try {
-
-    const list = getStoreAssoc(`status`);
 
     const keys = Object.keys(list);
 
@@ -327,7 +340,10 @@ export const getStatusPojectsAll = () => {
 
       if (typeof t.probe !== 'boolean') {
 
-        return 'error';
+        return {
+          status: 'error', // ok, error
+          text: 'PE', // probe error
+        };
       }
 
       if ( ! t.probe ) {
@@ -338,20 +354,30 @@ export const getStatusPojectsAll = () => {
 
     if (error) {
 
-      return error;
+      return {
+        status: 'error', // ok, error
+        text: String(error),
+      };
     }
 
-    return 'ok'
+    return {
+      status: 'ok', // ok, error
+      text: 'OK',
+    };
 
   }
   catch (e) {
 
     log.dump({
-      getStatusPojectsAll_catch_error: e
+      getStatusPojectsAll_catch_error: e,
+      data: list,
     });
-  }
 
-  return 'unknown';
+    return {
+      status: 'error', // ok, error
+      text: 'GE',  // general error
+    };
+  }
 }
 
 export const setStatusReset = () => setStoreAssocDelete(`status`);
@@ -455,8 +481,6 @@ export const actionFetchFullRangeStats = ({
   }
 };
 
-
-
 export const actionFetchSelectedLog = ({
   log_id,
   key,
@@ -469,8 +493,6 @@ export const actionFetchSelectedLog = ({
     key,
   });
 };
-
-
 
 export const actionFetchSelectionStats = ({
   probe_id,

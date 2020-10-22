@@ -19,6 +19,8 @@ import { GlobalLoaderProvider } from './components/GlobalLoader/GlobalLoader';
 
 import { NotificationsProvider } from './components/Notifications/Notifications';
 
+import FaviconStatusContextDriven from './components/FaviconStatus/FaviconStatusContextDriven';
+
 import App from './App';
 
 import {
@@ -33,6 +35,7 @@ const Main = () => (
       <StoreSocketProvider>
         <StoreProjectsProvider>
           <StoreAssocProvider>
+            <FaviconStatusContextDriven />
             <App />
           </StoreAssocProvider>
         </StoreProjectsProvider>

@@ -397,8 +397,8 @@ curl -H 'x-password: ${form.password}' ${location.protocol}//${location.host}/pa
                               correct={10}
                             />
                           </Tab.Pane> },
-                        { menuItem: 'Tab 2', render: () => <Tab.Pane>Tab 2 Content</Tab.Pane> },
-                        { menuItem: 'Tab 3', render: () => <Tab.Pane>Tab 3 Content</Tab.Pane> },
+                        // { menuItem: 'Tab 2', render: () => <Tab.Pane>Tab 2 Content</Tab.Pane> },
+                        // { menuItem: 'Tab 3', render: () => <Tab.Pane>Tab 3 Content</Tab.Pane> },
                       ]} />
                     </Modal.Content>
                     <Modal.Actions>
