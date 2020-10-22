@@ -91,6 +91,8 @@ export function StoreSocketProvider(props) {
 
       log.dump('Connection renewed')
 
+      socket.emit('status_all_probes')
+
       clearInterval(handler);
       i = 0;
 

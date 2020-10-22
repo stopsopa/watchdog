@@ -52,6 +52,12 @@ import {
 } from '../../views/Projects/storeProjects';
 
 import {
+  StoreContext as StoreContextAssoc,
+  getStoreAssoc,
+  getProbeStatus,
+} from '../../_storage/storeAssoc'
+
+import {
   StoreContext as StoreContextNotifications,
 
   notificationsAdd,
@@ -74,12 +80,9 @@ export default function Project() {
   }
 
   useContext(StoreContextProjects);
+  useContext(StoreContextAssoc);
 
   const [ loading, setLoading ] = useState(true);
-
-  const [ sending, setSending ] = useState(false);
-
-  const history = useHistory();
 
   const form = getProjectForm();
 
@@ -90,7 +93,6 @@ export default function Project() {
     }]) => {
 
       setLoading(false);
-      setSending(false);
     }
 
     const [a, b] = all([a => a, () => {}], onLoad);
@@ -158,7 +160,7 @@ export default function Project() {
                   <Link to={`/${form.id}/log/${p.id}`}>
                     <FitText text={p.name} />
                     <div>
-                      <StatusIcon />
+                      <StatusIcon status={getProbeStatus(p.id)}/>
                       {` `}
                       <Icon name={(p.type === 'active') ? `paper plane` : `assistive listening systems`} />
                     </div>

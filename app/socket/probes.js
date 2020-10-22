@@ -229,5 +229,47 @@ module.exports = ({
         error: `failed to fetch probe by id '${id}' list from database.......`,
       })
     }
-  })
+  });
+
+  socket.on('status_all_probes', async () => {
+
+    log.dump({
+      status_all_probes: '',
+    })
+
+    try {
+
+      let list = driver.getProbesArray().map(r => {
+
+        const {
+          log,
+          ...rest
+        } = r.state();
+
+        return rest;
+      }).reduce((acc, probe) => {
+
+        acc[probe.db.id] = probe;
+
+        return acc;
+      }, {});
+
+      socket.emit('status_all_probes', {
+        list,
+      })
+    }
+    catch (e) {
+
+      log.dump({
+        status_all_probes: e,
+      }, 2);
+
+      socket.emit('status_all_probes', {
+        error: `status_all_probes error`,
+      })
+    }
+  });
+
+
+
 }

@@ -162,6 +162,8 @@ tool.getProbe = (id, _throw = true) => {
 
 tool.getProbes = () => probes;
 
+tool.getProbesArray = () => Object.keys(probes).map(key => probes[key]);
+
 tool.register = db => register(db);
 
 tool.unregister = id => unregister(id);

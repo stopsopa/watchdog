@@ -3,6 +3,7 @@ import React, {
   createContext,
   useReducer,
   useContext,
+  useEffect,
 } from 'react';
 
 import log from 'inspc';
@@ -80,6 +81,23 @@ export function StoreAssocProvider(props) {
       ({ state: socket } = useContext(storeSocket.StoreContext));
 
   [state, dispatch] = useReducer(reducer, initialState);
+
+  useEffect(() => {
+
+    if (socket) {
+
+      socket.on('status_all_probes', ({
+        list,
+      }) => {
+
+        setStoreAssoc('status', list);
+      })
+
+    }
+    else {
+      log.dump('StoreAssocProvider socket not available yet')
+    }
+  }, [socket]);
 
   return (<StoreContext.Provider value={{
     state,
@@ -192,12 +210,34 @@ export const getStoreAssoc = key => {
     throw th(`getStoreAssoc key.trim() is an empty string`);
   }
 
-  return state.assoc[key];
+  return get(state.assoc, key);
 }
 
 /// from this point all below is customised for this project
 /// from this point all below is customised for this project
 /// from this point all below is customised for this project
+
+export const getProbeStatus = id => {
+
+  try {
+
+    if (getStoreAssoc(`status.${id}.db.enabled`) === false) {
+
+      return 'disabled'
+    }
+
+    return getStoreAssoc(`status.${id}.probe`) ? 'ok' : 'error';
+  }
+  catch (e) {
+
+    log.dump({
+      getProbeStatus_catch_error: e,
+      probe_id: id,
+    })
+
+    return 'unknown';
+  }
+}
 
 export const actionFetchFullRangeStats = ({
   probe_id,

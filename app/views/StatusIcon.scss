@@ -3,11 +3,14 @@
     width: 15px;
     height: 15px;
     border-radius: 100px;
-    &.status-ok {
-        background-color: green;
+    &.status-unknown {
+        background-color: white;
     }
     &.status-disabled {
-        background-color: slategray;
+        background: repeating-linear-gradient(135deg, white, white 3px, gray 3px, gray 6px);
+    }
+    &.status-ok {
+        background-color: green;
     }
     &.status-error {
         animation-name: backgroundColorPalette;
