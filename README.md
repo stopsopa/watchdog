@@ -17,6 +17,7 @@
 - [ ] ctrl+s shrtcut
 - [ ] add ace editor
 - [ ] update live graph and list below
+- [ ] add icon informing about collecting full log when probe=true
 
 
 

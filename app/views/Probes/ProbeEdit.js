@@ -381,7 +381,17 @@ export default function ProbeEdit() {
                               defaultValue={`
 
 curl ${location.protocol}//${location.host}/passive/${form.id}?password="${form.password}"
+
+// or 
+
+curl -XPOST -H 'Content-Type: application/json' ${`\\`}
+    ${location.protocol}//${location.host}/passive/${form.id} ${`\\`}
+    -d '${JSON.stringify({password:form.password})}'
                               
+// or 
+
+curl -H 'x-password: ${form.password}' ${location.protocol}//${location.host}/passive/${form.id}
+
 `}
                               spellCheck={false}
                               correct={10}
@@ -392,14 +402,6 @@ curl ${location.protocol}//${location.host}/passive/${form.id}?password="${form.
                       ]} />
                     </Modal.Content>
                     <Modal.Actions>
-                      <Button
-                        content="Run"
-                        labelPosition='right'
-                        icon='checkmark'
-                        disabled={testResult === 'executing'}
-                        onClick={() => actionProbesRunCode(form.code, type)}
-                        positive
-                      />
                       <Button color='black' onClick={onModalClose}>
                         Close
                       </Button>
