@@ -86,38 +86,39 @@ export default function ProjectsList() {
       <hr />
       <div className="projects-list">
         {getProjectList().map(p => (
-          <Link key={p.id} className='project' to={`/${p.id}`}>
-            <div>
-              #{p.id} - {p.name}
-              <div className="helpers">
-                <Button
-                  icon="trash"
-                  size="mini"
-                  color="red"
-                  onClick={e => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setDeleting(p);
-                  }}
-                />
-                <Button
-                  size="mini"
-                  as={Link}
-                  color="olive"
-                  to={`/edit/${p.id}`}
-                >Edit</Button>
+          <div className='project' key={p.id}>
+            <Link to={`/${p.id}`}>
+              <div>
+                #{p.id} - {p.name}
               </div>
-            </div>
-            <div>
+              <div>
 
+              </div>
+              <div>
+  progress
+              </div>
+            </Link>
+            <div className="helpers">
+              <Button
+                icon="trash"
+                size="mini"
+                color="red"
+                onClick={e => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setDeleting(p);
+                }}
+              />
+              <Button
+                size="mini"
+                as={Link}
+                color="olive"
+                to={`/edit/${p.id}`}
+              >Edit</Button>
             </div>
-            <div>
-progress
-            </div>
-          </Link>
+          </div>
         ))}
       </div>
-
 
       <Modal
         basic

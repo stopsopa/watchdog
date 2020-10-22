@@ -150,35 +150,31 @@ export default function Project() {
             </div>
             <div className="project-probes">
               {getProbesList().map(p => (
-                <Link key={p.id} className='probe' to={`/${form.id}/log/${p.id}`}>
-                  <div>
-                    #{p.id} - {p.name}
-                    <div className="helpers">
-                      <Button
-                        icon="trash"
-                        size="mini"
-                        color="red"
-                        onClick={e => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          setDeleting(p);
-                        }}
-                      />
-                      <Button
-                        size="mini"
-                        as={Link}
-                        color="olive"
-                        to={`/${form.id}/probe/edit/${p.id}`}
-                      >Edit</Button>
+                <div key={p.id} className='probe'>
+                  <Link to={`/${form.id}/log/${p.id}`}>
+                    <div>
+                      #{p.id} - {p.name}
                     </div>
+                  </Link>
+                  <div className="helpers">
+                    <Button
+                      icon="trash"
+                      size="mini"
+                      color="red"
+                      onClick={e => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setDeleting(p);
+                      }}
+                    />
+                    <Button
+                      size="mini"
+                      as={Link}
+                      color="olive"
+                      to={`/${form.id}/probe/edit/${p.id}`}
+                    >Edit</Button>
                   </div>
-                  {/*<div>*/}
-
-                  {/*</div>*/}
-                  {/*<div>*/}
-                  {/*  progress*/}
-                  {/*</div>*/}
-                </Link>
+                </div>
               ))}
             </div>
 

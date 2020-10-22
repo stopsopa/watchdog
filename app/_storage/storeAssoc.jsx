@@ -191,13 +191,13 @@ export const actionFetchFullRangeStats = ({
   onLoad = () => {},
 }) => {
 
-  log.dump({
-    actionFetchFullRangeStats: {
-      probe_id,
-      startDate,
-      endDate,
-    }
-  });
+  // log.dump({
+  //   actionFetchFullRangeStats: {
+  //     probe_id,
+  //     startDate,
+  //     endDate,
+  //   }
+  // });
 
   socket.emit('probes_logs_full', {
     probe_id,
