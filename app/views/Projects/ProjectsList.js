@@ -10,6 +10,10 @@ import './ProjectsList.scss';
 
 import log from 'inspc';
 
+import FitText from '../../components/FitText';
+
+import StatusIcon from '../../views/StatusIcon'
+
 import {
   Button,
   Breadcrumb,
@@ -88,6 +92,7 @@ export default function ProjectsList() {
         {getProjectList().map(p => (
           <div className='project' key={p.id}>
             <Link to={`/${p.id}`}>
+              <FitText text={p.name} />
               <div>
                 #{p.id} - {p.name}
               </div>

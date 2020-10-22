@@ -7,14 +7,8 @@
     .probes_logs_selection {
 
         width: 100%;
-        .actions {
-            button {
-
-            }
-        }
         & > thead {
             & > tr {
-
                 th {
                     text-align: left;
                 }
@@ -60,7 +54,6 @@
         & > tbody > tr > :last-child {
             width: 200px;
         }
-
     }
     svg {
         box-shadow: 0 0 4px black;
@@ -71,7 +64,6 @@
         & > * {
             -webkit-touch-callout: none;
             -webkit-user-select: none;
-            -khtml-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
@@ -93,8 +85,6 @@
         &.right {
             padding-left: 5px;
             padding-right: 11px;
-        }
-        & > i {
         }
     }
     .error {
@@ -146,9 +136,6 @@
                         display: block;
                     }
                 }
-            }
-            & > div:last-child {
-
             }
 
         }

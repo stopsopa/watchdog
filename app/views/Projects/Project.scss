@@ -1,9 +1,9 @@
 
-.error {
-    color: #9f3a38;
-}
 
 #app .project {
+    .error {
+        color: #9f3a38;
+    }
     .header {
         display: flex;
         & > :last-child {
@@ -55,9 +55,6 @@
                 .helpers {
                     display: block;
                 }
-            }
-            & > div:last-child {
-
             }
         }
     }

@@ -1,0 +1,34 @@
+.status-icon {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 100px;
+    &.status-ok {
+        background-color: green;
+    }
+    &.status-error {
+        animation-name: backgroundColorPalette;
+        animation-duration: 0.5s;
+        animation-iteration-count: infinite;
+        animation-direction: alternate;
+        animation-timing-function: linear;
+    }
+}
+
+@keyframes backgroundColorPalette {
+    0% {
+        background: transparent;
+    }
+    //25% {
+    //    background: #60d394;
+    //}
+    40% {
+        background: red;
+    }
+    //75% {
+    //    background: #ffd97d;
+    //}
+    100% {
+        background: red;
+    }
+}
