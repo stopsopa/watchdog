@@ -14,7 +14,9 @@
         background-color: white;
     }
     &.status-disabled {
-        background: repeating-linear-gradient(135deg, white, white 3px, gray 3px, gray 6px);
+        background: repeating-linear-gradient(135deg, white, white 1px, gray 1px, gray 3px);
+        box-sizing: border-box;
+        border: 1px solid #888;
     }
     &.status-ok {
         background-color: green;

@@ -51,6 +51,7 @@ import {
 
 import {
   setStatusReset,
+  setStoreAssoc,
 } from './storeAssoc'
 
 export const StoreContext = createContext();
@@ -96,6 +97,16 @@ export function StoreSocketProvider(props) {
       log.dump('Connection renewed')
 
       socket.emit('status_all_probes')
+
+      socket.on('probe_status_destruct', id => {
+
+        setStoreAssoc(`status.${id}`);
+      });
+
+      socket.on('probe_status_update', data => {
+
+        setStoreAssoc(`status.${data.db.id}`, data);
+      });
 
       clearInterval(handler);
       i = 0;

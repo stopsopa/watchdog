@@ -33,6 +33,7 @@ import {
   Header,
   Dropdown,
   Image,
+  Tab,
 } from 'semantic-ui-react';
 
 import {
@@ -297,7 +298,6 @@ export default function ProbeEdit() {
                 />
                 {errors.code && <pre className="error">{errors.code}</pre>}
 
-
                 {(type === 'active') && (<Modal
                     onClose={onModalClose}
                     onOpen={e => {
@@ -334,9 +334,62 @@ export default function ProbeEdit() {
                               </tbody>
                             </table>
                           )}
-                          <pre className="code-test-result">{JSON.stringify((testResult || "No result yet"), null, 4)}</pre>
+                          <Textarea
+                            className="textarea-code"
+                            autoComplete="nope"
+                            defaultValue={JSON.stringify((testResult || "No result yet"), null, 4)}
+                            spellCheck={false}
+                            correct={10}
+                          />
                         </>
                       )}
+                    </Modal.Content>
+                    <Modal.Actions>
+                      <Button
+                        content="Run"
+                        labelPosition='right'
+                        icon='checkmark'
+                        disabled={testResult === 'executing'}
+                        onClick={() => actionProbesRunCode(form.code, type)}
+                        positive
+                      />
+                      <Button color='black' onClick={onModalClose}>
+                        Close
+                      </Button>
+                    </Modal.Actions>
+                  </Modal>
+                )}
+                {(type === 'passive' && form.id) && (<Modal
+                    onClose={onModalClose}
+                    onOpen={e => {
+                      e && e.preventDefault();
+                      setTestModal(true)
+                    }}
+                    open={testModal}
+                    closeOnEscape={true}
+                    closeOnDimmerClick={true}
+                    trigger={<Button className="test-code">Examples</Button>}
+                    // size="fullscreen"
+                  >
+                    <Modal.Header>Examples</Modal.Header>
+                    <Modal.Content scrolling>
+                      <Tab panes={[
+                        { menuItem: 'Curl', render: () => <Tab.Pane>
+                            <Textarea
+                              className="textarea-code"
+                              autoComplete="nope"
+                              defaultValue={`
+
+curl ${location.protocol}//${location.host}/passive/${form.id}?password="${form.password}"
+                              
+`}
+                              spellCheck={false}
+                              correct={10}
+                            />
+                          </Tab.Pane> },
+                        { menuItem: 'Tab 2', render: () => <Tab.Pane>Tab 2 Content</Tab.Pane> },
+                        { menuItem: 'Tab 3', render: () => <Tab.Pane>Tab 3 Content</Tab.Pane> },
+                      ]} />
                     </Modal.Content>
                     <Modal.Actions>
                       <Button

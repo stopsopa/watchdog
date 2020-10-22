@@ -13,6 +13,8 @@ import './ProbeLog.scss';
 
 import classnames from 'classnames';
 
+import Textarea from '../../components/Textarea'
+
 import log from 'inspc';
 
 const ms        = require('nlab/ms');
@@ -733,7 +735,13 @@ export default function ProbeLog() {
             >
               <Modal.Header>Log</Modal.Header>
               <Modal.Content scrolling>
-                <pre className="code-test-result">{JSON.stringify((assocSelectedLog || "No result yet"), null, 4)}</pre>
+                <Textarea
+                  className="textarea-code"
+                  autoComplete="nope"
+                  defaultValue={JSON.stringify((assocSelectedLog || "No result yet"), null, 4)}
+                  spellCheck={false}
+                  correct={10}
+                />
               </Modal.Content>
               <Modal.Actions>
                 <Button color='black' onClick={onModalClose}>

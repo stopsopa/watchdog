@@ -241,6 +241,20 @@ const estool = (async function () {
 
     await (async function () {
 
+      const io        = require('socket.io')(server); // io
+
+      (function () {
+
+// https://stackoverflow.com/a/37159364/5560682
+        io.use(require('./app/lib/socketio-wildcard')());
+
+        require('./app/io').bind({
+          io,
+          bind: require('./app/socket'),
+        });
+
+      }());
+
       (function () {
 
         const cls = require('./app/probeClass');
@@ -248,6 +262,7 @@ const estool = (async function () {
         cls.setup({
           dir: path.resolve(__dirname, 'var', 'probes'),
           es,
+          io
         });
       }());
 
@@ -258,6 +273,7 @@ const estool = (async function () {
           await driver({
             knex: knex(),
             es,
+            io,
           });
 
           // setTimeout(() => {
@@ -406,20 +422,6 @@ const estool = (async function () {
         console.log(`\n 🌎  Server is running ` + ` ${host}:${port} ` + "\n")
       }
     );
-
-    (function () {
-
-      const io        = require('socket.io')(server); // io
-
-// https://stackoverflow.com/a/37159364/5560682
-      io.use(require('./app/lib/socketio-wildcard')());
-
-      require('./app/io').bind({
-        io,
-        bind: require('./app/socket'),
-      });
-
-    }());
 
   }
   catch (e) {

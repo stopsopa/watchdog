@@ -28,7 +28,7 @@ export default ({
   }
 
   return (
-    <Tippy content={`${status} status`}>
+    <Tippy content={`status: ${status}`}>
       <div className={classnames('status-icon', `status-${status}`)} {...rest}>{num}</div>
     </Tippy>
   );
