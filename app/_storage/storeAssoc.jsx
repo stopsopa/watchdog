@@ -255,9 +255,9 @@ export const getStatusPoject = id => {
   //   projects: getStoreAssoc(`status`)
   // })
 
-  try {
+  const list = getStoreAssoc(`status`);
 
-    const list = getStoreAssoc(`status`);
+  try {
 
     const keys = Object.keys(list);
 
@@ -305,6 +305,7 @@ export const getStatusPoject = id => {
     log.dump({
       getStatusPoject_catch_error: e,
       project_id: id,
+      list,
     });
   }
 
@@ -369,7 +370,7 @@ export const getStatusFavicon = () => {
   catch (e) {
 
     log.dump({
-      getStatusPojectsAll_catch_error: e,
+      getStatusFavicon_catch_error: e,
       data: list,
     });
 
