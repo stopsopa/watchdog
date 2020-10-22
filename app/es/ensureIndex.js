@@ -106,7 +106,7 @@ const tool = async () => {
 
 tool.delete = async () => {
 
-    // curl -XDELETE -H "Authorization: Basic xxx"  http://elastic.xxx.com/pendulum
+    // curl -XDELETE -H "Authorization: Basic xxx"  http://elastic.xxx.com/watchdog
 
     try {
 
