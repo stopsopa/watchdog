@@ -12,6 +12,10 @@ import log from 'inspc';
 
 import all from 'nlab/all';
 
+import FitText from '../../components/FitText';
+
+import StatusIcon from '../../views/StatusIcon'
+
 import {
   Breadcrumb,
   List,
@@ -152,8 +156,11 @@ export default function Project() {
               {getProbesList().map(p => (
                 <div key={p.id} className='probe'>
                   <Link to={`/${form.id}/log/${p.id}`}>
+                    <FitText text={p.name} />
                     <div>
-                      #{p.id} - {p.name}
+                      <StatusIcon />
+                      {` `}
+                      <Icon name={(p.type === 'active') ? `paper plane` : `assistive listening systems`} />
                     </div>
                   </Link>
                   <div className="helpers">

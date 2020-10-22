@@ -21,7 +21,7 @@
         & > .probe {
             flex-shrink: 0;
             flex-grow: 0;
-            width: 150px;
+            width: 220px;
             padding: 5px;
             margin: 5px;
 
@@ -34,6 +34,9 @@
             position: relative;
 
             color: #414141;
+            a {
+                color: dimgray;
+            }
 
             .helpers {
                 display: none;

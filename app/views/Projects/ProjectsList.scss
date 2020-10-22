@@ -26,6 +26,9 @@
         position: relative;
 
         color: #414141;
+        a {
+            color: dimgray;
+        }
         & > .helpers {
             display: none;
             position: absolute;

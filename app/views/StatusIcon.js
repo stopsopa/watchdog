@@ -8,7 +8,7 @@ import './StatusIcon.scss'
 import log from 'inspc';
 
 export default ({
-  status, // error, ok
+  status = 'disabled', // error, ok
   ...rest
 }) => {
 
