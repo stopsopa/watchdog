@@ -250,6 +250,8 @@ export default function ProbeLog() {
 
   const [ loading, setLoading ] = useState(true);
 
+  const [ testModal, setTestModal ] = useState(false);
+
   const history = useHistory();
 
   const pform = getProjectForm();
@@ -268,6 +270,8 @@ export default function ProbeLog() {
       errors = {},
       submitted,
     }]) => {
+
+      setLoading(false);
 
       if (submitted) {
 
@@ -702,7 +706,8 @@ export default function ProbeLog() {
               ) : <span><Icon name="search"/> No results found</span>)}
             </div>
 
-            <a href="javascript:void(0)" onClick={() => {
+            <a href="" onClick={e => {
+              e.preventDefault();
 
               var k = (function (p, h, k) {
                 p.has(k) ? p.delete(k) : p.set(k, '');
