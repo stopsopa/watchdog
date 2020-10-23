@@ -7,17 +7,17 @@
 - [ ] extend webpack to be able to import semantic ui css
 - [ ] parameter to skip cache-loader in webpack.config.js for docker image build mode
 - [x] deleteing projects with probes
-- [ ] favicon
-- [ ] @todo - let callNext = await es(); // fetch and calculate it based on es data logs
+- [x] favicon
 - [x] probeClass()->status() - add/calculate next trigger time
-- [ ] Flip days selectors next to the datepicker
+- [x] Flip days selectors next to the datepicker
 - [ ] log stats page, listen to get parameters
 - [ ] (REJECTED) fix resizing of the graph with selection (it would require to convert positon of mouse to percentage of with of the svg - not worth of effort)
 - [x] buttons to navigate from logs to edit probe and back
-- [ ] ctrl+s shrtcut
+- [ ] (NAAA REJECTED) ctrl+s shrtcut
 - [ ] add ace editor
 - [ ] update live graph and list below
 - [ ] add icon informing about collecting full log when probe=true
+- [ ] extend project - add telegram integration with proxy users management - sending to to particular use but to group (to group id)
 
 
 
