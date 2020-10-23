@@ -63,19 +63,19 @@ if [ "$PROJECT_NAME_SHORT" = "" ]; then
     exit 1;
 fi
 
-if [ "$PROJECT_NAME_PVC" = "" ]; then
+#if [ "$PROJECT_NAME_PVC" = "" ]; then
+#
+#    echo "$0 error: environment variable missing 'PROJECT_NAME_PVC'";
+#
+#    exit 1;
+#fi
 
-    echo "$0 error: environment variable missing 'PROJECT_NAME_PVC'";
-
-    exit 1;
-fi
-
-if [ "$PROJECT_NAME_SHORT_PVC__NODASH" = "" ]; then
-
-    echo "$0 error: environment variable missing 'PROJECT_NAME_SHORT_PVC__NODASH'";
-
-    exit 1;
-fi
+#if [ "$PROJECT_NAME_SHORT_PVC__NODASH" = "" ]; then
+#
+#    echo "$0 error: environment variable missing 'PROJECT_NAME_SHORT_PVC__NODASH'";
+#
+#    exit 1;
+#fi
 
 /bin/bash "$ROOT/bash/kuber/switch-cluster.sh" "$PROTECTED_KUB_CLUSTER"
 
@@ -120,7 +120,8 @@ DEPLOYMENT_FILE="$DIR/pod.yaml";
 
 DEPLOYMENT_FILE="$(/bin/bash "$ROOT/bash/envrender.sh" "$ENVTMP" "$DEPLOYMENT_FILE" --clear --rmfirst -g "ubuntu-tmp")"
 
-CHECK=("secret k8s-ssh-key" "secret env-${PROJECT_NAME_SHORT}" "pvc pvc-${PROJECT_NAME_PVC}");
+#CHECK=("secret k8s-ssh-key" "secret env-${PROJECT_NAME_SHORT}" "pvc pvc-${PROJECT_NAME_PVC}");
+CHECK=("secret k8s-ssh-key" "secret env-${PROJECT_NAME_SHORT}");
 
 for i in "${CHECK[@]}"
 do

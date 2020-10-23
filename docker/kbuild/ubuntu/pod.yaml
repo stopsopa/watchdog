@@ -19,8 +19,8 @@ spec:
         - image: "$PROTECTED_DOCKER_REGISTRY/ubuntu:$DEPLOYMENT_TAG" # docker run -p 8082:80 docker-registry.domain.com/tapp:0.0.12
           name: ${PROJECT_NAME}-ubuntu-$RAND
           volumeMounts:
-            - name: image-store
-              mountPath: /home/node/app/public/media
+#            - name: image-store
+#              mountPath: /home/node/app/public/media
             # /usr/src/envdir/.env /home/node/app/.env
             - name: env-secret
               mountPath: /usr/src/envdir
@@ -41,10 +41,10 @@ spec:
         - name: env-secret
           secret:
             secretName: env-$PROJECT_NAME_SHORT
-        - name: image-store
-          persistentVolumeClaim:
-            claimName: pvc-$PROJECT_NAME_SHORT_PVC__NODASH
-            readOnly: false
+#        - name: image-store
+#          persistentVolumeClaim:
+#            claimName: pvc-$PROJECT_NAME_SHORT_PVC__NODASH
+#            readOnly: false
 
 
 #        - name: vollh
