@@ -73,6 +73,7 @@ fi
 
 
 
+
 source ~/.bashrc
 source ~/.bash_profile
 set -x
