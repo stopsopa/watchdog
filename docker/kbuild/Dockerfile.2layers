@@ -1,0 +1,65 @@
+# https://www.digitalocean.com/community/tutorials/how-to-build-a-node-js-application-with-docker
+FROM node:8.17.0-slim as builder
+
+RUN apt-get update || : && apt-get install -y python build-essential
+
+RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
+
+# yarn volume
+VOLUME /usr/local/share/.cache/yarn/v6
+
+# app workspace
+WORKDIR /home/node/app
+
+# copy nprc yarn.lck pckg.json
+COPY .npmrc package*.json yarn.lock ./
+
+# exec yarn
+RUN yarn
+
+# cp . .
+COPY --chown=node:node . .
+
+# cp __env .env
+RUN cp __env-for-docker-build .env
+
+# exec react/prod.sh
+RUN /bin/bash react/prod.sh
+
+# rm .env
+RUN rm .env
+
+# yarn volume
+FROM node:8.17.0-slim
+
+#$ docker history tapp:0.0.1
+
+# to add bash: https://stackoverflow.com/a/40944512/5560682
+#RUN apk update && apk add bash
+
+# https://i.imgur.com/DxvrAtj.png
+# https://community.nodebb.org/topic/13052/segmentation-fault-core-dumped-during-install-setup-of-nodebb-v1-10-2/4
+#RUN npm install benchpressjs@1.2.7
+# antoher solution is to try to instal python
+RUN apt-get update || : && apt-get install -y python build-essential
+
+RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
+
+WORKDIR /home/node/app
+
+COPY .npmrc package*.json yarn.lock ./
+
+COPY --from=builder /home/node/app/node_modules node_modules
+
+#USER node
+#COPY  .npmrc package*.json ./
+
+#RUN npm install
+
+COPY --from=builder /home/node/app .
+
+#COPY server.js .
+
+EXPOSE $NODE_PORT
+
+CMD [ "/bin/sh", "podrun.sh" ]

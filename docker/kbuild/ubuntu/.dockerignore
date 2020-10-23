@@ -1,0 +1,8 @@
+.env
+build.sh
+pod*.yaml
+ReAdMe.TxT
+Dockerfile
+.gitignore
+.dockerignore
+*-tmp-*

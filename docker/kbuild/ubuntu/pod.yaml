@@ -1,0 +1,58 @@
+this line is here to prevent using this file directly with kubectl apply, use it through script $0.sh
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${PROJECT_NAME}-ubuntu-$RAND
+  labels:
+    app: ${PROJECT_NAME}-ubuntu-$RAND
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${PROJECT_NAME}-ubuntu-$RAND
+  template:
+    metadata:
+      labels:
+        app: ${PROJECT_NAME}-ubuntu-$RAND
+    spec:
+      containers:
+        - image: "$PROTECTED_DOCKER_REGISTRY/ubuntu:$DEPLOYMENT_TAG" # docker run -p 8082:80 docker-registry.domain.com/tapp:0.0.12
+          name: ${PROJECT_NAME}-ubuntu-$RAND
+          volumeMounts:
+            - name: image-store
+              mountPath: /home/node/app/public/media
+            # /usr/src/envdir/.env /home/node/app/.env
+            - name: env-secret
+              mountPath: /usr/src/envdir
+              readOnly: true
+            - name: k8s-ssh-key
+              mountPath: /usr/src/k8s-ssh-key
+              readOnly: true
+#            - name: vollh
+#              mountPath: /home/node/app/public/media
+#            - name: glusterfsvol
+#              mountPath: /home/node/app/public/glus
+      imagePullSecrets:
+        - name: regcred
+      volumes:
+        - name: k8s-ssh-key
+          secret:
+            secretName: k8s-ssh-key
+        - name: env-secret
+          secret:
+            secretName: env-$PROJECT_NAME_SHORT
+        - name: image-store
+          persistentVolumeClaim:
+            claimName: pvc-$PROJECT_NAME_SHORT_PVC__NODASH
+            readOnly: false
+
+
+#        - name: vollh
+#          persistentVolumeClaim:
+#            claimName: cephfs-lhhub
+#            readOnly: false
+#        - name: glusterfsvol
+#          glusterfs:
+#            endpoints: glusterfs-cluster
+#            path: gv0
+#            readOnly: false

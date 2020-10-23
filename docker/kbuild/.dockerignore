@@ -1,0 +1,51 @@
+# keep in mind that this file will be copied to root directory and it will be used there
+# keep in mind that this file will be copied to root directory and it will be used there
+# keep in mind that this file will be copied to root directory and it will be used there
+# keep in mind that this file will be copied to root directory and it will be used there
+# keep in mind that this file will be copied to root directory and it will be used there
+# keep in mind that this file will be copied to root directory and it will be used there
+
+deployment-*.yaml
+.git
+package-lock.json
+
+/docker/mysql*
+#/public/asset/
+#/public/dist/
+
+#/react/development/
+#/react/production/
+#/react/servers/
+
+/public/media/
+__ignore__
+.idea
+# /app/preprocessor/dotenv.json
+/yarn-error.log
+.DS_Store
+*.tar.gz
+*.tgz
+/libtests/
+/vanila/
+/var/
+/doc/
+/bin/
+# /migrations/
+/puppeteer/node_modules/
+/bash/node_modules/
+
+/docker/kbuild/backup/
+/docker/kbuild/DO-pvc/
+/docker/kbuild/openebs/
+/docker/kbuild/rook/
+/docker/kbuild/secret/
+/docker/kbuild/ubuntu/
+
+!.npmrc
+.env*
+!.env
+*-tmp-*
+
+# let's block yarn.lock because for local development we are using mac and for prod|staging|testing linux
+#yarn.lock
+
