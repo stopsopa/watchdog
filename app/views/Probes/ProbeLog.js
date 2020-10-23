@@ -113,11 +113,33 @@ function offsetDay(date, days) {
   return new Date( date.getTime() + ( 60 * 60 * 24 * days * 1000)   )
 }
 
-function range(date, offsetDays) {
+function rangeBack(date, offset) {
 
-  const abs = Math.abs(offsetDays);
+  const abs = Math.abs(offset);
 
-  if (offsetDays < 0) {
+  if (offset < 0) {
+
+    date = offsetDay(date, abs)
+  }
+
+  const list = [];
+
+  for (var i = 0 ; i < abs ; i += 1 ) {
+
+    list.push({
+      d: offsetDay(date, i),
+      o: i + 1,
+    })
+  }
+
+  return list;
+}
+
+function range(date, offset) {
+
+  const abs = Math.abs(offset);
+
+  if (offset < 0) {
 
     date = offsetDay(date, abs)
   }
@@ -319,7 +341,7 @@ export default function ProbeLog() {
 
   const [datepickerDate, setDatepickerDate] = useState(new Date());
 
-  const [offset, setOffset] = useState(1);
+  const [offset, setOffset] = useState(0);
 
   // const endDate = offsetDay(datepickerDate, offset);
 
@@ -333,9 +355,9 @@ export default function ProbeLog() {
     }
   }, [windowSize]);
 
-  const rangeSeconds = (60 * 60 * 24 * offset);
+  const rangeSeconds = (60 * 60 * 24 * offset); // xx
 
-  const startDateMidnight = new Date(datepickerDate);
+  const startDateMidnight = new Date(datepickerDate); // xx
   startDateMidnight.setUTCHours(0,0,0,0);
 
   const [selected , setSelected] = useState({});
@@ -354,11 +376,11 @@ export default function ProbeLog() {
 
   useEffect(eraseStats, []);
 
-  useEffect(() => {
+  useEffect(() => {  // xx
 
     eraseStats();
 
-    const endDate = offsetDay(datepickerDate, offset - 1);
+    const endDate = offsetDay(datepickerDate, offset - 1);  // xx
 
     endDate.setUTCHours(23, 59, 59, 0);
 
@@ -405,6 +427,10 @@ export default function ProbeLog() {
       key: assocKeySelection,
     })
   }
+
+  log.dump({
+    'range(datepickerDate, 7, -1)': range(datepickerDate, 7, -1),
+  })
 
   return (
     <div>
@@ -480,7 +506,7 @@ export default function ProbeLog() {
                       <Icon name='chevron right' />
                     </Button>
                   </td>
-                  {range(datepickerDate, 7, -1).map(d => (
+                  {range(datepickerDate, 7, -1).map(d => ( // xx
                     <td key={d.o}>
                       <Button
                         size="mini"
@@ -627,7 +653,7 @@ export default function ProbeLog() {
                           fill="url(#brush_pattern)"
                         />
                       )}
-                      {range(datepickerDate, offset, -1).map(d => (
+                      {range(datepickerDate, offset, -1).map(d => ( // xx
                         <Fragment key={d.d.toISOString()}>
                           <rect width="5" height="70" x={r((d.o - 1) * dayWidth) - 5} y="420" fill="black"></rect>
                           <text x={r((d.o - 1) * dayWidth) - 5} y="470"> &nbsp; {formatToTimeZone(d.d, 'D dddd', {timeZone:'UTC'})}</text>
@@ -658,7 +684,7 @@ export default function ProbeLog() {
               }({
                 viewBoxX,
                 viewBoxY: 500,
-                dayWidth: parseInt(width / offset, 10),
+                dayWidth: parseInt(width / offset, 10), // xx
                 r: ratio,
                 s: (flip(selected))
               }))}
