@@ -41,10 +41,6 @@ node_modules
 /docker/kbuild/rook/
 /docker/kbuild/secret/
 /docker/kbuild/ubuntu/
-
-!.npmrc
-.env*
-!.env
 *-tmp-*
 
 # let's block yarn.lock because for local development we are using mac and for prod|staging|testing linux
@@ -64,6 +60,11 @@ preprocessed.js
 # after build in docker image, remove content of this directory too,
 # or add flag to skip using cache-loader in webpack.config.js
 /var/cache-loader/
+
+!.npmrc
+.env*
+!.env
+!.env.dist
 
 
 
