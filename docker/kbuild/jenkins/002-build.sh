@@ -73,10 +73,10 @@ fi
 
 
 
-set -x
-set -e
 source ~/.bashrc
 source ~/.bash_profile
+set -x
+set -e
 pwd
 id
 /bin/bash gitstorage.sh pull --force
