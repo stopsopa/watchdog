@@ -89,7 +89,6 @@ set +x
 
 
 
-
 if [ "$TRIGGERED_MANUALLY" = "0" ]; then
 
     JENKINS__KUB_ENV=".env.kub.test"
