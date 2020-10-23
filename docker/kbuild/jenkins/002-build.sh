@@ -73,10 +73,12 @@ fi
 
 
 
-
+set -x
 set -e
+pwd
 /bin/bash gitstorage.sh pull --force
 set +e
+set +x
 
 
 
