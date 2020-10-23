@@ -381,24 +381,24 @@ export default function ProbeEdit() {
                               autoComplete="nope"
                               defaultValue={`
 
-curl ${location.protocol}//${location.host}/passive/${form.id}?password=${form.password}
+curl "${location.protocol}//${location.host}/passive/${form.id}?password=${form.password}"
 
 // or 
 
-curl -XPOST -H 'Content-Type: application/json' ${`\\`}
-    ${location.protocol}//${location.host}/passive/${form.id} ${`\\`}
+curl -XPOST -H "Content-Type: application/json" ${`\\`}
+    "${location.protocol}//${location.host}/passive/${form.id}" ${`\\`}
     -d '${JSON.stringify({password:form.password})}'
                               
 // or 
 
-curl -H 'x-password: ${form.password}' ${location.protocol}//${location.host}/passive/${form.id}
+curl -H "x-password: ${form.password}" "${location.protocol}//${location.host}/passive/${form.id}"
 
 // extra:
 // you can also send extra get|post parameters and headers
 
 curl -XPOST -H "x-extra-header: hvalue" ${`\\`}
-    -H 'Content-Type: application/json' ${`\\`}
-    ${location.protocol}//${location.host}/passive/${form.id}?password=${form.password}${`\\`}&extraget=gval ${`\\`}
+    -H "Content-Type: application/json" ${`\\`}
+    "${location.protocol}//${location.host}/passive/${form.id}?password=${form.password}&extraget=gval" ${`\\`}
     -d '{"jsonkey":"jsonvalue"}'
  
 
@@ -448,7 +448,7 @@ module.exports = function watchdog(url, opt = {}) {
 };
 
 // other file
-require('./watchdog')('${location.protocol}//${location.host}/passive/${form.id}', {
+require('./watchdog')("${location.protocol}//${location.host}/passive/${form.id}", {
   body: ${JSON.stringify({password:form.password})}
 })
 
@@ -494,7 +494,7 @@ require('./watchdog')('${location.protocol}//${location.host}/passive/${form.id}
   req.on('error', e => {})
   body && req.write(body);
   req.end();
-})('${location.protocol}//${location.host}/passive/${form.id}', {
+})("${location.protocol}//${location.host}/passive/${form.id}", {
   body: ${JSON.stringify({password:form.password})}
 });
 
