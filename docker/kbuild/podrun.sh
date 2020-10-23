@@ -96,16 +96,33 @@ if [[ $PROJECT_NAME_SHORT = "" ]]; then
   exit 1
 fi
 
-DIR="$_DIR/public/media/podslogs/$PROJECT_NAME_SHORT"
+#DIR="$_DIR/public/media/podslogs/$PROJECT_NAME_SHORT"
+#
+#mkdir -p "$DIR"
 
-mkdir -p "$DIR"
+#FILE="$DIR/$(date "+%Y-%m-%d__%H-%M-%S")--$HOSTNAME-b-$BUILD_NUMBER-g-$GIT_COMMIT-d-$DEPLOYMENT_TAG.log";
 
-FILE="$DIR/$(date "+%Y-%m-%d__%H-%M-%S")--$HOSTNAME-b-$BUILD_NUMBER-g-$GIT_COMMIT-d-$DEPLOYMENT_TAG.log";
+#/bin/bash "$_DIR/$0" "$FILE" & disown
 
-/bin/bash "$_DIR/$0" "$FILE" & disown
+#cd "$_DIR/react"
 
-cd "$_DIR/react"
+#node webpack.config.js
+#
+#node production/index.js prod | tee -a "$FILE"
 
-node webpack.config.js
 
-node production/index.js prod | tee -a "$FILE"
+cd /home/node/app
+
+#cp .env.dist .env
+
+(
+  cd public
+  if [ -e public ]; then echo 'dist symlink already exist'; else ln -s ../node_modules public; fi
+)
+
+source .env
+
+(cd app && node lib/preprocessor.js)
+
+node server.js
+
