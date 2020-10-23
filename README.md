@@ -6,14 +6,14 @@
 - [ ] refresh param ?_=time (browser cache)
 - [ ] extend webpack to be able to import semantic ui css
 - [ ] parameter to skip cache-loader in webpack.config.js for docker image build mode
-- [✓] deleteing projects with probes
+- [x] deleteing projects with probes
 - [ ] favicon
 - [ ] @todo - let callNext = await es(); // fetch and calculate it based on es data logs
-- [✓] probeClass()->status() - add/calculate next trigger time
+- [x] probeClass()->status() - add/calculate next trigger time
 - [ ] Flip days selectors next to the datepicker
 - [ ] log stats page, listen to get parameters
-- [x] fix resizing of the graph with selection (it would require to convert positon of mouse to percentage of with of the svg - not worth of effort)
-- [✓] buttons to navigate from logs to edit probe and back
+- [ ] (REJECTED) fix resizing of the graph with selection (it would require to convert positon of mouse to percentage of with of the svg - not worth of effort)
+- [x] buttons to navigate from logs to edit probe and back
 - [ ] ctrl+s shrtcut
 - [ ] add ace editor
 - [ ] update live graph and list below
