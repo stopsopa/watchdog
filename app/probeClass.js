@@ -21,6 +21,8 @@ const promiseall = require('nlab/promiseall');
 
 const howMuchTimeLeftToNextTrigger = require('./howMuchTimeLeftToNextTrigger');
 
+const verbose = process.argv.includes('--verbose')
+
 const th = (msg, data) => {
 
   const e = new Error(`probeClass.js error: ${msg} `);
@@ -195,7 +197,7 @@ function tool(db) {
         hide_log,
       } = opt || {};
 
-      hide_log || logg.t(`probe destruct  ${db.enabled ? 'enabled ' : 'disabled'} [${String(db.type).padStart(8, ' ')}:${String(db.id).padStart(6, ' ')}] [project:${String(db.project_id).padStart(6, ' ')}]`);
+      hide_log || (verbose && logg.t(`probe destruct  ${db.enabled ? 'enabled ' : 'disabled'} [${String(db.type).padStart(8, ' ')}:${String(db.id).padStart(6, ' ')}] [project:${String(db.project_id).padStart(6, ' ')}]`));
 
       clearTimeout(activeTimeoutHandler);
 
@@ -227,7 +229,7 @@ function tool(db) {
     },
     construct: async function (onServerStart) {
 
-      logg.t(`probe construct ${db.enabled ? 'enabled ' : 'disabled'} [${String(db.type).padStart(8, ' ')}:${String(db.id).padStart(6, ' ')}] [project:${String(db.project_id).padStart(6, ' ')}]       interval: ${ms(db.interval_ms)}`);
+      verbose && logg.t(`probe construct ${db.enabled ? 'enabled ' : 'disabled'} [${String(db.type).padStart(8, ' ')}:${String(db.id).padStart(6, ' ')}] [project:${String(db.project_id).padStart(6, ' ')}]       interval: ${ms(db.interval_ms)}`);
 
       this.destruct({
         hide_log: true,
@@ -455,7 +457,7 @@ function tool(db) {
 
             log = _log;
 
-            logg.t(`probe timeout   ${db.enabled ? 'enabled ' : 'disabled'} [${String(db.type).padStart(8, ' ')}:${String(db.id).padStart(6, ' ')}] [project:${String(db.project_id).padStart(6, ' ')}]       interval: ${ms(intervalMilliseconds)}`);
+            verbose && logg.t(`probe timeout   ${db.enabled ? 'enabled ' : 'disabled'} [${String(db.type).padStart(8, ' ')}:${String(db.id).padStart(6, ' ')}] [project:${String(db.project_id).padStart(6, ' ')}]       interval: ${ms(intervalMilliseconds)}`);
 
             this.ioTriggerStatus()
 
@@ -512,7 +514,7 @@ function tool(db) {
         throw th(`passiveEndpoint(): db.password !== password`);
       }
 
-      logg.t(`probe           ${db.enabled ? 'enabled ' : 'disabled'} [${String(db.type).padStart(8, ' ')}:${String(db.id).padStart(6, ' ')}] [project:${String(db.project_id).padStart(6, ' ')}] ${String(probe).padEnd(5, ' ')} interval: ${ms(db.interval_ms)}`);
+      verbose && logg.t(`probe           ${db.enabled ? 'enabled ' : 'disabled'} [${String(db.type).padStart(8, ' ')}:${String(db.id).padStart(6, ' ')}] [project:${String(db.project_id).padStart(6, ' ')}] ${String(probe).padEnd(5, ' ')} interval: ${ms(db.interval_ms)}`);
 
       let data;
 
@@ -584,7 +586,7 @@ function tool(db) {
           ...rest
         } = data;
 
-        logg.t(`probe           ${db.enabled ? 'enabled ' : 'disabled'} [${String(db.type).padStart(8, ' ')}:${String(db.id).padStart(6, ' ')}] [project:${String(db.project_id).padStart(6, ' ')}] ${String(probe).padEnd(5, ' ')} interval: ${ms(db.interval_ms)}`);
+        verbose && logg.t(`probe           ${db.enabled ? 'enabled ' : 'disabled'} [${String(db.type).padStart(8, ' ')}:${String(db.id).padStart(6, ' ')}] [project:${String(db.project_id).padStart(6, ' ')}] ${String(probe).padEnd(5, ' ')} interval: ${ms(db.interval_ms)}`);
 
         // enabled
         // disabled

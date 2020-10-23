@@ -19,7 +19,7 @@ server:
 	node server.js
 
 dev:
-	nodemon --ignore public/dist --ignore var server.js
+	nodemon --ignore public/dist --ignore var -- server.js --verbose
 
 esdeleteindex:
 	@echo "\n\n    node server.js --delete\n\n"
