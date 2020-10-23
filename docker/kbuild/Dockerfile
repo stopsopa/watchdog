@@ -1,4 +1,4 @@
-FROM node:8.17.0-slim
+FROM node:14.4.0-slim
 
 RUN apt-get update || : && apt-get install -y python build-essential net-tools procps tree
 
