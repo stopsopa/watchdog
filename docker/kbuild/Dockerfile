@@ -16,7 +16,7 @@ RUN yarn
 
 COPY . .
 
-RUN /bin/bash react/prod.sh && rm .env
+RUN /bin/bash webpack.sh && rm .env
 
 ENV GIT_COMMIT="$GIT_COMMIT" DEPLOYMENT_TAG="$DEPLOYMENT_TAG" BUILD_NUMBER="$BUILD_NUMBER" BUILD_TIME="$BUILD_TIME"
 

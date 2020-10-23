@@ -48,9 +48,11 @@ fi
 
 if [ "$1" = "dev" ]; then
 
-# https://webpack.js.org/guides/build-performance/#incremental-builds
-node node_modules/.bin/webpack --watch
+  # https://webpack.js.org/guides/build-performance/#incremental-builds
+  node node_modules/.bin/webpack --watch
 
+else
+  node node_modules/.bin/webpack
 fi
 
 
