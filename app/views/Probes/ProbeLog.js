@@ -498,7 +498,13 @@ export default function ProbeLog() {
                   </td>
                   <td>
                    <DatePicker
-                      selected={datepickerDate}
+                      selected={(function (datepickerDate) {
+
+                        // to make datepicker work in 0 timezone
+                        const n = new Date(datepickerDate.getTime() + (1000 * 60 * datepickerDate.getTimezoneOffset()))
+
+                        return n;
+                      }(datepickerDate))}
                       onChange={date => setDatepickerDate(date)}
                       dateFormat="yyyy-MM-dd iiii"
                     />
