@@ -221,12 +221,12 @@ if [ "$PROJECT_NAME" = "" ]; then
     exit 1;
 fi
 
-if [ "$PROJECT_NAME_PVC" = "" ]; then
-
-    { red "$0 error: environment variable missing 'PROJECT_NAME_PVC'"; } 2>&3
-
-    exit 1;
-fi
+#if [ "$PROJECT_NAME_PVC" = "" ]; then
+#
+#    { red "$0 error: environment variable missing 'PROJECT_NAME_PVC'"; } 2>&3
+#
+#    exit 1;
+#fi
 
 echo "======================== switching kubectl to target cluster ===========================";
 
@@ -283,7 +283,8 @@ TRAPS=("cleanup" "${TRAPS[@]}")
 
 echo "======================== checking existance of secrets and pvc's ===========================";
 
-CHECK=("secret env-${PROJECT_NAME_SHORT}" "pvc pvc-${PROJECT_NAME_PVC}");
+#CHECK=("secret env-${PROJECT_NAME_SHORT}" "pvc pvc-${PROJECT_NAME_PVC}");
+CHECK=("secret env-${PROJECT_NAME_SHORT}");
 
 for i in "${CHECK[@]}"
 do
