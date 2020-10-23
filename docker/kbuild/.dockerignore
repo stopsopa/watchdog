@@ -33,6 +33,7 @@ __ignore__
 # /migrations/
 /puppeteer/node_modules/
 /bash/node_modules/
+node_modules
 
 /docker/kbuild/backup/
 /docker/kbuild/DO-pvc/
@@ -48,4 +49,25 @@ __ignore__
 
 # let's block yarn.lock because for local development we are using mac and for prod|staging|testing linux
 #yarn.lock
+/logs/*
+!/logs/.gitignore
+/test/
+Dockerfile.*
+Makefile
+README.md
+/public/public
+.env
+preprocessed.js
+.env.kub.prod
+.env.kub.test
+.env.kub.stage
+# after build in docker image, remove content of this directory too,
+# or add flag to skip using cache-loader in webpack.config.js
+/var/cache-loader/
+
+
+
+
+
+
 
