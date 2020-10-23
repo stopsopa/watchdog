@@ -317,11 +317,11 @@ export default function ProbeLog() {
 
   // const viewBoxRatio = 0.05;
 
-  const [startDate, setStartDate] = useState(new Date());
+  const [datepickerDate, setDatepickerDate] = useState(new Date());
 
   const [offset, setOffset] = useState(1);
 
-  // const endDate = offsetDay(startDate, offset);
+  // const endDate = offsetDay(datepickerDate, offset);
 
   const windowSize = useWindowSize();
 
@@ -335,7 +335,7 @@ export default function ProbeLog() {
 
   const rangeSeconds = (60 * 60 * 24 * offset);
 
-  const startDateMidnight = new Date(startDate);
+  const startDateMidnight = new Date(datepickerDate);
   startDateMidnight.setUTCHours(0,0,0,0);
 
   const [selected , setSelected] = useState({});
@@ -358,7 +358,7 @@ export default function ProbeLog() {
 
     eraseStats();
 
-    const endDate = offsetDay(startDate, offset - 1);
+    const endDate = offsetDay(datepickerDate, offset - 1);
 
     endDate.setUTCHours(23, 59, 59, 0);
 
@@ -368,7 +368,7 @@ export default function ProbeLog() {
       endDate,
       key: assocKeyFullRange
     });
-  }, [startDate, offset]);
+  }, [datepickerDate, offset]);
 
   const assocFullRange    = getStoreAssoc(assocKeyFullRange);
 
@@ -459,7 +459,7 @@ export default function ProbeLog() {
                 <tr>
                   <td>
                     <Button size="mini" primary className="arrow" onClick={e => {e.preventDefault();
-                      setStartDate(offsetDay(startDate, -1))
+                      setDatepickerDate(offsetDay(datepickerDate, -1))
                       setSelected({})
                     }}>
                       <Icon name='chevron left' />
@@ -467,20 +467,20 @@ export default function ProbeLog() {
                   </td>
                   <td>
                    <DatePicker
-                      selected={startDate}
-                      onChange={date => setStartDate(date)}
+                      selected={datepickerDate}
+                      onChange={date => setDatepickerDate(date)}
                       dateFormat="yyyy-MM-dd iiii"
                     />
                   </td>
                   <td>
                     <Button size="mini" primary className="arrow right" onClick={e => {e.preventDefault();
-                      setStartDate(offsetDay(startDate, 1))
+                      setDatepickerDate(offsetDay(datepickerDate, 1))
                       setSelected({})
                     }}>
                       <Icon name='chevron right' />
                     </Button>
                   </td>
-                  {range(startDate, 7, -1).map(d => (
+                  {range(datepickerDate, 7, -1).map(d => (
                     <td key={d.o}>
                       <Button
                         size="mini"
@@ -511,7 +511,7 @@ export default function ProbeLog() {
 {/*[startDateMidnight:${startDateMidnight.toISOString()}] */}
 {/*[offsetdate_______:${timeOffset(startDateMidnight, parseInt(rangeSeconds * p(xy.x), 10) || 0).toISOString()}] */}
 {/*parseInt((viewBoxX * xy.x) / width, 10):${parseInt((viewBoxX * xy.x) / width, 10)}  */}
-{/*startDate:${startDate.toISOString()}*/}
+{/*datepickerDate:${datepickerDate.toISOString()}*/}
 {/*endDate__:${endDate.toISOString()}             */}
 {/*selected.start:${selected && selected.start && selected.start.date.toISOString()}     */}
 {/*selected.end__:${selected && selected.end && selected.end.date.toISOString()} */}
@@ -627,7 +627,7 @@ export default function ProbeLog() {
                           fill="url(#brush_pattern)"
                         />
                       )}
-                      {range(startDate, offset, -1).map(d => (
+                      {range(datepickerDate, offset, -1).map(d => (
                         <Fragment key={d.d.toISOString()}>
                           <rect width="5" height="70" x={r((d.o - 1) * dayWidth) - 5} y="420" fill="black"></rect>
                           <text x={r((d.o - 1) * dayWidth) - 5} y="470"> &nbsp; {formatToTimeZone(d.d, 'D dddd', {timeZone:'UTC'})}</text>
