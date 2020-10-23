@@ -74,8 +74,9 @@ fi
 
 
 
-
+set -e
 /bin/bash gitstorage.sh pull --force
+set +e
 
 
 
