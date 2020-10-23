@@ -6,4 +6,6 @@ preprocessed.js
 /public/public
 yarn-error.log
 .env.prod
-.env
+.env.kub.prod
+.env.kub.test
+.env.kub.stage

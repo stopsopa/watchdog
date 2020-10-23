@@ -10,6 +10,9 @@ README.md
 /public/public
 .env
 preprocessed.js
+.env.kub.prod
+.env.kub.test
+.env.kub.stage
 
 
 # after build in docker image, remove content of this directory too,

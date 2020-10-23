@@ -25,7 +25,7 @@ const env               = require('./app/lib/dotenv');
 
 module.exports = mode => ({
   // just name for this project, it's gonna show up in some places
-  name: env('DOCKER_IMAGE_NAME_PROD'),
+  name: env('PROJECT_NAME'),
   root,
   app,
   node_modules,

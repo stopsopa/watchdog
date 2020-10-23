@@ -1,10 +1,11 @@
 #!/bin/bash
 
-GITSTORAGESOURCE="git@github.com:stopsopa/gitstorage.git"
+GITSTORAGESOURCE="git@bitbucket.org:phaseii/doc.git"
 
-GITSTORAGETARGETDIR="github-stopsopa.github.io"
+GITSTORAGETARGETDIR="pii-watchdog"
 
 GITSTORAGELIST=(
     ".env::$GITSTORAGETARGETDIR/.env"
+    ".env.kub.test::$GITSTORAGETARGETDIR/.env.kub.test"
     "gitstorage-config.sh::$GITSTORAGETARGETDIR/gitstorage-config.sh"
 )
