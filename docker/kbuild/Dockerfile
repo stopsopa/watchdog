@@ -10,7 +10,7 @@ WORKDIR /home/node/app
 
 CMD [ "/bin/bash", "podrun.sh" ]
 
-COPY .npmrc package*.json yarn.lock ./
+COPY package*.json yarn.lock ./
 
 RUN yarn
 
