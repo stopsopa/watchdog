@@ -71,6 +71,18 @@ if ! [[ $RUN_TESTS_DEFAULT_VALUE_IF_TRIGGERED_AUTOMATICALLY =~ $_TFTEST ]]; then
     exit 1;
 fi
 
+
+
+
+
+/bin/bash gitstorage.sh pull --force
+
+
+
+
+
+
+
 if [ "$TRIGGERED_MANUALLY" = "0" ]; then
 
     JENKINS__KUB_ENV=".env.kub.test"
