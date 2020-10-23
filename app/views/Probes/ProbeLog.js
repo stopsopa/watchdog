@@ -119,7 +119,7 @@ function range(date, offsetDays) {
 
   if (offsetDays < 0) {
 
-    date = offsetDays(date, abs)
+    date = offsetDay(date, abs)
   }
 
   const list = [];
