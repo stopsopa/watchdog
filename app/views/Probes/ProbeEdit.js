@@ -376,11 +376,12 @@ export default function ProbeEdit() {
                       <Tab panes={[
                         { menuItem: 'Curl', render: () => <Tab.Pane>
                             <Textarea
+                              key="curl"
                               className="textarea-code"
                               autoComplete="nope"
                               defaultValue={`
 
-curl ${location.protocol}//${location.host}/passive/${form.id}?password="${form.password}"
+curl ${location.protocol}//${location.host}/passive/${form.id}?password=${form.password}
 
 // or 
 
@@ -392,13 +393,116 @@ curl -XPOST -H 'Content-Type: application/json' ${`\\`}
 
 curl -H 'x-password: ${form.password}' ${location.protocol}//${location.host}/passive/${form.id}
 
+// extra:
+// you can also send extra get|post parameters and headers
+
+curl -XPOST -H "x-extra-header: hvalue" ${`\\`}
+    -H 'Content-Type: application/json' ${`\\`}
+    ${location.protocol}//${location.host}/passive/${form.id}?password=${form.password}${`\\`}&extraget=gval ${`\\`}
+    -d '{"jsonkey":"jsonvalue"}'
+ 
+
 `}
                               spellCheck={false}
                               correct={10}
                             />
                           </Tab.Pane> },
-                        // { menuItem: 'Tab 2', render: () => <Tab.Pane>Tab 2 Content</Tab.Pane> },
-                        // { menuItem: 'Tab 3', render: () => <Tab.Pane>Tab 3 Content</Tab.Pane> },
+                        { menuItem: 'Node.js module', render: () => <Tab.Pane>
+                            <Textarea
+                              key="n1"
+                              className="textarea-code"
+                              autoComplete="nope"
+                              defaultValue={`
+
+// watchdog.js
+module.exports = function watchdog(url, opt = {}) {
+  let {
+    method      = 'GET',
+    timeout     = 30 * 1000,
+    get         = {},
+    headers     = {},
+    body,
+  } = opt;
+  method = method.toUpperCase();
+  const uri   = new (require('url').URL)(url);
+  const lib   = (uri.protocol === 'https:') ? require('https') : require('http');
+  const query = require('querystring').stringify(get);
+  if (Object.prototype.toString.call(body) === '[object Object]' || Array.isArray(body)) {
+    if (method === 'GET'){method = 'POST'}try {body = JSON.stringify(body)} catch (e) {}
+    headers['Content-Type'] = 'application/json; charset=utf-8';
+  }
+  var req = lib.request({
+    hostname    : uri.hostname,
+    port        : uri.port || ( (uri.protocol === 'https:') ? '443' : '80'),
+    path        : uri.pathname + uri.search + (query ? (uri.search.includes('?') ? '&' : '?') + query : ''),
+    method,
+    headers,
+  });
+  req.on('socket', function (socket) {
+    socket.setTimeout(timeout);
+    socket.on('timeout', () => req.abort());
+  });
+  req.on('error', e => {})
+  body && req.write(body);
+  req.end();
+};
+
+// other file
+require('./watchdog')('${location.protocol}//${location.host}/passive/${form.id}', {
+  body: ${JSON.stringify({password:form.password})}
+})
+
+`}
+                              spellCheck={false}
+                              correct={10}
+                            />
+                          </Tab.Pane> },
+                        { menuItem: 'Node.js oneliner', render: () => <Tab.Pane>
+                            <Textarea
+                              key="n2"
+                              className="textarea-code"
+                              autoComplete="nope"
+                              defaultValue={`
+
+(function watchdog(url, opt = {}) {
+  let {
+    method      = 'GET',
+    timeout     = 30 * 1000,
+    get         = {},
+    headers     = {},
+    body,
+  } = opt;
+  method = method.toUpperCase();
+  const uri   = new (require('url').URL)(url);
+  const lib   = (uri.protocol === 'https:') ? require('https') : require('http');
+  const query = require('querystring').stringify(get);
+  if (Object.prototype.toString.call(body) === '[object Object]' || Array.isArray(body)) {
+    if (method === 'GET'){method = 'POST'}try {body = JSON.stringify(body)} catch (e) {}
+    headers['Content-Type'] = 'application/json; charset=utf-8';
+  }
+  var req = lib.request({
+    hostname    : uri.hostname,
+    port        : uri.port || ( (uri.protocol === 'https:') ? '443' : '80'),
+    path        : uri.pathname + uri.search + (query ? (uri.search.includes('?') ? '&' : '?') + query : ''),
+    method,
+    headers,
+  });
+  req.on('socket', function (socket) {
+    socket.setTimeout(timeout);
+    socket.on('timeout', () => req.abort());
+  });
+  req.on('error', e => {})
+  body && req.write(body);
+  req.end();
+})('${location.protocol}//${location.host}/passive/${form.id}', {
+  body: ${JSON.stringify({password:form.password})}
+});
+
+`}
+                              spellCheck={false}
+                              correct={10}
+                            />
+                          </Tab.Pane> },
                       ]} />
                     </Modal.Content>
                     <Modal.Actions>
