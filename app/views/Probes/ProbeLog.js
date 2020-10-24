@@ -160,15 +160,15 @@ function _partOfSvgViewBoxXByPartOfSvgDOMElemWith(viewBoxX, svgDomWith) {
 }
 
 // vvvv corelated functions
-function percent(width) {
+function withRatioByWithOfPartOfFullWith(width) {
   return x => {
     // return (viewBoxX * (d.o * dayWidth)) / width
     return width ? ((x / width) || 0) : 0;
   }
 }
 function partOfWidthByWithRatio(width) {
-  return percent => {
-    return width ? parseInt(percent * width, 10) : 0;
+  return ratio => {
+    return width ? parseInt(ratio * width, 10) : 0;
   }
 }
 // ^^^^ corelated functions
@@ -386,13 +386,13 @@ export default function ProbeLog() {
   startDateMidnight.setUTCHours(0,0,0,0);
 
 
-  const [selectedLocked , setSelectedLocked] = useState(false);
+  const [mouseButtonIsDown , setMouseButtonIsDown] = useState(false);
   const [selectedStart , setSelectedStart] = useState(false);
   const [selectedEnd , setSelectedEnd] = useState(false);
 
   const partOfSvgViewBoxXByPartOfSvgDOMElemWith = _partOfSvgViewBoxXByPartOfSvgDOMElemWith(viewBoxX, svgDomWith);
 
-  const p = percent(svgDomWith);
+  const svgDomWithRatioByWithOfPartOfFullWith = withRatioByWithOfPartOfFullWith(svgDomWith);
 
   const partOfSvgDOMElemWidthByWithRatio = partOfWidthByWithRatio(svgDomWith);
 
@@ -527,7 +527,6 @@ export default function ProbeLog() {
                           // setSelected({})
                           setSelectedStart(null);
                           setSelectedEnd(null);
-                          setSelectedLocked(false);
                         }}
                       >
                         {formatToTimeZone(d.d, 'D dddd', {timeZone:'UTC'})}
@@ -540,7 +539,6 @@ export default function ProbeLog() {
                       // setSelected({})
                       setSelectedStart(null);
                       setSelectedEnd(null);
-                      setSelectedLocked(false);
                     }}>
                       <Icon name='chevron left' />
                     </Button>
@@ -564,7 +562,6 @@ export default function ProbeLog() {
                       // setSelected({})
                       setSelectedStart(null);
                       setSelectedEnd(null);
-                      setSelectedLocked(false);
                     }}>
                       <Icon name='chevron right' />
                     </Button>
@@ -575,7 +572,6 @@ export default function ProbeLog() {
                       // setSelected({})
                       setSelectedStart(null);
                       setSelectedEnd(null);
-                      setSelectedLocked(false);
                     }}>
                       Today
                     </Button>
@@ -632,14 +628,14 @@ export default function ProbeLog() {
                           x: xy
                         });
                         setSelectedEnd(null);
-                        setSelectedLocked(false);
+                        setMouseButtonIsDown(true);
                         log('onMouseDown')
                       }}
                       onMouseMove={e => {
 
-                        setXY(p(e.nativeEvent.offsetX)) // ???
+                        setXY(svgDomWithRatioByWithOfPartOfFullWith(e.nativeEvent.offsetX)) // ???
 
-                        if ( ! selectedStart || selectedLocked ) {
+                        if ( ! selectedStart || ! mouseButtonIsDown ) {
                           log('onMouseMove return')
                           return
                         }
@@ -652,16 +648,16 @@ export default function ProbeLog() {
                         // log('onMouseMove')
                       }}
                       onMouseUp={e => {
+
+                        setMouseButtonIsDown(false);
+
                         if ( selectedStart && selectedEnd && selectedStart.date == selectedEnd.date) {
 
                           setSelectedStart(null);
                           setSelectedEnd(null);
-                          setSelectedLocked(false);
                           log('same reset')
                           return;
                         }
-
-                        setSelectedLocked(true);
 
                         fetchSelectionData(flip({
                           start: selectedStart,
