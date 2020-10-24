@@ -115,20 +115,13 @@ function offsetDay(date, days) {
 
 function rangeBack(date, offset) {
 
-  const abs = Math.abs(offset);
-
-  if (offset < 0) {
-
-    date = offsetDay(date, abs)
-  }
-
   const list = [];
 
-  for (var i = 0 ; i < abs ; i += 1 ) {
+  for (; offset <= 0 ; offset += 1 ) {
 
     list.push({
-      d: offsetDay(date, i),
-      o: i + 1,
+      d: offsetDay(date, offset),
+      o: offset,
     })
   }
 
@@ -355,9 +348,9 @@ export default function ProbeLog() {
     }
   }, [windowSize]);
 
-  const rangeSeconds = (60 * 60 * 24 * offset); // xx
+  const rangeSeconds = (60 * 60 * 24 * (Math.abs(offset) + 1));
 
-  const startDateMidnight = new Date(datepickerDate); // xx
+  const startDateMidnight = new Date(offsetDay(datepickerDate, offset));
   startDateMidnight.setUTCHours(0,0,0,0);
 
   const [selected , setSelected] = useState({});
@@ -376,11 +369,11 @@ export default function ProbeLog() {
 
   useEffect(eraseStats, []);
 
-  useEffect(() => {  // xx
+  useEffect(() => {
 
     eraseStats();
 
-    const endDate = offsetDay(datepickerDate, offset - 1);  // xx
+    const endDate = new Date(datepickerDate);
 
     endDate.setUTCHours(23, 59, 59, 0);
 
@@ -428,9 +421,6 @@ export default function ProbeLog() {
     })
   }
 
-  log.dump({
-    'range(datepickerDate, 7, -1)': range(datepickerDate, 7, -1),
-  })
 
   return (
     <div>
@@ -483,6 +473,21 @@ export default function ProbeLog() {
               <table>
                 <tbody>
                 <tr>
+                  {rangeBack(datepickerDate, -6).map(d => (
+                    <td key={d.o}>
+                      <Button
+                        size="mini"
+                        primary={d.o >= offset}
+
+                        onClick={e => {e.preventDefault();
+                          setOffset(d.o)
+                          setSelected({})
+                        }}
+                      >
+                        {formatToTimeZone(d.d, 'D dddd', {timeZone:'UTC'})}
+                      </Button>
+                    </td>
+                  ))}
                   <td>
                     <Button size="mini" primary className="arrow" onClick={e => {e.preventDefault();
                       setDatepickerDate(offsetDay(datepickerDate, -1))
@@ -506,21 +511,14 @@ export default function ProbeLog() {
                       <Icon name='chevron right' />
                     </Button>
                   </td>
-                  {range(datepickerDate, 7, -1).map(d => ( // xx
-                    <td key={d.o}>
-                      <Button
-                        size="mini"
-                        primary={d.o <= offset}
-
-                        onClick={e => {e.preventDefault();
-                          setOffset(d.o)
-                          setSelected({})
-                        }}
-                      >
-                        {formatToTimeZone(d.d, 'D dddd', {timeZone:'UTC'})}
-                      </Button>
-                    </td>
-                  ))}
+                  <td>
+                    <Button size="mini" primary className="today" onClick={e => {e.preventDefault();
+                      setDatepickerDate(new Date())
+                      setSelected({})
+                    }}>
+                      Today
+                    </Button>
+                  </td>
                 </tr>
                 </tbody>
               </table>
@@ -653,7 +651,7 @@ export default function ProbeLog() {
                           fill="url(#brush_pattern)"
                         />
                       )}
-                      {range(datepickerDate, offset, -1).map(d => ( // xx
+                      {range(startDateMidnight, Math.abs(offset) + 1).map(d => (
                         <Fragment key={d.d.toISOString()}>
                           <rect width="5" height="70" x={r((d.o - 1) * dayWidth) - 5} y="420" fill="black"></rect>
                           <text x={r((d.o - 1) * dayWidth) - 5} y="470"> &nbsp; {formatToTimeZone(d.d, 'D dddd', {timeZone:'UTC'})}</text>
@@ -684,7 +682,7 @@ export default function ProbeLog() {
               }({
                 viewBoxX,
                 viewBoxY: 500,
-                dayWidth: parseInt(width / offset, 10), // xx
+                dayWidth: parseInt(width / (Math.abs(offset) + 1), 10),
                 r: ratio,
                 s: (flip(selected))
               }))}
