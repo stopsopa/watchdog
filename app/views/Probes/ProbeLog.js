@@ -171,6 +171,7 @@ function _partOfSvgDOMElemWidthByWithRatio(width) {
     return width ? parseInt(percent * width, 10) : 0;
   }
 }
+// ^^^^ corelated functions
 
 function widthBasedOnDateBuilder(rangeSeconds, width, rangeStartDate) {
 
