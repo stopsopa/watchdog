@@ -4,6 +4,7 @@ import React, {
   useState,
   useRef,
   useContext,
+  useMemo,
   useReducer,
   useCallback,
   Fragment,
@@ -346,21 +347,21 @@ export default function ProbeLog() {
 
   // const viewBoxRatio = 0.05;
 
-  const [datepickerDate, setDatepickerDate] = useState(new Date());
-  // const datepickerDate = search.has('datepickerDate') ? new Date(search.get('datepickerDate')) : new Date();
-  // log.dump({
-  //   "search.get('datepickerDate')": search.get('datepickerDate'),
-  //   datepickerDate,
-  // })
-  // function setDatepickerDate(datepickerDate) {
-  //   setQueryParam('datepickerDate', datepickerDate.toISOString());
-  // }
+  // const [datepickerDate, setDatepickerDate] = useState(new Date());
+  const datepickerDate = search.has('datepickerDate') ? (new Date(search.get('datepickerDate'))) : (new Date());
+  function setDatepickerDate(datepickerDate) {
+    setQueryParam('datepickerDate', datepickerDate.toISOString());
+  }
+
+
 
   // const [offset, setOffset] = useState(0);
   const offset = parseInt(search.get('offset'), 10) || 0;
+
   function setOffset(offset) {
     setQueryParam('offset', offset);
   }
+
 
   // const endDate = offsetDay(datepickerDate, offset);
 
@@ -409,7 +410,7 @@ export default function ProbeLog() {
       endDate,
       key: assocKeyFullRange
     });
-  }, [datepickerDate, offset]);
+  }, [search.get('datepickerDate'), search.get('offset')]);
 
   const assocFullRange    = getStoreAssoc(assocKeyFullRange);
 
