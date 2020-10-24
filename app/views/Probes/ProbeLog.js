@@ -193,7 +193,7 @@ function widthBasedOnDateBuilder(rangeSeconds, viewBoxX, rangeStartDate) {
   }
 }
 
-function timeOffset(date, seconds) {
+function offsetGivenDateByNumberOfSeconds(date, seconds) {
 
   if (seconds < 0) {
 
@@ -586,7 +586,7 @@ export default function ProbeLog() {
                   <td>
                     <UTCClock />
                     {` `}
-                    <DateColour date={timeOffset(startDateMidnight, parseInt(rangeSeconds * widthRatio, 10))} />
+                    <DateColour date={offsetGivenDateByNumberOfSeconds(startDateMidnight, parseInt(rangeSeconds * widthRatio, 10))} />
                   </td>
                   <td></td>
                   {(function (s) {
@@ -624,7 +624,7 @@ export default function ProbeLog() {
                       onMouseDown={e => {
                         // setSelected(s);
                         setSelectedStart({
-                          date: timeOffset(startDateMidnight, parseInt(rangeSeconds * widthRatio, 10) || 0),
+                          date: offsetGivenDateByNumberOfSeconds(startDateMidnight, parseInt(rangeSeconds * widthRatio, 10) || 0),
                           x: widthRatio
                         });
                         setSelectedEnd(null);
@@ -641,7 +641,7 @@ export default function ProbeLog() {
                         }
 
                         setSelectedEnd({
-                          date: timeOffset(startDateMidnight, parseInt(rangeSeconds * widthRatio, 10) || 0),
+                          date: offsetGivenDateByNumberOfSeconds(startDateMidnight, parseInt(rangeSeconds * widthRatio, 10) || 0),
                           x: widthRatio
                         });
 
