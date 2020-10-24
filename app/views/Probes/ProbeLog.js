@@ -152,17 +152,23 @@ function range(date, offset) {
   return list;
 }
 
-function ratio(viewBoxX, width) {
+function _partOfSvgViewBoxXByPartOfSvgDOMElemWith(viewBoxX, width) {
   return x => {
     // return (viewBoxX * (d.o * dayWidth)) / width
     return parseInt((viewBoxX * x) / width, 10) || 0;
   }
 }
 
+// vvvv corelated functions
 function percent(width) {
   return x => {
     // return (viewBoxX * (d.o * dayWidth)) / width
-    return (x / width) || 0;
+    return width ? ((x / width) || 0) : 0;
+  }
+}
+function _partOfSvgDOMElemWidthByWithRatio(width) {
+  return percent => {
+    return width ? parseInt(percent * width, 10) : 0;
   }
 }
 
@@ -343,8 +349,6 @@ export default function ProbeLog() {
 
   const [ viewBoxX, setViewBoxX ] = useState(10080);
 
-  const [ xy, setXY ] = useState({x: 0, y: 0})
-
   // const viewBoxRatio = 0.05;
 
   // const [datepickerDate, setDatepickerDate] = useState(new Date());
@@ -358,6 +362,10 @@ export default function ProbeLog() {
   function setOffset(offset) {
     setQueryParam('offset', offset);
   }
+
+
+
+  const [ xy, setXY ] = useState(0)
 
   // const endDate = offsetDay(datepickerDate, offset);
 
@@ -381,9 +389,11 @@ export default function ProbeLog() {
   const [selectedStart , setSelectedStart] = useState(false);
   const [selectedEnd , setSelectedEnd] = useState(false);
 
-  const r = ratio(viewBoxX, width);
+  const partOfSvgViewBoxXByPartOfSvgDOMElemWith = _partOfSvgViewBoxXByPartOfSvgDOMElemWith(viewBoxX, width);
 
   const p = percent(width);
+
+  const partOfSvgDOMElemWidthByWithRatio = _partOfSvgDOMElemWidthByWithRatio(width);
 
   const w = widthBasedOnDateBuilder(rangeSeconds, viewBoxX, startDateMidnight);
 
@@ -570,6 +580,7 @@ export default function ProbeLog() {
                     </Button>
                   </td>
                 </tr>
+
                 </tbody>
               </table>
 {/*              <pre>{`*/}
@@ -596,7 +607,7 @@ export default function ProbeLog() {
                   <td>
                     <UTCClock />
                     {` `}
-                    <DateColour date={timeOffset(startDateMidnight, parseInt(rangeSeconds * p(xy.x), 10))} />
+                    <DateColour date={timeOffset(startDateMidnight, parseInt(rangeSeconds * xy, 10))} />
                   </td>
                   <td></td>
                   {(function (s) {
@@ -622,7 +633,6 @@ export default function ProbeLog() {
                 viewBoxX,
                 viewBoxY,
                 dayWidth,
-                ratio,
                 s,
               }) {
                 return (
@@ -635,8 +645,8 @@ export default function ProbeLog() {
                       onMouseDown={e => {
                         // setSelected(s);
                         setSelectedStart({
-                          date: timeOffset(startDateMidnight, parseInt(rangeSeconds * p(xy.x), 10) || 0),
-                          x: xy.x
+                          date: timeOffset(startDateMidnight, parseInt(rangeSeconds * xy, 10) || 0),
+                          x: xy
                         });
                         setSelectedEnd(null);
                         setSelectedLocked(false);
@@ -644,7 +654,7 @@ export default function ProbeLog() {
                       }}
                       onMouseMove={e => {
 
-                        setXY({ x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY })
+                        setXY(p(e.nativeEvent.offsetX)) // ???
 
                         if ( ! selectedStart || selectedLocked ) {
                           log('onMouseMove return')
@@ -652,8 +662,8 @@ export default function ProbeLog() {
                         }
 
                         setSelectedEnd({
-                          date: timeOffset(startDateMidnight, parseInt(rangeSeconds * p(xy.x), 10) || 0),
-                          x: xy.x
+                          date: timeOffset(startDateMidnight, parseInt(rangeSeconds * xy, 10) || 0),
+                          x: xy
                         });
 
                         // log('onMouseMove')
@@ -696,10 +706,10 @@ export default function ProbeLog() {
                       })}
                       {s.start && s.end && (
                         <rect
-                          width={r(s.end.x - s.start.x)}
+                          width={partOfSvgViewBoxXByPartOfSvgDOMElemWith(partOfSvgDOMElemWidthByWithRatio(s.end.x) - partOfSvgDOMElemWidthByWithRatio(s.start.x))}
                           height="230"
                           y="170"
-                          x={r(s.start.x)}
+                          x={partOfSvgViewBoxXByPartOfSvgDOMElemWith(partOfSvgDOMElemWidthByWithRatio(s.start.x))}
                           // fill="blue"
                           stroke="#3e7c48"
                           fill="url(#brush_pattern)"
@@ -707,8 +717,8 @@ export default function ProbeLog() {
                       )}
                       {range(startDateMidnight, Math.abs(offset) + 1).map(d => (
                         <Fragment key={d.d.toISOString()}>
-                          <rect width="5" height="70" x={r((d.o - 1) * dayWidth) - 5} y="420" fill="black"></rect>
-                          <text x={r((d.o - 1) * dayWidth) - 5} y="470"> &nbsp; {formatToTimeZone(d.d, 'D dddd', {timeZone:'UTC'})}</text>
+                          <rect width="5" height="70" x={partOfSvgViewBoxXByPartOfSvgDOMElemWith((d.o - 1) * dayWidth) - 5} y="420" fill="black"></rect>
+                          <text x={partOfSvgViewBoxXByPartOfSvgDOMElemWith((d.o - 1) * dayWidth) - 5} y="470"> &nbsp; {formatToTimeZone(d.d, 'D dddd', {timeZone:'UTC'})}</text>
                         </Fragment>
                       ))}
                       <rect
@@ -719,7 +729,7 @@ export default function ProbeLog() {
 
                         height="230"
                         y="170"
-                        x={r(xy.x)}
+                        x={partOfSvgViewBoxXByPartOfSvgDOMElemWith(partOfSvgDOMElemWidthByWithRatio(xy))}
                         fill="green"
                       />
 
@@ -737,7 +747,6 @@ export default function ProbeLog() {
                 viewBoxX,
                 viewBoxY: 500,
                 dayWidth: parseInt(width / (Math.abs(offset) + 1), 10),
-                r: ratio,
                 s: (flip({
                   start: selectedStart,
                   end: selectedEnd,
