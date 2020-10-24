@@ -366,7 +366,7 @@ export default function ProbeLog() {
 
 
 
-  const [ xy, setXY ] = useState(0)
+  const [ widthRatio, setWidthRatio ] = useState(0)
 
   // const endDate = offsetDay(datepickerDate, offset);
 
@@ -586,7 +586,7 @@ export default function ProbeLog() {
                   <td>
                     <UTCClock />
                     {` `}
-                    <DateColour date={timeOffset(startDateMidnight, parseInt(rangeSeconds * xy, 10))} />
+                    <DateColour date={timeOffset(startDateMidnight, parseInt(rangeSeconds * widthRatio, 10))} />
                   </td>
                   <td></td>
                   {(function (s) {
@@ -624,8 +624,8 @@ export default function ProbeLog() {
                       onMouseDown={e => {
                         // setSelected(s);
                         setSelectedStart({
-                          date: timeOffset(startDateMidnight, parseInt(rangeSeconds * xy, 10) || 0),
-                          x: xy
+                          date: timeOffset(startDateMidnight, parseInt(rangeSeconds * widthRatio, 10) || 0),
+                          x: widthRatio
                         });
                         setSelectedEnd(null);
                         setMouseButtonIsDown(true);
@@ -633,7 +633,7 @@ export default function ProbeLog() {
                       }}
                       onMouseMove={e => {
 
-                        setXY(svgDomWithRatioByWithOfPartOfFullWith(e.nativeEvent.offsetX)) // ???
+                        setWidthRatio(svgDomWithRatioByWithOfPartOfFullWith(e.nativeEvent.offsetX)) // ???
 
                         if ( ! selectedStart || ! mouseButtonIsDown ) {
                           log('onMouseMove return')
@@ -641,8 +641,8 @@ export default function ProbeLog() {
                         }
 
                         setSelectedEnd({
-                          date: timeOffset(startDateMidnight, parseInt(rangeSeconds * xy, 10) || 0),
-                          x: xy
+                          date: timeOffset(startDateMidnight, parseInt(rangeSeconds * widthRatio, 10) || 0),
+                          x: widthRatio
                         });
 
                         // log('onMouseMove')
@@ -708,7 +708,7 @@ export default function ProbeLog() {
 
                         height="230"
                         y="170"
-                        x={partOfSvgViewBoxXByPartOfSvgDOMElemWith(partOfSvgDOMElemWidthByWithRatio(xy))}
+                        x={partOfSvgViewBoxXByPartOfSvgDOMElemWith(partOfSvgDOMElemWidthByWithRatio(widthRatio))}
                         fill="green"
                       />
 
