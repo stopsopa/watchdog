@@ -197,7 +197,7 @@ function tool(db) {
         hide_log,
       } = opt || {};
 
-      hide_log || (verbose && logg.t(`probe destruct  ${db.enabled ? 'enabled ' : 'disabled'} [${String(db.type).padStart(8, ' ')}:${String(db.id).padStart(6, ' ')}] [project:${String(db.project_id).padStart(6, ' ')}]`));
+      hide_log || (logg.t(`probe destruct  ${db.enabled ? 'enabled ' : 'disabled'} [${String(db.type).padStart(8, ' ')}:${String(db.id).padStart(6, ' ')}] [project:${String(db.project_id).padStart(6, ' ')}]`));
 
       clearTimeout(activeTimeoutHandler);
 
@@ -229,7 +229,7 @@ function tool(db) {
     },
     construct: async function (onServerStart) {
 
-      verbose && logg.t(`probe construct ${db.enabled ? 'enabled ' : 'disabled'} [${String(db.type).padStart(8, ' ')}:${String(db.id).padStart(6, ' ')}] [project:${String(db.project_id).padStart(6, ' ')}]       interval: ${ms(db.interval_ms)}`);
+      logg.t(`probe construct ${db.enabled ? 'enabled ' : 'disabled'} [${String(db.type).padStart(8, ' ')}:${String(db.id).padStart(6, ' ')}] [project:${String(db.project_id).padStart(6, ' ')}]       interval: ${ms(db.interval_ms)}`);
 
       this.destruct({
         hide_log: true,
@@ -457,7 +457,7 @@ function tool(db) {
 
             log = _log;
 
-            verbose && logg.t(`probe timeout   ${db.enabled ? 'enabled ' : 'disabled'} [${String(db.type).padStart(8, ' ')}:${String(db.id).padStart(6, ' ')}] [project:${String(db.project_id).padStart(6, ' ')}]       interval: ${ms(intervalMilliseconds)}`);
+            logg.t(`probe timeout   ${db.enabled ? 'enabled ' : 'disabled'} [${String(db.type).padStart(8, ' ')}:${String(db.id).padStart(6, ' ')}] [project:${String(db.project_id).padStart(6, ' ')}]       interval: ${ms(intervalMilliseconds)}`);
 
             this.ioTriggerStatus()
 
