@@ -111,10 +111,6 @@ import {
   notificationsAdd,
 } from '../../components/Notifications/storeNotifications';
 
-function offsetGivenDateByNumberOfDays(date, days) {
-  return new Date( date.getTime() + ( 60 * 60 * 24 * days * 1000)   )
-}
-
 function rangeBack(date, offset) {
 
   const list = [];
@@ -152,6 +148,46 @@ function range(date, offset) {
   return list;
 }
 
+/**
+ * This method is usefull only for one case:
+ *    EDIT: NO IT'S NOT - THERE IS ANOTHER PLACE WHERE IT IS USED
+ *
+ <rect
+   width={partOfSvgViewBoxXByPartOfSvgDOMElemWith(partOfSvgDOMElemWidthByWithRatio(s.end.widthRatio) - partOfSvgDOMElemWidthByWithRatio(s.start.widthRatio))}
+   height="230"
+   y="170"
+   x={partOfSvgViewBoxXByPartOfSvgDOMElemWith(partOfSvgDOMElemWidthByWithRatio(s.start.widthRatio))}
+   // fill="blue"
+   stroke="#3e7c48"
+   fill="url(#brush_pattern)"
+ />
+
+ I've been tempted to replace it with
+
+ partOfWidthByWithRatio(viewBoxX);
+
+ but no, it won't do the job
+
+
+ ... but wait a minute...
+
+
+ const partOfSvgViewBoxXByWithRatio = partOfWidthByWithRatio(viewBoxX);
+
+ <rect
+   width={partOfSvgViewBoxXByWithRatio(s.end.widthRatio - s.start.widthRatio)}
+   height="230"
+   y="170"
+   x={partOfSvgViewBoxXByWithRatio(s.start.widthRatio)}
+   // fill="blue"
+   stroke="#3e7c48"
+   fill="url(#brush_pattern)"
+ />
+
+ .. this will actually do
+      EDIT: ...IN THIS CASE
+
+ */
 function _partOfSvgViewBoxXByPartOfSvgDOMElemWith(viewBoxX, svgDomWith) {
   return x => {
     // return (viewBoxX * (d.o * dayWidth)) / svgDomWith
@@ -191,6 +227,10 @@ function widthBasedOnDateBuilder(rangeSeconds, viewBoxX, rangeStartDate) {
     //
     // return final;
   }
+}
+
+function offsetGivenDateByNumberOfDays(date, days) {
+  return new Date( date.getTime() + ( 60 * 60 * 24 * days * 1000)   )
 }
 
 function offsetGivenDateByNumberOfSeconds(date, seconds) {
@@ -391,6 +431,8 @@ export default function ProbeLog() {
   const [selectedEnd , setSelectedEnd] = useState(false);
 
   const partOfSvgViewBoxXByPartOfSvgDOMElemWith = _partOfSvgViewBoxXByPartOfSvgDOMElemWith(viewBoxX, svgDomWith);
+
+  const partOfSvgViewBoxXByWithRatio = partOfWidthByWithRatio(viewBoxX);
 
   const svgDomWithRatioByWithOfPartOfFullWith = withRatioByWithOfPartOfFullWith(svgDomWith);
 
@@ -685,10 +727,10 @@ export default function ProbeLog() {
                       })}
                       {s.start && s.end && (
                         <rect
-                          width={partOfSvgViewBoxXByPartOfSvgDOMElemWith(partOfSvgDOMElemWidthByWithRatio(s.end.widthRatio) - partOfSvgDOMElemWidthByWithRatio(s.start.widthRatio))}
+                          width={partOfSvgViewBoxXByWithRatio(s.end.widthRatio - s.start.widthRatio)}
                           height="230"
                           y="170"
-                          x={partOfSvgViewBoxXByPartOfSvgDOMElemWith(partOfSvgDOMElemWidthByWithRatio(s.start.widthRatio))}
+                          x={partOfSvgViewBoxXByWithRatio(s.start.widthRatio)}
                           // fill="blue"
                           stroke="#3e7c48"
                           fill="url(#brush_pattern)"
@@ -708,7 +750,7 @@ export default function ProbeLog() {
 
                         height="230"
                         y="170"
-                        x={partOfSvgViewBoxXByPartOfSvgDOMElemWith(partOfSvgDOMElemWidthByWithRatio(widthRatio))}
+                        x={partOfSvgViewBoxXByWithRatio(widthRatio)}
                         fill="green"
                       />
 
