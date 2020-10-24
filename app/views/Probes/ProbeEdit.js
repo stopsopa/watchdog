@@ -199,13 +199,13 @@ export default function ProbeEdit() {
             <h1>
               <Icon name={(type === 'active') ? `paper plane` : `assistive listening systems`} />
               {probe_id ? `Edit ${type} probe #${form.id}` : `Create ${type} probe`}
-              <Button
+              {form.id && <Button
                 icon="chart bar outline"
                 content="Logs"
                 as={Link}
                 to={`/${pform.id}/log/${form.id}`}
                 className="right"
-              />
+              />}
             </h1>
 
             <Form onSubmit={onSubmit}
