@@ -353,15 +353,11 @@ export default function ProbeLog() {
     setQueryParam('datepickerDate', datepickerDate.toISOString());
   }
 
-
-
   // const [offset, setOffset] = useState(0);
   const offset = parseInt(search.get('offset'), 10) || 0;
-
   function setOffset(offset) {
     setQueryParam('offset', offset);
   }
-
 
   // const endDate = offsetDay(datepickerDate, offset);
 
@@ -380,7 +376,10 @@ export default function ProbeLog() {
   const startDateMidnight = new Date(offsetDay(datepickerDate, offset));
   startDateMidnight.setUTCHours(0,0,0,0);
 
-  const [selected , setSelected] = useState({});
+
+  const [selectedLocked , setSelectedLocked] = useState(false);
+  const [selectedStart , setSelectedStart] = useState(false);
+  const [selectedEnd , setSelectedEnd] = useState(false);
 
   const r = ratio(viewBoxX, width);
 
@@ -440,7 +439,10 @@ export default function ProbeLog() {
 
   const onDeleteLog = log_id => {
 
-    const s = flip(selected);
+    const s = flip({
+      start: selectedStart,
+      end: selectedEnd,
+    });
 
     actionDeleteSelectedLog({
       log_id,
@@ -511,7 +513,10 @@ export default function ProbeLog() {
 
                         onClick={e => {e.preventDefault();
                           setOffset(d.o)
-                          setSelected({})
+                          // setSelected({})
+                          setSelectedStart(null);
+                          setSelectedEnd(null);
+                          setSelectedLocked(false);
                         }}
                       >
                         {formatToTimeZone(d.d, 'D dddd', {timeZone:'UTC'})}
@@ -521,7 +526,10 @@ export default function ProbeLog() {
                   <td>
                     <Button size="mini" primary className="arrow" onClick={e => {e.preventDefault();
                       setDatepickerDate(offsetDay(datepickerDate, -1))
-                      setSelected({})
+                      // setSelected({})
+                      setSelectedStart(null);
+                      setSelectedEnd(null);
+                      setSelectedLocked(false);
                     }}>
                       <Icon name='chevron left' />
                     </Button>
@@ -542,7 +550,10 @@ export default function ProbeLog() {
                   <td>
                     <Button size="mini" primary className="arrow right" onClick={e => {e.preventDefault();
                       setDatepickerDate(offsetDay(datepickerDate, 1))
-                      setSelected({})
+                      // setSelected({})
+                      setSelectedStart(null);
+                      setSelectedEnd(null);
+                      setSelectedLocked(false);
                     }}>
                       <Icon name='chevron right' />
                     </Button>
@@ -550,7 +561,10 @@ export default function ProbeLog() {
                   <td>
                     <Button size="mini" primary className="today" onClick={e => {e.preventDefault();
                       setDatepickerDate(new Date())
-                      setSelected({})
+                      // setSelected({})
+                      setSelectedStart(null);
+                      setSelectedEnd(null);
+                      setSelectedLocked(false);
                     }}>
                       Today
                     </Button>
@@ -573,8 +587,8 @@ export default function ProbeLog() {
 {/*parseInt((viewBoxX * xy.x) / width, 10):${parseInt((viewBoxX * xy.x) / width, 10)}  */}
 {/*datepickerDate:${datepickerDate.toISOString()}*/}
 {/*endDate__:${endDate.toISOString()}             */}
-{/*selected.start:${selected && selected.start && selected.start.date.toISOString()}     */}
-{/*selected.end__:${selected && selected.end && selected.end.date.toISOString()} */}
+{/*selectedStart:${selected && selectedStart && selectedStart.date.toISOString()}     */}
+{/*selectedEnd__:${selected && selectedEnd && selectedEnd.date.toISOString()} */}
 {/*              `}</pre>*/}
               <table className="timetable">
                 <tbody>
@@ -597,7 +611,10 @@ export default function ProbeLog() {
                         <td>{s && s.start && s.end && ms(Math.abs(s.start.date - s.end.date))}</td>
                       </>
                     )
-                  }(flip(selected)))}
+                  }(flip({
+                    start: selectedStart,
+                    end: selectedEnd,
+                  })))}
                 </tr>
                 </tbody>
               </table>
@@ -616,42 +633,48 @@ export default function ProbeLog() {
                       viewBox={`0 0 ${viewBoxX} ${viewBoxY}`}
                       ref={svgDOM}
                       onMouseDown={e => {
-                        var s = {};
-                        s.start = {
+                        // setSelected(s);
+                        setSelectedStart({
                           date: timeOffset(startDateMidnight, parseInt(rangeSeconds * p(xy.x), 10) || 0),
                           x: xy.x
-                        }
-                        setSelected(s);
+                        });
+                        setSelectedEnd(null);
+                        setSelectedLocked(false);
+                        log('onMouseDown')
                       }}
                       onMouseMove={e => {
+
                         setXY({ x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY })
-                        if ( ! selected || ! selected.start || selected.locked ) {
-                          // log('onMouseMove return')
+
+                        if ( ! selectedStart || selectedLocked ) {
+                          log('onMouseMove return')
                           return
                         }
 
-                        // log('onMouseOver', key)
-                        return setSelected({
-                          ...selected,
-                          end: {
-                            date: timeOffset(startDateMidnight, parseInt(rangeSeconds * p(xy.x), 10) || 0),
-                            x: xy.x
-                          }
-                        })
+                        setSelectedEnd({
+                          date: timeOffset(startDateMidnight, parseInt(rangeSeconds * p(xy.x), 10) || 0),
+                          x: xy.x
+                        });
+
+                        // log('onMouseMove')
                       }}
                       onMouseUp={e => {
-                        if ( selected.start && selected.end && selected.start.date == selected.end.date) {
-                          return setSelected({})
+                        if ( selectedStart && selectedEnd && selectedStart.date == selectedEnd.date) {
+
+                          setSelectedStart(null);
+                          setSelectedEnd(null);
+                          setSelectedLocked(false);
+                          log('same reset')
+                          return;
                         }
 
-                        const s = {
-                          ...selected,
-                          locked: true,
-                        };
+                        setSelectedLocked(true);
 
-                        setSelected(s)
-
-                        fetchSelectionData(flip(selected))
+                        fetchSelectionData(flip({
+                          start: selectedStart,
+                          end: selectedEnd,
+                        }))
+                        // log('onMouseUp')
                       }}
                     >
                       {assocFullRange && assocFullRange.map((d, i) => {
@@ -715,7 +738,10 @@ export default function ProbeLog() {
                 viewBoxY: 500,
                 dayWidth: parseInt(width / (Math.abs(offset) + 1), 10),
                 r: ratio,
-                s: (flip(selected))
+                s: (flip({
+                  start: selectedStart,
+                  end: selectedEnd,
+                }))
               }))}
             </div>
 
