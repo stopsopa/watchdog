@@ -412,11 +412,14 @@ export default function ProbeLog() {
   }
 
   const onDeleteLog = log_id => {
+
+    const s = flip(selected);
+
     actionDeleteSelectedLog({
       log_id,
       probe_id,
-      startDate: selected.start.date,
-      endDate: selected.end.date,
+      startDate: s.start.date,
+      endDate: s.end.date,
       key: assocKeySelection,
     })
   }
@@ -555,13 +558,19 @@ export default function ProbeLog() {
                     <DateColour date={timeOffset(startDateMidnight, parseInt(rangeSeconds * p(xy.x), 10))} />
                   </td>
                   <td></td>
-                  <td>
-                    {selected && selected.start && <DateColour date={selected.start.date}/>}
-                    {selected.end && ` - `}
-                    {selected && selected.end && <DateColour date={selected.end.date}/>}
-                  </td>
-                  <td></td>
-                  <td>{selected && selected.start && selected.end && ms(Math.abs(selected.start.date - selected.end.date))}</td>
+                  {(function (s) {
+                    return (
+                      <>
+                        <td>
+                          {s && s.start && <DateColour date={s.start.date}/>}
+                          {s.end && ` - `}
+                          {s && s.end && <DateColour date={s.end.date}/>}
+                        </td>
+                        <td></td>
+                        <td>{s && s.start && s.end && ms(Math.abs(s.start.date - s.end.date))}</td>
+                      </>
+                    )
+                  }(flip(selected)))}
                 </tr>
                 </tbody>
               </table>
@@ -581,7 +590,7 @@ export default function ProbeLog() {
                       ref={svgDOM}
                       onMouseDown={e => {
                         var s = {};
-                        s.start = s.end = {
+                        s.start = {
                           date: timeOffset(startDateMidnight, parseInt(rangeSeconds * p(xy.x), 10) || 0),
                           x: xy.x
                         }
@@ -594,22 +603,11 @@ export default function ProbeLog() {
                           return
                         }
 
-                        const s = flip(selected);
-
-                        let key = 'end';
-
-                        let tmp = timeOffset(startDateMidnight, parseInt(rangeSeconds * p(xy.x), 10) || 0);
-
-                        if ( Math.abs(tmp - selected.start.date) < Math.abs(tmp - selected.end.date) ) {
-
-                          key = 'start';
-                        }
-
                         // log('onMouseOver', key)
                         return setSelected({
-                          ...s,
-                          [key]: {
-                            date: tmp,
+                          ...selected,
+                          end: {
+                            date: timeOffset(startDateMidnight, parseInt(rangeSeconds * p(xy.x), 10) || 0),
                             x: xy.x
                           }
                         })
@@ -620,13 +618,13 @@ export default function ProbeLog() {
                         }
 
                         const s = {
-                          ...flip(selected),
+                          ...selected,
                           locked: true,
                         };
 
                         setSelected(s)
 
-                        fetchSelectionData(s)
+                        fetchSelectionData(flip(selected))
                       }}
                     >
                       {assocFullRange && assocFullRange.map((d, i) => {
