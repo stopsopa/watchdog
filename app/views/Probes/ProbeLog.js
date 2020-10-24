@@ -90,6 +90,7 @@ import {
 import {
   Link,
   useHistory,
+  useLocation,
   useParams,
 } from 'react-router-dom';
 
@@ -243,7 +244,24 @@ function UTCClock() {
 
 export default function ProbeLog() {
 
-  const deletemode = new URLSearchParams(location.search).has('deletemode');
+  useLocation();
+
+  const history = useHistory();
+
+  const search = new URLSearchParams(location.search);
+
+  function setQueryParam(key, value) {
+
+    value ? search.set(key, value) : search.delete(key);
+
+    const s = search.toString();
+
+    history.push({
+      search: s ? ('?' + s) : '',
+    });
+  }
+
+  const deletemode = search.has('deletemode');
 
   useContext(StoreContextAssoc);
 
@@ -266,10 +284,6 @@ export default function ProbeLog() {
   }
 
   const [ loading, setLoading ] = useState(true);
-
-  const [ testModal, setTestModal ] = useState(false);
-
-  const history = useHistory();
 
   const pform = getProjectForm();
 
@@ -333,8 +347,20 @@ export default function ProbeLog() {
   // const viewBoxRatio = 0.05;
 
   const [datepickerDate, setDatepickerDate] = useState(new Date());
+  // const datepickerDate = search.has('datepickerDate') ? new Date(search.get('datepickerDate')) : new Date();
+  // log.dump({
+  //   "search.get('datepickerDate')": search.get('datepickerDate'),
+  //   datepickerDate,
+  // })
+  // function setDatepickerDate(datepickerDate) {
+  //   setQueryParam('datepickerDate', datepickerDate.toISOString());
+  // }
 
-  const [offset, setOffset] = useState(0);
+  // const [offset, setOffset] = useState(0);
+  const offset = parseInt(search.get('offset'), 10) || 0;
+  function setOffset(offset) {
+    setQueryParam('offset', offset);
+  }
 
   // const endDate = offsetDay(datepickerDate, offset);
 
