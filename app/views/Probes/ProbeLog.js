@@ -111,7 +111,7 @@ import {
   notificationsAdd,
 } from '../../components/Notifications/storeNotifications';
 
-function offsetDay(date, days) {
+function offsetGivenDateByNumberOfDays(date, days) {
   return new Date( date.getTime() + ( 60 * 60 * 24 * days * 1000)   )
 }
 
@@ -122,7 +122,7 @@ function rangeBack(date, offset) {
   for (; offset <= 0 ; offset += 1 ) {
 
     list.push({
-      d: offsetDay(date, offset),
+      d: offsetGivenDateByNumberOfDays(date, offset),
       o: offset,
     })
   }
@@ -136,7 +136,7 @@ function range(date, offset) {
 
   if (offset < 0) {
 
-    date = offsetDay(date, abs)
+    date = offsetGivenDateByNumberOfDays(date, abs)
   }
 
   const list = [];
@@ -144,7 +144,7 @@ function range(date, offset) {
   for (var i = 0 ; i < abs ; i += 1 ) {
 
     list.push({
-      d: offsetDay(date, i),
+      d: offsetGivenDateByNumberOfDays(date, i),
       o: i + 1,
     })
   }
@@ -368,7 +368,7 @@ export default function ProbeLog() {
 
   const [ widthRatio, setWidthRatio ] = useState(0)
 
-  // const endDate = offsetDay(datepickerDate, offset);
+  // const endDate = offsetGivenDateByNumberOfDays(datepickerDate, offset);
 
   const windowSize = useWindowSize();
 
@@ -382,7 +382,7 @@ export default function ProbeLog() {
 
   const rangeSeconds = (60 * 60 * 24 * (Math.abs(offset) + 1));
 
-  const startDateMidnight = new Date(offsetDay(datepickerDate, offset));
+  const startDateMidnight = new Date(offsetGivenDateByNumberOfDays(datepickerDate, offset));
   startDateMidnight.setUTCHours(0,0,0,0);
 
 
@@ -535,7 +535,7 @@ export default function ProbeLog() {
                   ))}
                   <td>
                     <Button size="mini" primary className="arrow" onClick={e => {e.preventDefault();
-                      setDatepickerDate(offsetDay(datepickerDate, -1))
+                      setDatepickerDate(offsetGivenDateByNumberOfDays(datepickerDate, -1))
                       // setSelected({})
                       setSelectedStart(null);
                       setSelectedEnd(null);
@@ -558,7 +558,7 @@ export default function ProbeLog() {
                   </td>
                   <td>
                     <Button size="mini" primary className="arrow right" onClick={e => {e.preventDefault();
-                      setDatepickerDate(offsetDay(datepickerDate, 1))
+                      setDatepickerDate(offsetGivenDateByNumberOfDays(datepickerDate, 1))
                       // setSelected({})
                       setSelectedStart(null);
                       setSelectedEnd(null);
@@ -625,7 +625,7 @@ export default function ProbeLog() {
                         // setSelected(s);
                         setSelectedStart({
                           date: offsetGivenDateByNumberOfSeconds(startDateMidnight, parseInt(rangeSeconds * widthRatio, 10) || 0),
-                          x: widthRatio
+                          widthRatio,
                         });
                         setSelectedEnd(null);
                         setMouseButtonIsDown(true);
@@ -642,7 +642,7 @@ export default function ProbeLog() {
 
                         setSelectedEnd({
                           date: offsetGivenDateByNumberOfSeconds(startDateMidnight, parseInt(rangeSeconds * widthRatio, 10) || 0),
-                          x: widthRatio
+                          widthRatio,
                         });
 
                         // log('onMouseMove')
@@ -685,10 +685,10 @@ export default function ProbeLog() {
                       })}
                       {s.start && s.end && (
                         <rect
-                          width={partOfSvgViewBoxXByPartOfSvgDOMElemWith(partOfSvgDOMElemWidthByWithRatio(s.end.x) - partOfSvgDOMElemWidthByWithRatio(s.start.x))}
+                          width={partOfSvgViewBoxXByPartOfSvgDOMElemWith(partOfSvgDOMElemWidthByWithRatio(s.end.widthRatio) - partOfSvgDOMElemWidthByWithRatio(s.start.widthRatio))}
                           height="230"
                           y="170"
-                          x={partOfSvgViewBoxXByPartOfSvgDOMElemWith(partOfSvgDOMElemWidthByWithRatio(s.start.x))}
+                          x={partOfSvgViewBoxXByPartOfSvgDOMElemWith(partOfSvgDOMElemWidthByWithRatio(s.start.widthRatio))}
                           // fill="blue"
                           stroke="#3e7c48"
                           fill="url(#brush_pattern)"
