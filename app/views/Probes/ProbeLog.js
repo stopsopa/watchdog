@@ -152,10 +152,10 @@ function range(date, offset) {
   return list;
 }
 
-function _partOfSvgViewBoxXByPartOfSvgDOMElemWith(viewBoxX, width) {
+function _partOfSvgViewBoxXByPartOfSvgDOMElemWith(viewBoxX, svgDomWith) {
   return x => {
-    // return (viewBoxX * (d.o * dayWidth)) / width
-    return parseInt((viewBoxX * x) / width, 10) || 0;
+    // return (viewBoxX * (d.o * dayWidth)) / svgDomWith
+    return parseInt((viewBoxX * x) / svgDomWith, 10) || 0;
   }
 }
 
@@ -166,14 +166,14 @@ function percent(width) {
     return width ? ((x / width) || 0) : 0;
   }
 }
-function _partOfSvgDOMElemWidthByWithRatio(width) {
+function partOfWidthByWithRatio(width) {
   return percent => {
     return width ? parseInt(percent * width, 10) : 0;
   }
 }
 // ^^^^ corelated functions
 
-function widthBasedOnDateBuilder(rangeSeconds, width, rangeStartDate) {
+function widthBasedOnDateBuilder(rangeSeconds, viewBoxX, rangeStartDate) {
 
   // log('rangeSeconds',rangeSeconds,'width',width,'rangeStartDate', rangeStartDate);
 
@@ -183,7 +183,7 @@ function widthBasedOnDateBuilder(rangeSeconds, width, rangeStartDate) {
 
     const xsec = parseInt(((new Date(givenDateString)).getTime() - rangeStartDateTime) / 1000, 10);
 
-    return parseInt((xsec * width) / rangeSeconds, 10);
+    return parseInt((xsec * viewBoxX) / rangeSeconds, 10);
 
     // const final = parseInt((xsec * width) / rangeSeconds, 10);
     //
@@ -372,11 +372,11 @@ export default function ProbeLog() {
 
   const windowSize = useWindowSize();
 
-  const [width, setWidth] = useState(0);
+  const [svgDomWith, setSvgDomWith] = useState(0);
 
   const svgDOM = useCallback(svgDOM => { // https://reactjs.org/docs/hooks-faq.html#how-can-i-measure-a-dom-node
     if (svgDOM !== null) {
-      setWidth(svgDOM.getBoundingClientRect().width);
+      setSvgDomWith(svgDOM.getBoundingClientRect().width);
     }
   }, [windowSize]);
 
@@ -390,11 +390,11 @@ export default function ProbeLog() {
   const [selectedStart , setSelectedStart] = useState(false);
   const [selectedEnd , setSelectedEnd] = useState(false);
 
-  const partOfSvgViewBoxXByPartOfSvgDOMElemWith = _partOfSvgViewBoxXByPartOfSvgDOMElemWith(viewBoxX, width);
+  const partOfSvgViewBoxXByPartOfSvgDOMElemWith = _partOfSvgViewBoxXByPartOfSvgDOMElemWith(viewBoxX, svgDomWith);
 
-  const p = percent(width);
+  const p = percent(svgDomWith);
 
-  const partOfSvgDOMElemWidthByWithRatio = _partOfSvgDOMElemWidthByWithRatio(width);
+  const partOfSvgDOMElemWidthByWithRatio = partOfWidthByWithRatio(svgDomWith);
 
   const w = widthBasedOnDateBuilder(rangeSeconds, viewBoxX, startDateMidnight);
 
@@ -584,24 +584,6 @@ export default function ProbeLog() {
 
                 </tbody>
               </table>
-{/*              <pre>{`*/}
-{/*${viewBoxX} ${parseInt(viewBoxX * viewBoxRatio, 10)}*/}
-{/*${xy.x} - ${xy.y}*/}
-{/*[width:${width}]*/}
-{/*[offset:${offset}]*/}
-{/*[ratio:${r(xy.x)}]*/}
-{/*[%:${p(xy.x)}]*/}
-{/*[rangeSeconds:${rangeSeconds}]*/}
-{/*[rangeSeconds * %:${parseInt(rangeSeconds * p(xy.x), 10)}] */}
-{/*[dayWidth:${parseInt(width / offset, 10)}] */}
-{/*[startDateMidnight:${startDateMidnight.toISOString()}] */}
-{/*[offsetdate_______:${timeOffset(startDateMidnight, parseInt(rangeSeconds * p(xy.x), 10) || 0).toISOString()}] */}
-{/*parseInt((viewBoxX * xy.x) / width, 10):${parseInt((viewBoxX * xy.x) / width, 10)}  */}
-{/*datepickerDate:${datepickerDate.toISOString()}*/}
-{/*endDate__:${endDate.toISOString()}             */}
-{/*selectedStart:${selected && selectedStart && selectedStart.date.toISOString()}     */}
-{/*selectedEnd__:${selected && selectedEnd && selectedEnd.date.toISOString()} */}
-{/*              `}</pre>*/}
               <table className="timetable">
                 <tbody>
                 <tr>
@@ -747,7 +729,7 @@ export default function ProbeLog() {
               }({
                 viewBoxX,
                 viewBoxY: 500,
-                dayWidth: parseInt(width / (Math.abs(offset) + 1), 10),
+                dayWidth: parseInt(svgDomWith / (Math.abs(offset) + 1), 10),
                 s: (flip({
                   start: selectedStart,
                   end: selectedEnd,
