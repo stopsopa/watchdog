@@ -257,7 +257,7 @@ function offsetGivenDateByNumberOfSeconds(date, seconds) {
 
 function flip(s = {}) {
 
-  if ( s.start && s.end && s.start.date > s.end.date ) {
+  if ( s.start && s.end && s.start > s.end ) {
 
     return {
       start: s.end,
@@ -487,8 +487,8 @@ export default function ProbeLog() {
   function fetchSelectionData(s) {
     actionFetchSelectionStats({
       probe_id,
-      startDate: s.start.date,
-      endDate: s.end.date,
+      startDate: s.start,
+      endDate: s.end,
       key: assocKeySelection,
     })
   }
@@ -514,8 +514,8 @@ export default function ProbeLog() {
     actionDeleteSelectedLog({
       log_id,
       probe_id,
-      startDate: s.start.date,
-      endDate: s.end.date,
+      startDate: s.start,
+      endDate: s.end,
       key: assocKeySelection,
     })
   }
@@ -649,12 +649,12 @@ export default function ProbeLog() {
                     return (
                       <>
                         <td>
-                          {s && s.start && <DateColour date={s.start.date}/>}
+                          {s && s.start && <DateColour date={s.start}/>}
                           {s.end && ` - `}
-                          {s && s.end && <DateColour date={s.end.date}/>}
+                          {s && s.end && <DateColour date={s.end}/>}
                         </td>
                         <td></td>
-                        <td>{s && s.start && s.end && ms(Math.abs(s.start.date - s.end.date))}</td>
+                        <td>{s && s.start && s.end && ms(Math.abs(s.start - s.end))}</td>
                       </>
                     )
                   }(flip({
@@ -679,10 +679,7 @@ export default function ProbeLog() {
                       ref={svgDOM}
                       onMouseDown={e => {
                         // setSelected(s);
-                        setSelectedStart({
-                          date: offsetGivenDateByNumberOfSeconds(startDateMidnight, parseInt(rangeSeconds * widthRatio, 10) || 0),
-                          widthRatio,
-                        });
+                        setSelectedStart(offsetGivenDateByNumberOfSeconds(startDateMidnight, parseInt(rangeSeconds * widthRatio, 10) || 0));
                         setSelectedEnd(null);
                         setMouseButtonIsDown(true);
                         log('onMouseDown')
@@ -696,10 +693,7 @@ export default function ProbeLog() {
                           return
                         }
 
-                        setSelectedEnd({
-                          date: offsetGivenDateByNumberOfSeconds(startDateMidnight, parseInt(rangeSeconds * widthRatio, 10) || 0),
-                          widthRatio,
-                        });
+                        setSelectedEnd(offsetGivenDateByNumberOfSeconds(startDateMidnight, parseInt(rangeSeconds * widthRatio, 10) || 0));
 
                         // log('onMouseMove')
                       }}
@@ -707,7 +701,7 @@ export default function ProbeLog() {
 
                         setMouseButtonIsDown(false);
 
-                        if ( selectedStart && selectedEnd && selectedStart.date == selectedEnd.date) {
+                        if ( selectedStart && selectedEnd && selectedStart == selectedEnd) {
 
                           setSelectedStart(null);
                           setSelectedEnd(null);
@@ -741,11 +735,10 @@ export default function ProbeLog() {
                       })}
                       {s.start && s.end && (
                         <rect
-                          width={partOfSvgViewBoxXByWithRatio(ratioFormByNumberOfMilisecondsFromStartDate(s.end.date.getTime() - s.start.date.getTime()))}
+                          width={partOfSvgViewBoxXByWithRatio(ratioFormByNumberOfMilisecondsFromStartDate(s.end.getTime() - s.start.getTime()))}
                           height="230"
                           y="170"
-                          x={partOfSvgViewBoxXByWithRatio(ratioFormByNumberOfMilisecondsFromStartDate(s.start.date.getTime() - startDateMidnight.getTime()))}
-                          // fill="blue"
+                          x={partOfSvgViewBoxXByWithRatio(ratioFormByNumberOfMilisecondsFromStartDate(s.start.getTime() - startDateMidnight.getTime()))}
                           stroke="#3e7c48"
                           fill="url(#brush_pattern)"
                         />
