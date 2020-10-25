@@ -367,7 +367,9 @@ export default function ProbeLog() {
 
   function setQueryParam(key, value) {
 
-    value ? search.set(key, dflop(value)) : search.delete(key);
+    const val = (typeof value === 'string') ? dflop(value) : value;
+
+    value ? search.set(key, val) : search.delete(key);
 
     const s = search.toString();
 
@@ -456,15 +458,15 @@ export default function ProbeLog() {
   // const viewBoxRatio = 0.05;
 
   // const [datepickerDate, setDatepickerDate] = useState(new Date());
-  const datepickerDate = search.has('datepickerDate') ? (new Date(dflop(search.get('datepickerDate')))) : (new Date());
+  const datepickerDate = search.has('d') ? (new Date(dflop(search.get('d')))) : (new Date());
   function setDatepickerDate(datepickerDate) {
-    setQueryParam('datepickerDate', datepickerDate.toISOString());
+    setQueryParam('d', datepickerDate.toISOString());
   }
 
   // const [offset, setOffset] = useState(0);
-  const offset = parseInt(search.get('offset'), 10) || 0;
+  const offset = parseInt(search.get('o'), 10) || 0;
   function setOffset(offset) {
-    setQueryParam('offset', offset);
+    setQueryParam('o', offset);
   }
 
   const [ widthRatio, setWidthRatio ] = useState(0)
@@ -489,15 +491,15 @@ export default function ProbeLog() {
   const [mouseButtonIsDown , setMouseButtonIsDown] = useState(false);
 
   // const [selectedStart , setSelectedStart] = useState(false);
-  const selectedStart = search.has('selectedStart') ? (new Date(dflop(search.get('selectedStart')))) : false;
+  const selectedStart = search.has('s') ? (new Date(dflop(search.get('s')))) : false;
   function setSelectedStart(selectedStart) {
-    setQueryParam('selectedStart', selectedStart ? selectedStart.toISOString() : false);
+    setQueryParam('s', selectedStart ? selectedStart.toISOString() : false);
   }
 
   // const [selectedEnd , setSelectedEnd] = useState(false);
-  const selectedEnd = search.has('selectedEnd') ? (new Date(dflop(search.get('selectedEnd')))) : false;
+  const selectedEnd = search.has('e') ? (new Date(dflop(search.get('e')))) : false;
   function setSelectedEnd(selectedEnd) {
-    setQueryParam('selectedEnd', selectedEnd ? selectedEnd.toISOString() : false);
+    setQueryParam('e', selectedEnd ? selectedEnd.toISOString() : false);
   }
 
   const partOfSvgViewBoxXByPartOfSvgDOMElemWith = _partOfSvgViewBoxXByPartOfSvgDOMElemWith(viewBoxX, svgDomWith);
@@ -532,7 +534,7 @@ export default function ProbeLog() {
       endDate,
       key: assocKeyFullRange
     });
-  }, [search.get('datepickerDate'), search.get('offset')]);
+  }, [search.get('d'), search.get('o')]);
 
   const assocFullRange    = getStoreAssoc(assocKeyFullRange);
 
