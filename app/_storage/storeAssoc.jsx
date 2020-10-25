@@ -12,6 +12,8 @@ import get from 'nlab/get';
 
 import set from 'nlab/set';
 
+import del from 'nlab/del';
+
 /**
  *
  *
@@ -102,7 +104,6 @@ export function StoreAssocProvider(props) {
   return (<StoreContext.Provider value={{
     state,
     dispatch,
-    setStoreAssoc,
   }}>{props.children}</StoreContext.Provider>);
 }
 
@@ -151,7 +152,7 @@ function reducer(state, action) {
         assoc: {...state.assoc},
       }
 
-      set(state.assoc, action.key, undefined);
+      del(state.assoc, action.key);
 
       return state;
     default:
