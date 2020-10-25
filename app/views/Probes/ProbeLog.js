@@ -501,6 +501,14 @@ export default function ProbeLog() {
   function setSelectedEnd(selectedEnd) {
     setQueryParam('e', selectedEnd ? selectedEnd.toISOString() : false);
   }
+  useEffect(() => {
+    if (selectedStart && selectedEnd) {
+      fetchSelectionData(flip({
+        start: selectedStart,
+        end: selectedEnd,
+      }))
+    }
+  }, []);
 
   const partOfSvgViewBoxXByPartOfSvgDOMElemWith = _partOfSvgViewBoxXByPartOfSvgDOMElemWith(viewBoxX, svgDomWith);
 
