@@ -288,6 +288,69 @@ function UTCClock() {
   )
 }
 
+// encodeURIComponent('space~ ~doublequote~"~colon~:~semicolon~;~curlybracketleft~{~curlbybracketright~}~question~?~and~&~~~~~~~lodash~_~bracketleft~(~bracketright~)~hyphen~-~exclamation~!~dot~.~')
+// "space~%20~doublequote~%22~colon~%3A~semicolon~%3B~curlybracketleft~%7B~curlbybracketright~%7D~question~%3F~and~%26~~~~~~~lodash~_~bracketleft~(~bracketright~)~hyphen~-~exclamation~!~dot~.~"
+
+// new Date().toISOString()
+// "2020-10-25T00:36:30.459Z"
+
+// flipget((new Date()).toISOString())
+// "2020:10:25T00-35-19 324Z"
+
+// encodeURIComponent(flipget( (new Date()).toISOString() ))
+// "2020%3A10%3A25T00-34-53%20455Z"
+
+// so in order to properly encode dates
+var flipget = function (w, c) {
+  for (var i in c) {
+    c[c[i]] = i;
+  }
+
+  return function (s) {
+    if (typeof s !== 'string') {
+      throw new Error(`flipget error: s is not a string`);
+    }
+    s = s.split('');
+
+    for (var i = 0, l = s.length; i < l; ++i) {
+      if (c[s[i]]) s[i] = c[s[i]];
+    }
+
+    return s.join('');
+  };
+}(undefined, {
+
+  // ' ': '.', // good for json in get parameter
+  // '"': '!',
+  // ':': '-',
+  // '{': '(',
+  // '}': ")",
+  // '?': "_",
+  // '&': "~",
+
+  ':': "~", // good for dates in get params
+});
+
+function dateflip(date) {
+
+  if (typeof date !== 'string') {
+
+    throw new Error(`dateflip error: date is not a string`);
+  }
+
+  if (date.length === 24) {
+
+    return date.substring(0, 19);
+  }
+  else {
+    return date + '.000Z';
+  }
+}
+
+function dflop(date) {
+  return dateflip(flipget(date));
+}
+
 export default function ProbeLog() {
 
   useLocation();
@@ -304,7 +367,7 @@ export default function ProbeLog() {
 
   function setQueryParam(key, value) {
 
-    value ? search.set(key, value) : search.delete(key);
+    value ? search.set(key, dflop(value)) : search.delete(key);
 
     const s = search.toString();
 
@@ -393,7 +456,7 @@ export default function ProbeLog() {
   // const viewBoxRatio = 0.05;
 
   // const [datepickerDate, setDatepickerDate] = useState(new Date());
-  const datepickerDate = search.has('datepickerDate') ? (new Date(search.get('datepickerDate'))) : (new Date());
+  const datepickerDate = search.has('datepickerDate') ? (new Date(dflop(search.get('datepickerDate')))) : (new Date());
   function setDatepickerDate(datepickerDate) {
     setQueryParam('datepickerDate', datepickerDate.toISOString());
   }
@@ -426,13 +489,13 @@ export default function ProbeLog() {
   const [mouseButtonIsDown , setMouseButtonIsDown] = useState(false);
 
   // const [selectedStart , setSelectedStart] = useState(false);
-  const selectedStart = search.has('selectedStart') ? (new Date(search.get('selectedStart'))) : false;
+  const selectedStart = search.has('selectedStart') ? (new Date(dflop(search.get('selectedStart')))) : false;
   function setSelectedStart(selectedStart) {
     setQueryParam('selectedStart', selectedStart ? selectedStart.toISOString() : false);
   }
 
   // const [selectedEnd , setSelectedEnd] = useState(false);
-  const selectedEnd = search.has('selectedEnd') ? (new Date(search.get('selectedEnd'))) : false;
+  const selectedEnd = search.has('selectedEnd') ? (new Date(dflop(search.get('selectedEnd')))) : false;
   function setSelectedEnd(selectedEnd) {
     setQueryParam('selectedEnd', selectedEnd ? selectedEnd.toISOString() : false);
   }
