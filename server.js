@@ -35,6 +35,10 @@ app.use(express.urlencoded({extended: false}));
 
 app.use(express.json());
 
+app.all('/favicon.ico', (req, res) => {
+  res.status(404).end();
+})
+
 const requestIp = require('request-ip');
 
 app.use(requestIp.mw());
