@@ -424,8 +424,18 @@ export default function ProbeLog() {
   startDateMidnight.setUTCHours(0,0,0,0);
 
   const [mouseButtonIsDown , setMouseButtonIsDown] = useState(false);
-  const [selectedStart , setSelectedStart] = useState(false);
-  const [selectedEnd , setSelectedEnd] = useState(false);
+
+  // const [selectedStart , setSelectedStart] = useState(false);
+  const selectedStart = search.has('selectedStart') ? (new Date(search.get('selectedStart'))) : false;
+  function setSelectedStart(selectedStart) {
+    setQueryParam('selectedStart', selectedStart ? selectedStart.toISOString() : false);
+  }
+
+  // const [selectedEnd , setSelectedEnd] = useState(false);
+  const selectedEnd = search.has('selectedEnd') ? (new Date(search.get('selectedEnd'))) : false;
+  function setSelectedEnd(selectedEnd) {
+    setQueryParam('selectedEnd', selectedEnd ? selectedEnd.toISOString() : false);
+  }
 
   const partOfSvgViewBoxXByPartOfSvgDOMElemWith = _partOfSvgViewBoxXByPartOfSvgDOMElemWith(viewBoxX, svgDomWith);
 
