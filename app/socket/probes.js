@@ -217,6 +217,8 @@ module.exports = ({
 
       await man.delete(id);
 
+      driver.unregister(id);
+
       await probes_list_populate(io, probe.project_id);
 
       io.emit('probe_status_delete', id);
