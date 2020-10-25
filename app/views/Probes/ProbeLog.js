@@ -369,7 +369,7 @@ export default function ProbeLog() {
 
     const val = (typeof value === 'string') ? dflop(value) : value;
 
-    (value === null || value === undefined) ? search.delete(key) : search.set(key, val);
+    (value === null || value === undefined || typeof value === 'boolean') ? search.delete(key) : search.set(key, val);
 
     const s = search.toString();
 
