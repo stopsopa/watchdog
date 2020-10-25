@@ -195,6 +195,18 @@ function _partOfSvgViewBoxXByPartOfSvgDOMElemWith(viewBoxX, svgDomWith) {
   }
 }
 
+function _ratioFormByNumberOfMilisecondsFromStartDate(rangeSeconds) {
+
+  const ratioCalc = withRatioByWithOfPartOfFullWith(rangeSeconds);
+
+  return function (miliseconds) {
+
+    const differenceInSeconds = parseInt(miliseconds / 1000, 10);
+
+    return ratioCalc(differenceInSeconds);
+  }
+}
+
 // vvvv corelated functions
 function withRatioByWithOfPartOfFullWith(width) {
   return x => {
@@ -421,6 +433,8 @@ export default function ProbeLog() {
   }, [windowSize]);
 
   const rangeSeconds = (60 * 60 * 24 * (Math.abs(offset) + 1));
+
+  const ratioFormByNumberOfMilisecondsFromStartDate = _ratioFormByNumberOfMilisecondsFromStartDate(rangeSeconds);
 
   const startDateMidnight = new Date(offsetGivenDateByNumberOfDays(datepickerDate, offset));
   startDateMidnight.setUTCHours(0,0,0,0);
@@ -727,10 +741,10 @@ export default function ProbeLog() {
                       })}
                       {s.start && s.end && (
                         <rect
-                          width={partOfSvgViewBoxXByWithRatio(s.end.widthRatio - s.start.widthRatio)}
+                          width={partOfSvgViewBoxXByWithRatio(ratioFormByNumberOfMilisecondsFromStartDate(s.end.date.getTime() - s.start.date.getTime()))}
                           height="230"
                           y="170"
-                          x={partOfSvgViewBoxXByWithRatio(s.start.widthRatio)}
+                          x={partOfSvgViewBoxXByWithRatio(ratioFormByNumberOfMilisecondsFromStartDate(s.start.date.getTime() - startDateMidnight.getTime()))}
                           // fill="blue"
                           stroke="#3e7c48"
                           fill="url(#brush_pattern)"
