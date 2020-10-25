@@ -216,7 +216,7 @@ export default function ProbeEdit() {
                 error={!!errors.name}
               >
                 <label>Name</label>
-                <input placeholder='Name' value={form.name}
+                <input placeholder='Name' value={form.name || ''}
                        onChange={e => actionProbesFormFieldEdit('name', e.target.value)}
                        autoComplete="nope"
                 />
@@ -241,7 +241,7 @@ export default function ProbeEdit() {
                 error={!!errors.password}
               >
                 <label>Password</label>
-                <input placeholder='Password' value={form.password}
+                <input placeholder='Password' value={form.password || ''}
                        onChange={e => actionProbesFormFieldEdit('password', e.target.value)}
                        autoComplete="nope"
                 />
@@ -291,7 +291,7 @@ export default function ProbeEdit() {
                 <Textarea
                   className="textarea-code"
                   autoComplete="nope"
-                  value={form.code}
+                  value={form.code || ''}
                   onChange={e => actionProbesFormFieldEdit('code', e.target.value)}
                   spellCheck={false}
                   correct={10}
