@@ -27,14 +27,12 @@ import { formatToTimeZone } from 'date-fns-timezone';
 import {
   StoreContext as StoreContextAssoc,
   getStoreAssoc,
-  setStoreAssoc,
   setStoreAssocDelete,
 
   actionFetchFullRangeStats,
   actionFetchSelectionStats,
   actionFetchSelectedLog,
   actionDeleteSelectedLog,
-
 } from '../../_storage/storeAssoc'
 
 const assocKeyFullRange     = 'log_full_range';
@@ -100,11 +98,9 @@ import {
 
   actionProjectsFormPopulate,
   actionProbesFormPopulate,
-  getProbesTestResult,
 
   getProjectForm,
   getProbesForm,
-  getProbesFormErrors,
 } from '../../views/Projects/storeProjects'
 
 import {
@@ -190,7 +186,6 @@ function range(date, offset) {
  */
 function _partOfSvgViewBoxXByPartOfSvgDOMElemWith(viewBoxX, svgDomWith) {
   return x => {
-    // return (viewBoxX * (d.o * dayWidth)) / svgDomWith
     return parseInt((viewBoxX * x) / svgDomWith, 10) || 0;
   }
 }
@@ -210,7 +205,6 @@ function _ratioFormByNumberOfMilisecondsFromStartDate(rangeSeconds) {
 // vvvv corelated functions
 function withRatioByWithOfPartOfFullWith(width) {
   return x => {
-    // return (viewBoxX * (d.o * dayWidth)) / width
     return width ? ((x / width) || 0) : 0;
   }
 }
@@ -223,8 +217,6 @@ function partOfWidthByWithRatio(width) {
 
 function widthBasedOnDateBuilder(rangeSeconds, viewBoxX, rangeStartDate) {
 
-  // log('rangeSeconds',rangeSeconds,'width',width,'rangeStartDate', rangeStartDate);
-
   const rangeStartDateTime = rangeStartDate.getTime();
 
   return function (givenDateString) {
@@ -232,12 +224,6 @@ function widthBasedOnDateBuilder(rangeSeconds, viewBoxX, rangeStartDate) {
     const xsec = parseInt(((new Date(givenDateString)).getTime() - rangeStartDateTime) / 1000, 10);
 
     return parseInt((xsec * viewBoxX) / rangeSeconds, 10);
-
-    // const final = parseInt((xsec * width) / rangeSeconds, 10);
-    //
-    // // log('w type', typeof givenDateString, 'givenDateString', givenDateString, 'xsec', xsec, 'width', width, '(xsec * width)',(xsec * width), 'final', final);
-    //
-    // return final;
   }
 }
 
@@ -516,7 +502,6 @@ export default function ProbeLog() {
       key: assocKeySelection,
     })
   }
-
 
   return (
     <div>
