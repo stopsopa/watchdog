@@ -306,7 +306,13 @@ export default function ProbeLog() {
 
   useLocation();
 
+  useContext(StoreContextAssoc);
+
+  useContext(StoreContextProjects);
+
   const history = useHistory();
+
+
 
   const search = new URLSearchParams(location.search);
 
@@ -322,10 +328,6 @@ export default function ProbeLog() {
   }
 
   const deletemode = search.has('deletemode');
-
-  useContext(StoreContextAssoc);
-
-  useContext(StoreContextProjects);
 
   let {
     project_id,
@@ -400,7 +402,7 @@ export default function ProbeLog() {
 
   }, []);
 
-  const [ viewBoxX, setViewBoxX ] = useState(10080);
+  const viewBoxX = 10080;
 
   // const viewBoxRatio = 0.05;
 
@@ -416,11 +418,7 @@ export default function ProbeLog() {
     setQueryParam('offset', offset);
   }
 
-
-
   const [ widthRatio, setWidthRatio ] = useState(0)
-
-  // const endDate = offsetGivenDateByNumberOfDays(datepickerDate, offset);
 
   const windowSize = useWindowSize();
 
@@ -439,7 +437,6 @@ export default function ProbeLog() {
   const startDateMidnight = new Date(offsetGivenDateByNumberOfDays(datepickerDate, offset));
   startDateMidnight.setUTCHours(0,0,0,0);
 
-
   const [mouseButtonIsDown , setMouseButtonIsDown] = useState(false);
   const [selectedStart , setSelectedStart] = useState(false);
   const [selectedEnd , setSelectedEnd] = useState(false);
@@ -450,7 +447,7 @@ export default function ProbeLog() {
 
   const svgDomWithRatioByWithOfPartOfFullWith = withRatioByWithOfPartOfFullWith(svgDomWith);
 
-  const partOfSvgDOMElemWidthByWithRatio = partOfWidthByWithRatio(svgDomWith);
+  // const partOfSvgDOMElemWidthByWithRatio = partOfWidthByWithRatio(svgDomWith);
 
   const w = widthBasedOnDateBuilder(rangeSeconds, viewBoxX, startDateMidnight);
 
