@@ -369,7 +369,7 @@ export default function ProbeLog() {
 
     const val = (typeof value === 'string') ? dflop(value) : value;
 
-    value ? search.set(key, val) : search.delete(key);
+    (value === null || value === undefined) ? search.delete(key) : search.set(key, val);
 
     const s = search.toString();
 
@@ -506,8 +506,10 @@ export default function ProbeLog() {
       fetchSelectionData(flip({
         start: selectedStart,
         end: selectedEnd,
-      }))
+      }));
     }
+    setDatepickerDate(datepickerDate);
+    setOffset(offset)
   }, []);
 
   const partOfSvgViewBoxXByPartOfSvgDOMElemWith = _partOfSvgViewBoxXByPartOfSvgDOMElemWith(viewBoxX, svgDomWith);
