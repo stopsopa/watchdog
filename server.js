@@ -337,7 +337,7 @@ const estool = (async function () {
 
     (function () {
 
-      const template = require('./app/lib/server-template')({
+      const template = eval('require')('./app/lib/server-template')({
         buildtimefile   : webpack.server.buildtime,
         tempatefile     : path.resolve(web, 'index.html'),
         isProd          : process.env.NODE_ENV === "production",
