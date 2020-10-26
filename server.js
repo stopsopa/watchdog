@@ -337,36 +337,16 @@ const estool = (async function () {
 
     (function () {
 
-      const replace   = require('./app/lib/htmlcache');
-      const template  = require('lodash/template');
+      const buildtime = require(webpack.server.buildtime);
 
-      const htmlLazyLoaderTemplate = require('./app/lib/fileLazyLoader')(path.resolve(web, 'index.html'), ms.generate({y: 1}), (content, file) => {
-
-        let tmp = replace(content, {
-          file: webpack.server.buildtime,
-          isProd: true,
-        });
-
-        try {
-          tmp = template(tmp);
-        }
-        catch (e) {
-          throw new Error(`binding template '${file}' error, probably syntax error`);
-        }
-
-        return params => {
-          try {
-            return tmp(params);
-          }
-          catch (e) {
-            log.t(`parsing template '${file}' error: `, e);
-          }
-        }
-      });
+      const template = require('./app/lib/server-template')({
+        buildtime,
+        file: path.resolve(web, 'index.html'),
+      })
 
       app.get('*', (req, res) => {
 
-        let tmp = htmlLazyLoaderTemplate()({});
+        let tmp = template({});
 
         res.send(tmp);
       });
