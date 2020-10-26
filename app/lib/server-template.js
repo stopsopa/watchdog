@@ -69,7 +69,7 @@ module.exports = ({
             throw th(`buildtimefile '${buildtimefile}' is not readdable`);
         }
 
-        buildtime = require(buildtimefile);
+        buildtime = eval('require')(buildtimefile);
     }
     else {
 
