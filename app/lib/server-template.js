@@ -5,15 +5,25 @@ const template  = require('lodash/template');
 
 const th        = msg => new Error(`server-template.js error: ${msg}`);
 
+/**
+ *
+ const template = require('./app/lib/server-template')({
+    buildtimefile   : webpack.server.buildtime,
+    tempatefile     : path.resolve(web, 'index.html'),
+    isProd          : process.env.NODE_ENV === "production",
+  })
+ */
+
 module.exports = ({
-    buildtime,
-    file,
+    buildtimefile,
+    tempatefile,
     replace = (content, buildtime) => {
 
         const reg       = /([&\?])__/g;
 
         return content.replace(reg, `$1_=${buildtime}`)
-    }
+    },
+    isProd,
 }) => {
 
     if ( typeof replace !== 'function' ) {
@@ -21,49 +31,74 @@ module.exports = ({
         throw th(`replace param is not a function`);
     }
 
-    if ( typeof file !== 'string' ) {
+    if ( typeof tempatefile !== 'string' ) {
 
-        throw th(`file param is not a string`);
+        throw th(`tempatefile param is not a string`);
     }
 
-    if ( ! file.trim() ) {
+    if ( ! tempatefile.trim() ) {
 
-        throw th(`file param is an empty string`);
+        throw th(`tempatefile param is an empty string`);
     }
 
-    if ( typeof buildtime !== 'string' ) {
+    if ( typeof buildtimefile !== 'string' ) {
 
-        throw th(`buildtime param is not a string`);
+        throw th(`buildtimefile param is not a string`);
     }
 
-    if ( ! buildtime.trim() ) {
+    if ( ! buildtimefile.trim() ) {
 
-        throw th(`buildtime param is an empty string`);
+        throw th(`buildtimefile param is an empty string`);
     }
 
-    if ( ! fs.existsSync(file)) {
+    let buildtime;
 
-        throw th(`file '${file}' doesn't exist`);
+    if (isProd) {
+
+        if ( ! fs.existsSync(buildtimefile)) {
+
+            throw th(`buildtimefile '${buildtimefile}' doesn't exist`);
+        }
+
+        try {
+
+            fs.accessSync(buildtimefile, fs.constants.R_OK);
+        }
+        catch (e) {
+
+            throw th(`buildtimefile '${buildtimefile}' is not readdable`);
+        }
+
+        buildtime = require(buildtimefile);
+    }
+    else {
+
+        buildtime = (new Date()).toISOString().substring(0, 19).replace('T', '_').replace(/:/g, '-') + '_dev'
+    }
+
+    if ( ! fs.existsSync(tempatefile)) {
+
+        throw th(`tempatefile '${tempatefile}' doesn't exist`);
     }
 
     try {
 
-        fs.accessSync(file, fs.constants.R_OK);
+        fs.accessSync(tempatefile, fs.constants.R_OK);
     }
     catch (e) {
 
-        throw th(`file '${file}' is not readdable`);
+        throw th(`tempatefile '${tempatefile}' is not readdable`);
     }
 
-    let content = fs.readFileSync(file).toString();
+    let content = fs.readFileSync(tempatefile).toString();
 
     try {
 
-        content = template(replace(content, buildtime);
+        content = template(replace(content, buildtime));
     }
     catch (e) {
 
-        throw th(`binding template '${file}' error, probably syntax error: ${JSON.stringify(se(e))}`);
+        throw th(`binding template '${tempatefile}' error, probably syntax error: ${JSON.stringify(se(e))}`);
     }
 
     return params => {
@@ -74,7 +109,7 @@ module.exports = ({
         }
         catch (e) {
 
-            throw th(`parsing template '${file}' error: : ${JSON.stringify(se(e))}`);
+            throw th(`parsing template '${tempatefile}' error: : ${JSON.stringify(se(e))}`);
         }
     }
 };

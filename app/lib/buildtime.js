@@ -98,7 +98,7 @@ if (fs.existsSync(file)) {
     // })
   }
 
-  hash = trim(hash, '_- ')
+  hash = trim(hash, '-_ ')
 
   const time = (new Date()).toISOString().substring(0, 19).replace('T', '_').replace(/:/g, '-') + '_prod' + (hash ? ('_' + hash) : '');
 
