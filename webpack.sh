@@ -37,21 +37,20 @@ mkdir -p override
 #mkdir -p "$_ROOT/public/dist"
 #if [ -e dist ]; then echo 'dist symlink already exist'; else ln -s ../public/dist dist; fi
 
-node "$_ROOT/app/lib/preprocessor.js"
+node "$_ROOT/app/lib/buildtime.js" # run only during build time
 
-export NODE_ENV="production"
+node "$_ROOT/app/lib/preprocessor.js" # run on server execution with fresh .env
 
 if [ "$1" = "dev" ]; then
 
   export NODE_ENV="development"
-fi
-
-if [ "$1" = "dev" ]; then
 
   # https://webpack.js.org/guides/build-performance/#incremental-builds
   node node_modules/.bin/webpack --watch
-
 else
+
+  export NODE_ENV="production"
+
   node node_modules/.bin/webpack
 fi
 

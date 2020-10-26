@@ -2,13 +2,22 @@ const path = require("path");
 
 const fs = require("fs");
 
+const log = require("inspc");
+
 const mkdirp = require("mkdirp");
+
+const webpack = require('../../config')('production');
+
+if ( typeof webpack.server.preprocessor !== 'string') {
+
+  throw new Error(`webpack.server.preprocessor is not a string`);
+}
 
 const targets = [
   // path.resolve(__dirname, "..", "public", "preprocessed.js"),
   // path.resolve(__dirname, "..", "build", "preprocessed.js"),
 
-  path.resolve(__dirname, "..", "..", "public", "preprocessed.js"),
+  webpack.server.preprocessor,
 ];
 
 const env = require("dotenv-up")(

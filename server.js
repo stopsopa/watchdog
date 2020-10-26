@@ -21,9 +21,13 @@ const log           = require('inspc');
 
 const delay         = require('nlab/delay');
 
+const ms        = require('nlab/ms');
+
 const compression   = require('compression');
 
 const se = require('nlab/se');
+
+const webpack = require('./config')('production');
 
 const app = express();
 
@@ -327,10 +331,46 @@ const estool = (async function () {
         // res.setHeader('Cache-Control', 'public, no-cache, max-age=30758400')
         // res.setHeader('Cache-Control', 'public, only-if-cached')
       },
-      index: path.resolve(web, 'index.html'),
+      // index: path.resolve(web, 'index.html'),
+      index: false, // https://expressjs.com/en/4x/api.html#express.static
     }));
 
-    app.get('*', (req, res) => res.sendFile(path.resolve(web, 'index.html')));
+    (function () {
+
+      const replace   = require('./app/lib/htmlcache');
+      const template  = require('lodash/template');
+
+      const htmlLazyLoaderTemplate = require('./app/lib/fileLazyLoader')(path.resolve(web, 'index.html'), ms.generate({y: 1}), (content, file) => {
+
+        let tmp = replace(content, {
+          file: webpack.server.buildtime,
+          isProd: true,
+        });
+
+        try {
+          tmp = template(tmp);
+        }
+        catch (e) {
+          throw new Error(`binding template '${file}' error, probably syntax error`);
+        }
+
+        return params => {
+          try {
+            return tmp(params);
+          }
+          catch (e) {
+            log.t(`parsing template '${file}' error: `, e);
+          }
+        }
+      });
+
+      app.get('*', (req, res) => {
+
+        let tmp = htmlLazyLoaderTemplate()({});
+
+        res.send(tmp);
+      });
+    }());
 
     let port = parseInt(env('NODE_PORT'), 10);
 

@@ -7,8 +7,10 @@ const root              = path.resolve(__dirname);
 
 const vardir            = path.resolve(root, 'var');
 
+const _public            = path.resolve(root, 'public');
+
 // relative path to public server directory
-const output            = path.resolve(root, 'public', 'dist');
+const output            = path.resolve(_public, 'dist');
 
 const node_modules      = path.resolve(root, 'node_modules');
 
@@ -31,6 +33,7 @@ module.exports = mode => ({
   node_modules,
   vardir,
   output,
+  // public: _public,
   resolve: [ // where to search by require and files to watch
 
     app,
@@ -44,6 +47,10 @@ module.exports = mode => ({
       app,
       // ...
     ],
+  },
+  server: {
+    preprocessor  : path.resolve(_public, "preprocessed.js"),
+    buildtime     : path.resolve(_public, 'buildtime.js'),
   },
 });
 

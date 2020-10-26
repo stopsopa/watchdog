@@ -10,6 +10,7 @@ README.md
 /public/public
 .env
 preprocessed.js
+buildtime.js
 .env.kub.prod
 .env.kub.test
 .env.kub.stage

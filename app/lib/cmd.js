@@ -33,7 +33,7 @@ module.exports = (cmd, opt) => new Promise((resolve, reject) => {
     verbose = false,
   } = {...opt};
 
-  verbose && console.log(`executing command ${c.g(cmd.join(' '))}`)
+  verbose && console.log(`executing command ${cmd.join(' ')}`)
 
   const [command, ...args] = cmd;
 
@@ -65,11 +65,11 @@ module.exports = (cmd, opt) => new Promise((resolve, reject) => {
 
   process.on("close", code => {
 
-    verbose && console.log(`child process ${c.g(cmd.join(' '))} exited with code ${code}`);
+    verbose && console.log(`child process ${cmd.join(' ')} exited with code ${code}`);
 
-    if (code !== 0) {
+    if (code === 0) {
 
-      return reject({
+      resolve({
         cmd,
         stdout,
         stderr,
@@ -77,7 +77,7 @@ module.exports = (cmd, opt) => new Promise((resolve, reject) => {
       });
     }
 
-    resolve({
+    reject({
       cmd,
       stdout,
       stderr,

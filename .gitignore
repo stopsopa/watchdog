@@ -3,6 +3,7 @@ node_modules
 *-tmp-*
 /public/dist/
 preprocessed.js
+buildtime.js
 /public/public
 yarn-error.log
 .env.prod
