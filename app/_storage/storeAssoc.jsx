@@ -270,6 +270,11 @@ export const getStatusPoject = id => {
 
       t = list[keys[i]];
 
+      if (t.probe === null) {
+
+        continue;
+      }
+
       if (t.db.project_id !== id) {
 
         continue;
@@ -334,6 +339,11 @@ export const getStatusFavicon = () => {
     for (let i = 0, l = keys.length, t ; i < l ; i += 1 ) {
 
       t = list[keys[i]];
+
+      if (t.probe === null) {
+
+        continue;
+      }
 
       if (t.db.enabled === false) {
 

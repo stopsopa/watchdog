@@ -122,7 +122,7 @@ const tool = async function (opt = {}) {
 
       try {
 
-        await register(db, true);
+        await register(db);
       }
       catch (e) {
 

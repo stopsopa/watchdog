@@ -227,7 +227,7 @@ function tool(db) {
 
       io.emit('probe_status_update', this.state());
     },
-    construct: async function (onServerStart) {
+    construct: async function () {
 
       logg.t(`probe construct ${db.enabled ? 'enabled ' : 'disabled'} [${String(db.type).padStart(8, ' ')}:${String(db.id).padStart(6, ' ')}] [project:${String(db.project_id).padStart(6, ' ')}]       interval: ${ms(db.interval_ms)}`);
 
@@ -276,25 +276,22 @@ function tool(db) {
           })
         }
 
-        if (onServerStart) {
+        if (nextTriggerFromNowMilliseconds > 1000) { // no point to trigger it now if we will trigger it in next 1 sec anyway
 
-          if (nextTriggerFromNowMilliseconds > 1000) { // no point to trigger it now if we will trigger it in next 1 sec anyway
+          ({
+            probe,
+            ...log
+          } = await this.prodRunActive());
 
-            ({
-              probe,
-              ...log
-            } = await this.prodRunActive());
+          this.ioTriggerStatus()
+        }
+        else {
 
-            this.ioTriggerStatus()
-          }
-          else {
-
-            logg.dump({
-              probe_id: db.id,
-              '(nextTriggerFromNowMilliseconds > 1000)': false,
-              action: "ignore onServerStart flag and don't trigger now"
-            })
-          }
+          logg.dump({
+            probe_id: db.id,
+            '(nextTriggerFromNowMilliseconds > 1000)': false,
+            action: "ignore onServerStart flag and don't trigger now"
+          })
         }
 
         const run = async () => {
