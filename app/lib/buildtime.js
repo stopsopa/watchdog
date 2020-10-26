@@ -29,6 +29,8 @@ if ( typeof webpack.server.buildtime !== 'string') {
 
 const file = webpack.server.buildtime;
 
+const th = msg => new Error(`buildtime.js error: ${msg}`);
+
 console.log("");
 
 console.log(`Saving ${file}`);
@@ -47,9 +49,8 @@ if (fs.existsSync(file)) {
 
 if (fs.existsSync(file)) {
 
-  throw `\n\n\n       Error: Can't remove file '${file}'\n\n\n`;
+  throw th(`Can't remove file '${file}'\n\n\n`);
 }
-
 
 (async function () {
 
@@ -57,13 +58,15 @@ if (fs.existsSync(file)) {
 
   try {
 
-    hash = await cmd(['git', 'rev-parse', '--short', 'HEAD'], {
+    // throw new Error('');
+
+    let tmp = await cmd(['git', 'rev-parse', '--short', 'HEAD'], {
       // verbose: true,
     });
 
-    hash = hash.stdout;
+    tmp = tmp.stdout;
 
-    hash = trim(hash);
+    hash = trim(tmp);
   }
   catch (e) {
 
@@ -72,13 +75,17 @@ if (fs.existsSync(file)) {
     // })
   }
 
-  let tmp = '';
-
   try {
 
-    tmp = await cmd(['git', 'show', '-s', '--format=%ci', hash]);
+    // throw new Error('');
+
+    let tmp = await cmd(['git', 'show', '-s', '--format=%ci', hash]);
 
     tmp = tmp.stdout;
+
+    tmp = tmp.replace(/^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}).*/g, '$1');
+
+    tmp = tmp.replace(/ /g, '_').replace(/[^\d_]+/g, '-')
 
     tmp = trim(tmp);
 
@@ -91,25 +98,20 @@ if (fs.existsSync(file)) {
     // })
   }
 
-  hash = trim(hash.replace(/ /g, '_').replace(/[^\d_]+/g, '-'), '-_0');
+  hash = trim(hash, '_- ')
 
-  if ( ! hash ) {
-
-    hash = 'git_commit_hash_unobtainable'
-  }
-
-  const time = (new Date()).toISOString().substring(0, 19).replace('T', '_').replace(/:/g, '-') + '_prod_' + hash;
+  const time = (new Date()).toISOString().substring(0, 19).replace('T', '_').replace(/:/g, '-') + '_prod' + (hash ? ('_' + hash) : '');
 
   if ( ! fs.existsSync(dir) ) {
 
-    throw `\n\n\n       Error: Directory '${dir}' doesn't exist and i can't create it\n\n\n`;
+    throw th(`Directory '${dir}' doesn't exist and i can't create it`);
   }
 
   fs.writeFileSync(file, `module.exports = '${time}'`);
 
   if ( ! fs.existsSync(file)) {
 
-    throw `\n\n\n       Error: Can't create file '${file}'\n\n\n`;
+    throw th(`Can't create file '${file}'`);
   }
 })();
 

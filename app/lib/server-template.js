@@ -3,8 +3,7 @@ const fs        = require('fs');
 
 const template  = require('lodash/template');
 
-
-const th        = msg => new Error(`server-template.js error: ${mgs}`);
+const th        = msg => new Error(`server-template.js error: ${msg}`);
 
 module.exports = ({
     buildtime,
@@ -60,7 +59,7 @@ module.exports = ({
 
     try {
 
-        content = template(replace(content, buildtime));
+        content = template(replace(content, buildtime);
     }
     catch (e) {
 

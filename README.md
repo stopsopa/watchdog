@@ -20,6 +20,7 @@
 - [ ] extend project - add telegram integration with proxy users management - sending to to particular use but to group (to group id)
 - [ ] live update graph
 - [ ] widget informing about incomming execution (for active) or incomming request (for passive) expected trigger (countdown)
+- [ ] creating new probes by copying settings from another
 
 
 

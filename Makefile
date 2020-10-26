@@ -19,6 +19,7 @@ server:
 	node server.js
 
 dev:
+	node app/lib/buildtime.js
 	nodemon --ignore public/dist --ignore var -- server.js --verbose
 
 esdeleteindex:
