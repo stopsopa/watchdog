@@ -14,7 +14,7 @@
 - [x] fix resizing of the graph with selection (it would require to convert positon of mouse to percentage of with of the svg - not worth of effort)
 - [x] buttons to navigate from logs to edit probe and back
 - [ ] (NAAA REJECTED) ctrl+s shrtcut
-- [ ] add ace editor
+- [x] add ace editor
 - [x] update live graph and list below
 - [ ] add icon informing about collecting full log when probe=true
 - [ ] extend project - add telegram integration with proxy users management - sending to to particular use but to group (to group id)
