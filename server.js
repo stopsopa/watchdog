@@ -117,6 +117,26 @@ app.use(compression({filter: (req, res) => {
   return compression.filter(req, res)
 }}));
 
+const web = path.resolve(__dirname, 'public');
+
+app.use(express.static(web, { // http://expressjs.com/en/resources/middleware/serve-static.html
+  // maxAge: 60 * 60 * 24 * 1000 // in milliseconds
+  maxAge: '356 days', // in milliseconds max-age=30758400
+  setHeaders: (res, path) => {
+
+    if (/\.bmp$/i.test(path)) { // for some reason by default express.static sets here Content-Type: image/x-ms-bmp
+
+      res.setHeader('Content-type', 'image/bmp')
+    }
+
+    // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
+    // res.setHeader('Cache-Control', 'public, no-cache, max-age=30758400')
+    // res.setHeader('Cache-Control', 'public, only-if-cached')
+  },
+  // index: path.resolve(web, 'index.html'),
+  index: false, // https://expressjs.com/en/4x/api.html#express.static
+}));
+
 const estool = (async function () {
 
   const estool                = require('./app/es/es');
@@ -308,32 +328,12 @@ const estool = (async function () {
       }
     }());
 
-    const web = path.resolve(__dirname, 'public');
-
 // app.all('/basic', (req, res) => {
 //
 //   res.json({
 //     Authorization: req.headers.authorization
 //   })
 // });
-
-    app.use(express.static(web, { // http://expressjs.com/en/resources/middleware/serve-static.html
-      // maxAge: 60 * 60 * 24 * 1000 // in milliseconds
-      maxAge: '356 days', // in milliseconds max-age=30758400
-      setHeaders: (res, path) => {
-
-        if (/\.bmp$/i.test(path)) { // for some reason by default express.static sets here Content-Type: image/x-ms-bmp
-
-          res.setHeader('Content-type', 'image/bmp')
-        }
-
-        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
-        // res.setHeader('Cache-Control', 'public, no-cache, max-age=30758400')
-        // res.setHeader('Cache-Control', 'public, only-if-cached')
-      },
-      // index: path.resolve(web, 'index.html'),
-      index: false, // https://expressjs.com/en/4x/api.html#express.static
-    }));
 
     (function () {
 
