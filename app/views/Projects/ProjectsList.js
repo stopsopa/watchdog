@@ -94,7 +94,6 @@ export default function ProjectsList() {
           to="/create"
         >Create project</Breadcrumb.Section>
       </Breadcrumb>
-      <hr />
       <div className="projects-list">
         {getProjectList().map(p => (
           <div className='project' key={p.id}>

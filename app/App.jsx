@@ -18,6 +18,8 @@ import ProbeEdit from './views/Probes/ProbeEdit';
 
 import ProbeLog from './views/Probes/ProbeLog';
 
+import './App.scss'
+
 import {
   Button,
   Breadcrumb,
@@ -33,6 +35,11 @@ export default function App() {
 
   return (
     <>
+      <div className="brand">
+        <img src="/watchdog.svg" width="40" />
+        <span>WATCHDOG</span>
+      </div>
+      <hr />
       {socket ? (
         <Switch>
           <Route

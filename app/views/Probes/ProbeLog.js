@@ -607,7 +607,6 @@ export default function ProbeLog() {
         <Breadcrumb.Divider />
         <Breadcrumb.Section>{probe_id && `Logs of ${type} probe "${form.name}"`}</Breadcrumb.Section>
       </Breadcrumb>
-      <hr />
       <div className="probe-log">
         {loading ? (
           `Loading...`

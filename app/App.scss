@@ -1,0 +1,11 @@
+.brand {
+    display: flex;
+    align-items: center;
+    & > span {
+        font-family: "Alegreya",serif;
+        font-size: 36px;
+    }
+}
+#app .breadcrumb {
+    margin-bottom: 8px;
+}

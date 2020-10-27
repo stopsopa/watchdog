@@ -115,7 +115,6 @@ export default function ProjectsEdit() {
         <Breadcrumb.Divider />
         <Breadcrumb.Section>{id ? `Edit project "${form.name}"`: `Create project`}</Breadcrumb.Section>
       </Breadcrumb>
-      <hr />
       <div>
 
         {loading ? (

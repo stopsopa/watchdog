@@ -190,7 +190,6 @@ export default function ProbeEdit() {
         <Breadcrumb.Divider />
         <Breadcrumb.Section>{probe_id ? `Edit ${type} probe "${form.name}"`: `Create ${type} probe`}</Breadcrumb.Section>
       </Breadcrumb>
-      <hr />
       <div className="probe">
         {loading ? (
           `Loading...`

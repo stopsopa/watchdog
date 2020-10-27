@@ -126,7 +126,6 @@ export default function Project() {
         <Breadcrumb.Divider />
         <Breadcrumb.Section>{`Project "${form.name}"`}</Breadcrumb.Section>
       </Breadcrumb>
-      <hr />
       <div className="project">
         {loading ? (
           `Loading...`

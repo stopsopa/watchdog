@@ -19,8 +19,7 @@ server:
 	node server.js
 
 dev:
-	node app/lib/buildtime.js
-	nodemon --ignore public/dist --ignore var -- server.js --verbose
+	/bin/bash dev.sh
 
 esdeleteindex:
 	@echo "\n\n    node server.js --delete\n\n"
