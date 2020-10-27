@@ -8,7 +8,7 @@ import React, {
 
 import './ProjectsEdit.scss';
 
-import Textarea from '../../components/Textarea';
+import AceEditor from '../../components/AceEditor/AceEditor'
 
 import log from 'inspc';
 
@@ -140,12 +140,9 @@ export default function ProjectsEdit() {
               error={!!errors.description}
             >
               <label>Description</label>
-              <Textarea
-                autoComplete="nope"
-                value={form.description || ""}
-                onChange={e => actionProjectsFormFieldEdit('description', e.target.value)}
-                spellCheck={false}
-                correct={10}
+              <AceEditor
+                value={form.description || ``}
+                onChange={value => actionProjectsFormFieldEdit('description', value)}
               />
               {errors.description && <div className="error">{errors.description}</div>}
             </Form.Field>

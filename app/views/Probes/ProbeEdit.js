@@ -15,7 +15,7 @@ import log from 'inspc';
 
 import all from 'nlab/all';
 
-import Textarea from '../../components/Textarea';
+import AceEditor from '../../components/AceEditor/AceEditor';
 
 import NoInput from '../../components/NoInput/NoInput';
 
@@ -227,12 +227,9 @@ export default function ProbeEdit() {
                 error={!!errors.description}
               >
                 <label>Description</label>
-                <Textarea
-                  autoComplete="nope"
-                  value={form.description || ""}
-                  onChange={e => actionProbesFormFieldEdit('description', e.target.value)}
-                  spellCheck={false}
-                  correct={10}
+                <AceEditor
+                  value={form.description || ``}
+                  onChange={value => actionProbesFormFieldEdit('description', value)}
                 />
                 {errors.description && <div className="error">{errors.description}</div>}
               </Form.Field>
@@ -288,13 +285,9 @@ export default function ProbeEdit() {
                 className="relative"
               >
                 <label>Code</label>
-                <Textarea
-                  className="textarea-code"
-                  autoComplete="nope"
+                <AceEditor
                   value={form.code || ''}
-                  onChange={e => actionProbesFormFieldEdit('code', e.target.value)}
-                  spellCheck={false}
-                  correct={10}
+                  onChange={value => actionProbesFormFieldEdit('code', value)}
                 />
                 {errors.code && <pre className="error">{errors.code}</pre>}
 
@@ -334,12 +327,9 @@ export default function ProbeEdit() {
                               </tbody>
                             </table>
                           )}
-                          <Textarea
-                            className="textarea-code"
-                            autoComplete="nope"
-                            defaultValue={JSON.stringify((testResult || "No result yet"), null, 4)}
-                            spellCheck={false}
-                            correct={10}
+                          <AceEditor
+                            mode="json"
+                            value={JSON.stringify((testResult || "No result yet"), null, 4)}
                           />
                         </>
                       )}
@@ -375,11 +365,10 @@ export default function ProbeEdit() {
                     <Modal.Content scrolling>
                       <Tab panes={[
                         { menuItem: 'Curl', render: () => <Tab.Pane>
-                            <Textarea
+                            <AceEditor
+                              mode="batchfile"
                               key="curl"
-                              className="textarea-code"
-                              autoComplete="nope"
-                              defaultValue={`
+                              value={`
 
 curl "${location.protocol}//${location.host}/passive/${form.id}?password=${form.password}"
 
@@ -403,16 +392,12 @@ curl -XPOST -H "x-extra-header: hvalue" ${`\\`}
  
 
 `}
-                              spellCheck={false}
-                              correct={10}
                             />
                           </Tab.Pane> },
                         { menuItem: 'Node.js module', render: () => <Tab.Pane>
-                            <Textarea
+                            <AceEditor
                               key="n1"
-                              className="textarea-code"
-                              autoComplete="nope"
-                              defaultValue={`
+                              value={`
 
 // watchdog.js
 module.exports = function watchdog(url, opt = {}) {
@@ -453,16 +438,12 @@ require('./watchdog')("${location.protocol}//${location.host}/passive/${form.id}
 })
 
 `}
-                              spellCheck={false}
-                              correct={10}
                             />
                           </Tab.Pane> },
                         { menuItem: 'Node.js oneliner', render: () => <Tab.Pane>
-                            <Textarea
+                            <AceEditor
                               key="n2"
-                              className="textarea-code"
-                              autoComplete="nope"
-                              defaultValue={`
+                              value={`
 
 (function watchdog(url, opt = {}) {
   let {
@@ -499,8 +480,6 @@ require('./watchdog')("${location.protocol}//${location.host}/passive/${form.id}
 });
 
 `}
-                              spellCheck={false}
-                              correct={10}
                             />
                           </Tab.Pane> },
                       ]} />

@@ -14,7 +14,7 @@ import './ProbeLog.scss';
 
 import classnames from 'classnames';
 
-import Textarea from '../../components/Textarea'
+import AceEditor from '../../components/AceEditor/AceEditor'
 
 import log from 'inspc';
 
@@ -920,12 +920,9 @@ export default function ProbeLog() {
             >
               <Modal.Header>Log</Modal.Header>
               <Modal.Content scrolling>
-                <Textarea
-                  className="textarea-code"
-                  autoComplete="nope"
-                  defaultValue={JSON.stringify((assocSelectedLog || "No result yet"), null, 4)}
-                  spellCheck={false}
-                  correct={10}
+                <AceEditor
+                  mode="json"
+                  value={JSON.stringify((assocSelectedLog || "No result yet"), null, 4)}
                 />
               </Modal.Content>
               <Modal.Actions>
