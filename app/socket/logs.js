@@ -179,6 +179,14 @@ module.exports = async ({
 
         let execution_time_ms = t.execution_time_ms || (30 * 1000); // 30 sec because minimum interval is 1 minute
 
+                list.push({
+                  p: t.probe,
+                  f: t.created,
+                  t: t.created,
+                })
+
+                continue;
+
         // if (i == 500) {
         //
         //   console.log(JSON.stringify(tmp[i], null, 4))
@@ -275,8 +283,6 @@ module.exports = async ({
     // })
 
     try {
-
-      let data = [];
 
       const query = {
         method: "POST",
