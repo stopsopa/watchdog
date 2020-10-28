@@ -558,12 +558,16 @@ export default function ProbeLog() {
   const assocSelectedLog  = getStoreAssoc(assocKeySelectedLog);
 
   function fetchSelectionData(s) {
-    actionFetchSelectionStats({
-      probe_id,
-      startDate: s.start,
-      endDate: s.end,
-      key: assocKeySelection,
-    })
+
+    if (s.start && s.end) {
+
+      actionFetchSelectionStats({
+        probe_id,
+        startDate: s.start,
+        endDate: s.end,
+        key: assocKeySelection,
+      })
+    }
   }
 
   function fetchSelectedLog(log_id) {
