@@ -397,19 +397,46 @@ function RenderClock({
   return null;
 }
 
-function bridge() {
+const bridge = (function () {
 
-  let subscriber;
+  const generateId = (function () {
 
-  return {
-    subscriber: function (fn) {
-      subscriber = fn;
-    },
-    trigger: function (...args) {
-      (typeof subscriber === 'function') && subscriber(...args);
+    let i = 0;
+
+    let max = 1000;
+
+    return () => {
+
+      i += 1;
+
+      if (i > max) {
+
+        i %= max;
+      }
+
+      return i;
+    }
+  }());
+
+  return function () {
+
+    let subscriber;
+
+    const id = generateId();
+
+    return {
+      id,
+      subscriber: function (fn) {
+        subscriber = fn;
+      },
+      trigger: function (...args) {
+        if (typeof subscriber === 'function') {
+          subscriber(...args)
+        }
+      }
     }
   }
-}
+}())
 
 export default function ProbeLog() {
 
@@ -774,7 +801,10 @@ export default function ProbeLog() {
                 <tbody>
                 <tr>
                   <td>
-                    <UTCClock onChange={time => clockBridge.trigger(partOfSvgViewBoxXByWithRatio(ratioFormByNumberOfMilisecondsFromStartDate(time.getTime() - startDateMidnight.getTime())))} />
+                    <UTCClock
+                      key={clockBridge.id}
+                      onChange={time => clockBridge.trigger(partOfSvgViewBoxXByWithRatio(ratioFormByNumberOfMilisecondsFromStartDate(time.getTime() - startDateMidnight.getTime())))}
+                    />
                     {` `}
                     <DateColour date={offsetGivenDateByNumberOfSeconds(startDateMidnight, parseInt(rangeSeconds * widthRatio, 10))} />
                   </td>
@@ -884,7 +914,10 @@ export default function ProbeLog() {
                         </Fragment>
                       ))}
 
-                      <RenderClock bridge={clockBridge}/>
+                      <RenderClock
+                        key={clockBridge.id}
+                        bridge={clockBridge}
+                      />
 
                       <rect
                         width="10"
