@@ -92,47 +92,48 @@ const def= {
   type: '' // warning, error or empty string (default green state)
 };
 
-export const notificationsRemove = async id => {
+export const notificationsRemove = id => {
 
-  const list = getNotificationsState();
+  (async function () {
 
-  const found = (list || []).find(item => (item.id == id));
+    const list = getNotificationsState();
 
-  if ( ! found ) {
+    const found = (list || []).find(item => (item.id == id));
 
-    return;
-  }
+    if ( ! found ) {
 
-  const payload = { ...found };
-
-  payload.type = payload.type.replace(/(\s|^)show(\s|$)/g, ' ');
-
-  dispatch({
-    type: NOTIFICATIONS_UPDATE,
-    payload : {
-      ...payload,
-      type:payload.type + ' hide show'
+      return;
     }
-  });
 
-  await wait(delay);
+    const payload = { ...found };
 
-  dispatch({
-    type: NOTIFICATIONS_UPDATE,
-    payload : {
-      ...payload,
-      type:payload.type + ' hide'
-    }
-  });
+    payload.type = payload.type.replace(/(\s|^)show(\s|$)/g, ' ');
 
-  await wait(animationTime + (3 * delay) );
+    dispatch({
+      type: NOTIFICATIONS_UPDATE,
+      payload : {
+        ...payload,
+        type:payload.type + ' hide show'
+      }
+    });
 
-  dispatch({
-    type: NOTIFICATIONS_REMOVE,
-    payload: id
-  });
+    await wait(delay);
 
-  return payload
+    dispatch({
+      type: NOTIFICATIONS_UPDATE,
+      payload : {
+        ...payload,
+        type:payload.type + ' hide'
+      }
+    });
+
+    await wait(animationTime + (3 * delay) );
+
+    dispatch({
+      type: NOTIFICATIONS_REMOVE,
+      payload: id
+    });
+  }());
 }
 
 /**
@@ -145,63 +146,68 @@ export const notificationsRemove = async id => {
  *      time: 5000
  *  }) - explicit message, default green type, default delay
  */
-export const notificationsAdd = async (...args) => {
+export const notificationsAdd = (...args) => {
 
   const id = generateId();
 
-  let payload = {...def};
+  (async function () {
 
-  let firstString = true;
+    let payload = {...def};
 
-  args.forEach(arg => {
-    if (isObject(arg)) {
-      payload = {...payload, ...arg};
-    }
-    else if (Number.isInteger(arg)) {
-      payload.time = arg;
-    }
-    else {
-      if (firstString) {
-        payload = {
-          ...payload,
-          msg: (typeof arg === 'string') ? arg : JSON.stringify(arg)
-        }
-        firstString = false;
+    let firstString = true;
+
+    args.forEach(arg => {
+      if (isObject(arg)) {
+        payload = {...payload, ...arg};
+      }
+      else if (Number.isInteger(arg)) {
+        payload.time = arg;
       }
       else {
-        payload = {
-          ...payload,
-          type: (typeof arg === 'string') ? arg : JSON.stringify(arg)
+        if (firstString) {
+          payload = {
+            ...payload,
+            msg: (typeof arg === 'string') ? arg : JSON.stringify(arg)
+          }
+          firstString = false;
+        }
+        else {
+          payload = {
+            ...payload,
+            type: (typeof arg === 'string') ? arg : JSON.stringify(arg)
+          }
         }
       }
+    });
+
+    payload.id = id;
+
+    if (payload.time < animationTime) {
+
+      payload.time = animationTime;
     }
-  });
 
-  payload.id = id;
+    dispatch({
+      type: NOTIFICATIONS_ADD,
+      payload
+    });
 
-  if (payload.time < animationTime) {
+    await wait(50);
 
-    payload.time = animationTime;
-  }
+    dispatch({
+      type: NOTIFICATIONS_UPDATE,
+      payload : {
+        ...payload,
+        type:payload.type + ' show'
+      }
+    });
 
-  dispatch({
-    type: NOTIFICATIONS_ADD,
-    payload
-  });
+    await wait(payload.time);
 
-  await wait(50);
+    await notificationsRemove(id);
+  }());
 
-  dispatch({
-    type: NOTIFICATIONS_UPDATE,
-    payload : {
-      ...payload,
-      type:payload.type + ' show'
-    }
-  })
-
-  await wait(payload.time);
-
-  return await notificationsRemove(id);
+  return id;
 };
 
 try {
