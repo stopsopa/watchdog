@@ -14,7 +14,7 @@ import all from 'nlab/all';
 
 import FitText from '../../components/FitText';
 
-import StatusIcon from '../../views/StatusIcon'
+import StatusComponent from '../StatusComponent'
 
 import {
   Breadcrumb,
@@ -55,6 +55,7 @@ import {
   StoreContext as StoreContextAssoc,
   getStoreAssoc,
   getStatusProbe,
+  getStatusPoject,
 } from '../../_storage/storeAssoc'
 
 import {
@@ -124,7 +125,7 @@ export default function Project() {
           to="/"
         >Dashboard</Breadcrumb.Section>
         <Breadcrumb.Divider />
-        <Breadcrumb.Section>{`Project "${form.name}"`}</Breadcrumb.Section>
+        <Breadcrumb.Section>{`Project ${form.name ? `"${form.name}"` : `...`}`}</Breadcrumb.Section>
       </Breadcrumb>
       <div className="project">
         {loading ? (
@@ -136,6 +137,7 @@ export default function Project() {
                 <h1>{`Project "${form.name}"`}</h1>
               </div>
               <div>
+                <StatusComponent {...getStatusPoject(form.id)} />
                 <span className="add-probe-span">
                   add probe:
                 </span>
@@ -159,9 +161,9 @@ export default function Project() {
                   <Link to={`/${form.id}/log/${p.id}`}>
                     <FitText text={p.name} />
                     <div>
-                      <StatusIcon status={getStatusProbe(p.id)}/>
-                      {` `}
                       <Icon name={(p.type === 'active') ? `paper plane` : `assistive listening systems`} />
+                      {` `}
+                      <StatusComponent {...getStatusProbe(p.id)} />
                     </div>
                   </Link>
                   <div className="helpers">

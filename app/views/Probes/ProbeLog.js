@@ -16,6 +16,8 @@ import classnames from 'classnames';
 
 import AceEditor from '../../components/AceEditor/AceEditor'
 
+import StatusComponent from '../StatusComponent'
+
 import log from 'inspc';
 
 const ms        = require('nlab/ms');
@@ -33,6 +35,9 @@ import {
   actionFetchSelectionStats,
   actionFetchSelectedLog,
   actionDeleteSelectedLog,
+
+  getStatusPoject,
+  getStatusProbe,
 } from '../../_storage/storeAssoc'
 
 const assocKeyFullRange     = 'log_full_range';
@@ -603,9 +608,9 @@ export default function ProbeLog() {
           size="mini"
           as={Link}
           to={`/${pform.id}`}
-        >{`Project "${pform.name}"`}</Breadcrumb.Section>
+        >{`Project ${pform.name ? `"${pform.name}"` : `...`}`}</Breadcrumb.Section>
         <Breadcrumb.Divider />
-        <Breadcrumb.Section>{probe_id && `Logs of ${type} probe "${form.name}"`}</Breadcrumb.Section>
+        <Breadcrumb.Section>{probe_id && `Logs of ${type || '...'} probe ${form.name ? `"${form.name}"` : `...`}`}</Breadcrumb.Section>
       </Breadcrumb>
       <div className="probe-log">
         {loading ? (
@@ -623,6 +628,8 @@ export default function ProbeLog() {
                 to={`/${pform.id}/probe/edit/${form.id}`}
                 className="right"
               />
+
+              <StatusComponent {...getStatusProbe(form.id)} className="right"/>
             </h1>
 
             <div className="chart">

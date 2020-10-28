@@ -1,6 +1,15 @@
 
 
 #app .probe-log {
+    .status-component {
+        .status-icon {
+            width: 28px;
+            height: 28px;
+        }
+        .countdown {
+            margin-right: 10px;
+        }
+    }
     .right {
         float: right;
     }

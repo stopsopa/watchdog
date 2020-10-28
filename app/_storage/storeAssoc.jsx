@@ -225,18 +225,30 @@ export const getStoreAssoc = key => {
 
 export const getStatusProbe = id => {
 
+  let status;
+
+  let state = getStoreAssoc(`status.${id}`);
+
   try {
 
-    if (getStoreAssoc(`status.${id}.db.enabled`) === false) {
+    if (state.db.enabled === false) {
 
-      return 'disabled'
+      status = 'disabled'
+
+      return {
+        status,
+        state,
+      }
     }
 
-    const probe = getStoreAssoc(`status.${id}.probe`);
+    if (typeof state.probe === 'boolean') {
 
-    if (typeof probe === 'boolean') {
+      status = state.probe ? 'ok' : 'error';
 
-      return probe ? 'ok' : 'error';
+      return {
+        status,
+        state,
+      }
     }
   }
   catch (e) {
@@ -247,14 +259,15 @@ export const getStatusProbe = id => {
     })
   }
 
-  return 'unknown';
+  return {
+    status: 'unknown',
+    state,
+  }
 }
 
 export const getStatusPoject = id => {
 
-  // log.dump({
-  //   projects: getStoreAssoc(`status`)
-  // })
+  let state = {};
 
   const list = getStoreAssoc(`status`);
 
@@ -265,6 +278,41 @@ export const getStatusPoject = id => {
     let error = 0;
 
     let probesInThisProject = 0;
+
+    for (let i = 0, l = keys.length, t ; i < l ; i += 1 ) {
+
+      t = list[keys[i]];
+
+      if (t.db.project_id !== id) {
+
+        continue;
+      }
+
+      if (t.db.enabled === false) {
+
+        continue;
+      }
+
+      let nextTriggerFromNowMilliseconds;
+
+      try {
+
+        nextTriggerFromNowMilliseconds = t.nextTriggerFromNowMilliseconds;
+      }
+      catch (e) {}
+
+      if (
+        nextTriggerFromNowMilliseconds !== undefined &&
+        nextTriggerFromNowMilliseconds > 0 &&
+        (
+          state.nextTriggerFromNowMilliseconds === undefined ||
+          state.nextTriggerFromNowMilliseconds > nextTriggerFromNowMilliseconds
+        )
+      ) {
+
+        state = t;
+      }
+    }
 
     for (let i = 0, l = keys.length, t ; i < l ; i += 1 ) {
 
@@ -289,7 +337,10 @@ export const getStatusPoject = id => {
 
       if (typeof t.probe !== 'boolean') {
 
-        return 'error';
+        return {
+          status: 'error',
+          state,
+        }
       }
 
       if ( !t.probe ) {
@@ -300,11 +351,17 @@ export const getStatusPoject = id => {
 
     if (probesInThisProject && error) {
 
-      return error;
+      return {
+        status: error,
+        state,
+      }
     }
 
-    return 'ok'
 
+    return {
+      status: 'ok',
+      state,
+    }
   }
   catch (e) {
 
@@ -315,7 +372,10 @@ export const getStatusPoject = id => {
     });
   }
 
-  return 'unknown';
+  return {
+    status: 'unknown',
+    state,
+  }
 }
 
 export const getStatusFavicon = () => {

@@ -14,6 +14,8 @@ import FitText from '../../components/FitText';
 
 import StatusIcon from '../../views/StatusIcon'
 
+import StatusComponent from '../../views/StatusComponent'
+
 import {
   Button,
   Breadcrumb,
@@ -100,7 +102,7 @@ export default function ProjectsList() {
             <Link to={`/${p.id}`}>
               <FitText text={p.name} />
               <div>
-                <StatusIcon status={getStatusPoject(p.id)}/>
+                <StatusComponent {...getStatusPoject(p.id)}/>
               </div>
             </Link>
             <div className="helpers">

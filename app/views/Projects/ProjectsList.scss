@@ -28,6 +28,9 @@
         color: #414141;
         a {
             color: dimgray;
+            & > div {
+                display: flex;
+            }
         }
         & > .helpers {
             display: none;

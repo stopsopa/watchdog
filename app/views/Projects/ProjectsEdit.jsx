@@ -113,7 +113,7 @@ export default function ProjectsEdit() {
           to="/"
         >Dashboard</Breadcrumb.Section>
         <Breadcrumb.Divider />
-        <Breadcrumb.Section>{id ? `Edit project "${form.name}"`: `Create project`}</Breadcrumb.Section>
+        <Breadcrumb.Section>{id ? `Edit project ${form.name ? `"${form.name}"` : `...`}`: `Create project`}</Breadcrumb.Section>
       </Breadcrumb>
       <div>
 

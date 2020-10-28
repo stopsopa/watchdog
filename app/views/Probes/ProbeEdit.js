@@ -186,9 +186,9 @@ export default function ProbeEdit() {
           size="mini"
           as={Link}
           to={`/${pform.id}`}
-        >{`Project "${pform.name}"`}</Breadcrumb.Section>
+        >{`Project ${pform.name ? `"${pform.name}"` : `...`}`}</Breadcrumb.Section>
         <Breadcrumb.Divider />
-        <Breadcrumb.Section>{probe_id ? `Edit ${type} probe "${form.name}"`: `Create ${type} probe`}</Breadcrumb.Section>
+        <Breadcrumb.Section>{probe_id ? `Edit ${type || '...'} probe ${form.name ? `"${form.name}"` : `...`}`: `Create ${type || '...'} probe`}</Breadcrumb.Section>
       </Breadcrumb>
       <div className="probe">
         {loading ? (
@@ -197,7 +197,7 @@ export default function ProbeEdit() {
           <div>
             <h1>
               <Icon name={(type === 'active') ? `paper plane` : `assistive listening systems`} />
-              {probe_id ? `Edit ${type} probe #${form.id}` : `Create ${type} probe`}
+              {probe_id ? `Edit ${type} probe #${form.id || ''}` : `Create ${type} probe`}
               {form.id && <Button
                 icon="chart bar outline"
                 content="Logs"
