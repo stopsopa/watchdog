@@ -272,7 +272,9 @@ function DateColour({
   )
 }
 
-function UTCClock() {
+function UTCClock({
+  onChange = () => {},
+}) {
   const [time, setTime] = useState({
     char: ':',
     time: new Date(),
@@ -280,11 +282,17 @@ function UTCClock() {
   useEffect(() => {
     let l = true;
     const handler = setInterval(() => {
+
+      const time = new Date()
+
       setTime({
         char: l ? ' ' : ':',
-        time: new Date(),
+        time,
       });
+
       l = !l;
+
+      onChange(time);
     }, 500);
     return () => clearInterval(handler);
   }, []);
@@ -354,6 +362,53 @@ function dateflip(date) {
 
 function dflop(date) {
   return dateflip(flipget(date));
+}
+
+function RenderClock({
+  bridge,
+}) {
+
+  const [ x, setX ] = useState(false);
+
+  useEffect(() => {
+    bridge.subscriber(x => setX(x))
+    return () => {
+      bridge.subscriber(undefined);
+    }
+  }, [])
+
+  if (x) {
+
+    return (
+      <rect
+        width="13"
+
+        // height="380"
+        // y="20"
+
+        height="230"
+        y="170"
+        x={x}
+        fill="blue"
+      />
+    )
+  }
+
+  return null;
+}
+
+function bridge() {
+
+  let subscriber;
+
+  return {
+    subscriber: function (fn) {
+      subscriber = fn;
+    },
+    trigger: function (...args) {
+      (typeof subscriber === 'function') && subscriber(...args);
+    }
+  }
 }
 
 export default function ProbeLog() {
@@ -597,6 +652,8 @@ export default function ProbeLog() {
     })
   }
 
+  const clockBridge = bridge();
+
   return (
     <div>
       <Breadcrumb>
@@ -717,7 +774,7 @@ export default function ProbeLog() {
                 <tbody>
                 <tr>
                   <td>
-                    <UTCClock />
+                    <UTCClock onChange={time => clockBridge.trigger(partOfSvgViewBoxXByWithRatio(ratioFormByNumberOfMilisecondsFromStartDate(time.getTime() - startDateMidnight.getTime())))} />
                     {` `}
                     <DateColour date={offsetGivenDateByNumberOfSeconds(startDateMidnight, parseInt(rangeSeconds * widthRatio, 10))} />
                   </td>
@@ -826,6 +883,9 @@ export default function ProbeLog() {
                           <text x={partOfSvgViewBoxXByPartOfSvgDOMElemWith((d.o - 1) * dayWidth) - 5} y="470"> &nbsp; {formatToTimeZone(d.d, 'D dddd', {timeZone:'UTC'})}</text>
                         </Fragment>
                       ))}
+
+                      <RenderClock bridge={clockBridge}/>
+
                       <rect
                         width="10"
 
@@ -837,7 +897,6 @@ export default function ProbeLog() {
                         x={partOfSvgViewBoxXByWithRatio(widthRatio)}
                         fill="green"
                       />
-
                       <defs>
                         <pattern id="brush_pattern" width="60" height="60" patternUnits="userSpaceOnUse">
                           <path className="visx-pattern-line" d="M 0,60 l 60,-60" stroke="#3e7c48" strokeWidth="3"

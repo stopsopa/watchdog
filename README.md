@@ -17,6 +17,7 @@
 - [x] add ace editor
 - [ ] update live graph and list below
 - [ ] commenting individual logs
+- [x] current time on the graph
 - [ ] add icon informing about collecting full log when probe=true
 - [ ] extend project - add telegram integration with proxy users management - sending to to particular use but to group (to group id)
 - [ ] live update graph
