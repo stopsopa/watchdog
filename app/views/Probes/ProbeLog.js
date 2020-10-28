@@ -281,19 +281,17 @@ function UTCClock({
   });
   useEffect(() => {
     let l = true;
-    const handler = setInterval(() => {
-
+    const run = () => {
       const time = new Date()
-
       setTime({
         char: l ? ' ' : ':',
         time,
       });
-
       l = !l;
-
       onChange(time);
-    }, 500);
+    };
+    run('first');
+    const handler = setInterval(run, 500);
     return () => clearInterval(handler);
   }, []);
   return (
@@ -424,14 +422,24 @@ const bridge = (function () {
 
     const id = generateId();
 
+    const stack = [];
+
     return {
       id,
       subscriber: function (fn) {
         subscriber = fn;
+        if (typeof fn === 'function') {
+          while (stack.length > 0) {
+            fn(...stack.shift())
+          }
+        }
       },
       trigger: function (...args) {
         if (typeof subscriber === 'function') {
           subscriber(...args)
+        }
+        else {
+          stack.push(args)
         }
       }
     }
@@ -447,8 +455,6 @@ export default function ProbeLog() {
   useContext(StoreContextProjects);
 
   const history = useHistory();
-
-
 
   const search = new URLSearchParams(location.search);
 
@@ -679,7 +685,12 @@ export default function ProbeLog() {
     })
   }
 
-  const clockBridge = bridge();
+  let clockBridge = false;
+
+  if (!mouseButtonIsDown) {
+
+    clockBridge = bridge();
+  }
 
   return (
     <div>
@@ -801,10 +812,18 @@ export default function ProbeLog() {
                 <tbody>
                 <tr>
                   <td>
-                    <UTCClock
+                    {clockBridge && <UTCClock
                       key={clockBridge.id}
-                      onChange={time => clockBridge.trigger(partOfSvgViewBoxXByWithRatio(ratioFormByNumberOfMilisecondsFromStartDate(time.getTime() - startDateMidnight.getTime())))}
-                    />
+                      onChange={time => {
+                        clockBridge.trigger(
+                          partOfSvgViewBoxXByWithRatio(
+                            ratioFormByNumberOfMilisecondsFromStartDate(
+                              time.getTime() - startDateMidnight.getTime()
+                            )
+                          )
+                        )
+                      }}
+                    />}
                     {` `}
                     <DateColour date={offsetGivenDateByNumberOfSeconds(startDateMidnight, parseInt(rangeSeconds * widthRatio, 10))} />
                   </td>
@@ -914,10 +933,10 @@ export default function ProbeLog() {
                         </Fragment>
                       ))}
 
-                      <RenderClock
-                        key={clockBridge.id}
+                      {clockBridge && <RenderClock
                         bridge={clockBridge}
-                      />
+                        key={clockBridge.id}
+                      />}
 
                       <rect
                         width="10"
