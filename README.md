@@ -15,12 +15,13 @@
 - [x] buttons to navigate from logs to edit probe and back
 - [ ] (NAAA REJECTED) ctrl+s shrtcut
 - [x] add ace editor
-- [x] update live graph and list below
+- [ ] update live graph and list below
 - [ ] commenting individual logs
 - [ ] add icon informing about collecting full log when probe=true
 - [ ] extend project - add telegram integration with proxy users management - sending to to particular use but to group (to group id)
 - [ ] live update graph
-- [ ] widget informing about incomming execution (for active) or incomming request (for passive) expected trigger (countdown)
+- [x] status icon
+- [x] widget informing about incomming execution (for active) or incomming request (for passive) expected trigger (countdown)
 - [ ] creating new probes by copying settings from another
 
 
