@@ -360,12 +360,19 @@ function tool(db) {
           });
         }
 
-        return await this.passiveWatchdog(minus);
+        return await this.passiveWatchdog({
+          minus,
+        });
       }
 
       this.ioTriggerStatus();
     },
-    passiveWatchdog: async function (minus = 0) {
+    passiveWatchdog: async function (opt = {}) {
+
+      let {
+        minus = 0,
+        lastEs,
+      } = opt || {};
 
       if (minus < 0) {
 
@@ -526,29 +533,25 @@ function tool(db) {
         ...log
       } = data);
 
-      this.ioTriggerStatus()
-
       let created = new Date();
 
-      // enabled
-      // disabled
-      const record = {
-        method: 'post',
-        body: {
-          probe,
-          created: created.toISOString(),
-          probe_id: db.id,
-          execution_time_ms,
-          // log: rest,
-        }
-      }
+      const body = {
+        probe,
+        created: created.toISOString(),
+        probe_id: db.id,
+        execution_time_ms,
+        // log: rest,
+      };
 
       if ( ! probe || db.detailed_log && Object.keys(log || {}).length) {
 
-        record.body.log = log;
+        body.log = log;
       }
 
-      const esresult = await es(`/${index}/_doc/`, record);
+      const esresult = await es(`/${index}/_doc/`, {
+        method: 'post',
+        body,
+      });
 
       if ( ! Number.isInteger(esresult.status) || (esresult.status < 200 || esresult.status > 299)) {
 
@@ -562,7 +565,11 @@ function tool(db) {
         lastTimeLoggedInEsUnixtimestampMilliseconds = created.getTime();
       }
 
-      await this.passiveWatchdog();
+      this.ioTriggerStatus()
+
+      await this.passiveWatchdog({
+        lastEs: body
+      });
     },
     prodRunActiveLog: async function () {
 
