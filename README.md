@@ -31,3 +31,32 @@ https://github.com/stopsopa/watchdog
 
 
 https://www.geeksforgeeks.org/how-to-use-animation-on-favicon-image/#:~:text=An%20animated%20favicon%20is%20created,within%20a%20specific%20time%20frame.&text=Note%3A%20Animated%20images%20of%20type%20GIF%20will%20work%20in%20Firefox%20browser.
+
+
+
+--------- logger ----
+
+https://docs.python.org/3/howto/logging.html
+
+
+error_uuid: [string]
+ip || password [string]
+
+if ip provided:
+    url [string]
+    useragent [string]
+    session_uuid [string]
+    session_interaction_history: (array of few previous important events) Array([string]) 
+    user_id [string] ?
+
+else (if no ip then password have to be provided - for server)
+    machine_hostname: [string]
+    server_instance_uuid: [string] ?
+    cluster: [string] ?
+    node: [string] ?
+    pod: [string] ?
+
+error_symbol: [string] 
+level: DEBUG INFO WARNING+ ERROR CRITICAL [string]    
+
+created: [datetime]

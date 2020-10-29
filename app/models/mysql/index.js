@@ -5,12 +5,15 @@ const projects                  = require('./projects');
 
 const probes                    = require('./probes');
 
+const logger                    = require('./logger');
+
 // images.loadPaths();
 
 const managers = {
     common,
     projects,
     probes,
+    logger,
 };
 
 /**

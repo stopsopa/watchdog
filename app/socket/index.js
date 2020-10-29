@@ -8,4 +8,6 @@ module.exports = (...args) => {
   require('./probes')(...args);
 
   require('./logs')(...args);
+
+  require('./logger')(...args);
 }
