@@ -6,7 +6,13 @@ import React, {
   useContext,
 } from 'react';
 
-import { Route, Switch, Redirect } from 'react-router-dom';
+import {
+  Route,
+  Switch,
+  Link,
+  NavLink,
+  Redirect,
+} from 'react-router-dom';
 
 import ProjectsList from './views/Projects/ProjectsList';
 
@@ -17,6 +23,8 @@ import Project from './views/Projects/Project';
 import ProbeEdit from './views/Probes/ProbeEdit';
 
 import ProbeLog from './views/Probes/ProbeLog';
+
+import LoggersList from './views/Logger/LoggersList';
 
 import './App.scss'
 
@@ -37,7 +45,21 @@ export default function App() {
     <>
       <div className="brand">
         <img src="/watchdog.svg" width="40" />
-        <span>WATCHDOG</span>
+        <span className="name">WATCHDOG</span>
+
+        <NavLink
+          to="/projects"
+          activeClassName="active"
+        >
+          Projects
+        </NavLink>
+        <NavLink
+          to="/loggers"
+          activeClassName="active"
+        >
+          Loggers
+        </NavLink>
+
       </div>
       <hr />
       {socket ? (
@@ -45,43 +67,56 @@ export default function App() {
           <Route
             path="/"
             exact={true}
+            component={() => <Redirect to="/projects" />}
+          />
+          <Route
+            path="/projects"
+            exact={true}
             component={ProjectsList}
           />
           <Route
-            path="/:id(\d+)"
+            path="/projects/:id(\d+)"
             exact={true}
             component={Project}
           />
           <Route
-            path="/create"
+            path="/projects/create"
             exact={true}
             component={ProjectsEdit}
           />
           <Route
-            path="/edit/:id"
+            path="/projects/edit/:id"
             exact={true}
             component={ProjectsEdit}
           />
           <Route
-            path="/:project_id(\d+)/probe/create/:type(active|passive)"
+            path="/projects/:project_id(\d+)/probe/create/:type(active|passive)"
             exact={true}
             component={ProbeEdit}
           />
           <Route
-            path="/:project_id(\d+)/probe/edit/:probe_id"
+            path="/projects/:project_id(\d+)/probe/edit/:probe_id"
             exact={true}
             component={ProbeEdit}
           />
           <Route
-            path="/:project_id(\d+)/log/:probe_id"
+            path="/projects/:project_id(\d+)/log/:probe_id"
             exact={true}
             component={ProbeLog}
           />
+
+
+          <Route
+            path="/loggers"
+            exact={true}
+            component={LoggersList}
+          />
+
+
           <Route
             exact={true}
             component={() => `Unhandled url...`}
           />
-
         </Switch>
       ) : (
         <div>Connecting ...</div>

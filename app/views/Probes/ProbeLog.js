@@ -514,7 +514,7 @@ export default function ProbeLog() {
 
         if (Object.keys(errors).length === 0) {
 
-          history.push(`/${project_id}`);
+          history.push(`/projects/${project_id}`);
 
           notificationsAdd(`Probe '<b>${form.name}</b>' have been ${probe_id ? 'edited': 'created'}`)
         }
@@ -699,14 +699,14 @@ export default function ProbeLog() {
           // onClick={loginSignOut}
           size="mini"
           as={Link}
-          to="/"
-        >Dashboard</Breadcrumb.Section>
+          to="/projects"
+        >Projects</Breadcrumb.Section>
         <Breadcrumb.Divider />
         <Breadcrumb.Section
           // onClick={loginSignOut}
           size="mini"
           as={Link}
-          to={`/${pform.id}`}
+          to={`/projects/${pform.id}`}
         >{`Project ${pform.name ? `"${pform.name}"` : `...`}`}</Breadcrumb.Section>
         <Breadcrumb.Divider />
         <Breadcrumb.Section>{probe_id && `Logs of ${type || '...'} probe ${form.name ? `"${form.name}"` : `...`}`}</Breadcrumb.Section>
@@ -724,7 +724,7 @@ export default function ProbeLog() {
                 icon="edit"
                 content="Edit"
                 as={Link}
-                to={`/${pform.id}/probe/edit/${form.id}`}
+                to={`/projects/${pform.id}/probe/edit/${form.id}`}
                 className="right"
               />
 

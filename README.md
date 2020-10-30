@@ -1,5 +1,4 @@
 
-
 # todo
 
 - [ ] single dev.sh running everything (webpack build and dev server)
@@ -20,7 +19,6 @@
 - [x] current time on the graph
 - [ ] add icon informing about collecting full log when probe=true
 - [ ] extend project - add telegram integration with proxy users management - sending to to particular use but to group (to group id)
-- [ ] live update graph
 - [x] status icon
 - [x] widget informing about incomming execution (for active) or incomming request (for passive) expected trigger (countdown)
 - [ ] creating new probes by copying settings from another

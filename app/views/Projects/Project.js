@@ -122,8 +122,8 @@ export default function Project() {
           // onClick={loginSignOut}
           size="mini"
           as={Link}
-          to="/"
-        >Dashboard</Breadcrumb.Section>
+          to="/projects"
+        >Projects</Breadcrumb.Section>
         <Breadcrumb.Divider />
         <Breadcrumb.Section>{`Project ${form.name ? `"${form.name}"` : `...`}`}</Breadcrumb.Section>
       </Breadcrumb>
@@ -145,20 +145,20 @@ export default function Project() {
                   icon="paper plane"
                   content="Active"
                   as={Link}
-                  to={`/${form.id}/probe/create/active`}
+                  to={`/projects/${form.id}/probe/create/active`}
                 />
                 <Button
                   icon="assistive listening systems"
                   content="Passive"
                   as={Link}
-                  to={`/${form.id}/probe/create/passive`}
+                  to={`/projects/${form.id}/probe/create/passive`}
                 />
               </div>
             </div>
             <div className="project-probes">
               {getProbesList().map(p => (
                 <div key={p.id} className='probe'>
-                  <Link to={`/${form.id}/log/${p.id}`}>
+                  <Link to={`/projects/${form.id}/log/${p.id}`}>
                     <FitText text={p.name} />
                     <div>
                       <Icon name={(p.type === 'active') ? `paper plane` : `assistive listening systems`} />
@@ -181,7 +181,7 @@ export default function Project() {
                       size="mini"
                       as={Link}
                       color="olive"
-                      to={`/${form.id}/probe/edit/${p.id}`}
+                      to={`/projects/${form.id}/probe/edit/${p.id}`}
                     >Edit</Button>
                   </div>
                 </div>

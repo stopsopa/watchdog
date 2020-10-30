@@ -6,7 +6,7 @@ import React, {
   useContext,
 } from 'react';
 
-import './ProjectsList.scss';
+import './LoggersList.scss';
 
 import log from 'inspc';
 
@@ -25,7 +25,8 @@ import {
 } from 'semantic-ui-react';
 
 import {
-  Link
+  Link,
+  NavLink,
 } from 'react-router-dom';
 
 import {
@@ -46,7 +47,7 @@ import {
   getStatusPoject,
 } from '../../_storage/storeAssoc'
 
-export default function ProjectsList() {
+export default function LoggersList() {
 
   const [ deleting, setDeleting ] = useState(false);
 
@@ -96,7 +97,7 @@ export default function ProjectsList() {
           to="/projects/create"
         >Create project</Breadcrumb.Section>
       </Breadcrumb>
-      <div className="projects-list">
+      <div className="loggers-list">
         {getProjectList().map(p => (
           <div className='project' key={p.id}>
             <Link to={`/projects/${p.id}`}>

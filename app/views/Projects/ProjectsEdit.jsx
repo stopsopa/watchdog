@@ -80,7 +80,7 @@ export default function ProjectsEdit() {
 
           if (Object.keys(errors).length === 0) {
 
-            history.push(`/`);
+            history.push(`/projects/`);
 
             notificationsAdd(`Project '<b>${form.name}</b>' have been ${id ? 'edited': 'created'}`)
           }
@@ -110,8 +110,8 @@ export default function ProjectsEdit() {
           // onClick={loginSignOut}
           size="mini"
           as={Link}
-          to="/"
-        >Dashboard</Breadcrumb.Section>
+          to="/projects"
+        >Projects</Breadcrumb.Section>
         <Breadcrumb.Divider />
         <Breadcrumb.Section>{id ? `Edit project ${form.name ? `"${form.name}"` : `...`}`: `Create project`}</Breadcrumb.Section>
       </Breadcrumb>

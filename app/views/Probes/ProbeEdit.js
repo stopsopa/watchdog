@@ -125,7 +125,7 @@ export default function ProbeEdit() {
 
         if (Object.keys(errors).length === 0) {
 
-          history.push(`/${project_id}`);
+          history.push(`/projects/${project_id}`);
 
           notificationsAdd(`Probe '<b>${form.name}</b>' have been ${probe_id ? 'edited': 'created'}`)
         }
@@ -178,14 +178,14 @@ export default function ProbeEdit() {
           // onClick={loginSignOut}
           size="mini"
           as={Link}
-          to="/"
-        >Dashboard</Breadcrumb.Section>
+          to="/projects"
+        >Projects</Breadcrumb.Section>
         <Breadcrumb.Divider />
         <Breadcrumb.Section
           // onClick={loginSignOut}
           size="mini"
           as={Link}
-          to={`/${pform.id}`}
+          to={`/projects/${pform.id}`}
         >{`Project ${pform.name ? `"${pform.name}"` : `...`}`}</Breadcrumb.Section>
         <Breadcrumb.Divider />
         <Breadcrumb.Section>{probe_id ? `Edit ${type || '...'} probe ${form.name ? `"${form.name}"` : `...`}`: `Create ${type || '...'} probe`}</Breadcrumb.Section>
@@ -202,7 +202,7 @@ export default function ProbeEdit() {
                 icon="chart bar outline"
                 content="Logs"
                 as={Link}
-                to={`/${pform.id}/log/${form.id}`}
+                to={`/projects/${pform.id}/log/${form.id}`}
                 className="right"
               />}
             </h1>

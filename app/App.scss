@@ -1,9 +1,21 @@
 .brand {
     display: flex;
-    align-items: center;
-    & > span {
+    align-items: stretch;
+    & > span.name {
         font-family: "Alegreya",serif;
         font-size: 36px;
+        line-height: 39px;
+    }
+    & > a {
+        line-height: 39px;
+        padding-left: 10px;
+        padding-right: 10px;
+        &:hover {
+            text-decoration: underline;
+        }
+        &.active {
+            background-color: #f6f6f6;
+        }
     }
 }
 #app .breadcrumb {

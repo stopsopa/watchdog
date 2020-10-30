@@ -30,7 +30,22 @@ module.exports = ({
 
     try {
 
-      const list = await man.fetch('select * from :table: where project_id = :project_id order by created', {
+      const list = await man.fetch(`
+select  id,
+        name,
+        description,
+        type,
+        enabled,
+        interval_ms,
+        created,
+        updated,
+        project_id,
+        password,
+        detailed_log 
+from :table: 
+where project_id = :project_id 
+order by created
+`, {
         project_id,
       });
 
