@@ -70,9 +70,9 @@ fi
 #    exit 1;
 #fi
 
-#if [ "$PROJECT_NAME_SHORT_PVC__NODASH" = "" ]; then
+#if [ "$PROJECT_NAME_PVC__NODASH" = "" ]; then
 #
-#    echo "$0 error: environment variable missing 'PROJECT_NAME_SHORT_PVC__NODASH'";
+#    echo "$0 error: environment variable missing 'PROJECT_NAME_PVC__NODASH'";
 #
 #    exit 1;
 #fi

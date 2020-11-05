@@ -39,6 +39,7 @@ https://docs.python.org/3/howto/logging.html
 
 error_uuid: [string]
 ip || password [string]
+env: [string] (prod|stage|test|... so on)
 
 if ip provided:
     url [string]

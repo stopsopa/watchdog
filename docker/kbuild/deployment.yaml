@@ -2,21 +2,21 @@ remove this line with envrender.sh --rmfirst parameter
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ${PROJECT_NAME_SHORT_GENERATED}
+  name: ${PROJECT_NAME_GENERATED}
   labels:
-    app: ${PROJECT_NAME_SHORT_GENERATED}
+    app: ${PROJECT_NAME_GENERATED}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ${PROJECT_NAME_SHORT_GENERATED}
+      app: ${PROJECT_NAME_GENERATED}
   template:
     metadata:
       labels:
-        app: ${PROJECT_NAME_SHORT_GENERATED}
+        app: ${PROJECT_NAME_GENERATED}
     spec:
       containers:
-        - name: ${PROJECT_NAME_SHORT_GENERATED}
+        - name: ${PROJECT_NAME_GENERATED}
           image: "$PROTECTED_DOCKER_REGISTRY/$PROJECT_NAME:$DEPLOYMENT_TAG" # docker run -p 8082:80 docker-registry.domain.com/tapp:0.0.12
           # docker run -it $PROTECTED_DOCKER_REGISTRY/$PROJECT_NAME:$DEPLOYMENT_TAG bash
           ports:
@@ -58,14 +58,14 @@ spec:
             secretName: env-${PROJECT_NAME_SHORT}
 #        - name: image-store
 #          persistentVolumeClaim:
-#            claimName: pvc-${PROJECT_NAME_SHORT_PVC__NODASH}
+#            claimName: pvc-${PROJECT_NAME_PVC__NODASH}
 #            readOnly: false
       terminationGracePeriodSeconds: 2 # how long to wait for SIGKILL handler to finish before pod will be killed by k8s
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: ${PROJECT_NAME_SHORT_GENERATED}-service
+  name: ${PROJECT_NAME_GENERATED}-service
 spec:
   #  type: NodePort
   ports:
@@ -73,7 +73,7 @@ spec:
       port: 80
   #      nodePort: 30010
   selector:
-    app: ${PROJECT_NAME_SHORT_GENERATED}
+    app: ${PROJECT_NAME_GENERATED}
 #---
 #apiVersion: v1
 #kind: PersistentVolumeClaim

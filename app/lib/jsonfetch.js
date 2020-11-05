@@ -31,7 +31,7 @@ module.exports = function jsonfetch (url, opt = {}) {
     throw th(`method is not a string`);
   }
 
-  method = method.toLowerCase();
+  method = method.toUpperCase();
 
   return new Promise((resolve, reject) => {
 

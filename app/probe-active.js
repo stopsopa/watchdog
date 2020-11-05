@@ -65,6 +65,7 @@ function jsonfetch (url, opt = {}) {
     headers     = {},
     debug       = false,
     body,
+    nobody      = false,
   } = opt;
 
   if ( typeof method !== 'string' ) {
@@ -72,7 +73,7 @@ function jsonfetch (url, opt = {}) {
     throw th(`method is not a string`);
   }
 
-  method = method.toLowerCase();
+  method = method.toUpperCase();
 
   return new Promise((resolve, reject) => {
 
@@ -153,11 +154,17 @@ function jsonfetch (url, opt = {}) {
           }
         }
 
-        resolve({
+        const payload = {
           status: res.statusCode,
           headers: res.headers,
-          body,
-        })
+        };
+
+        if (nobody === false) {
+
+          payload.body = body;
+        }
+
+        resolve(payload)
       });
     });
 

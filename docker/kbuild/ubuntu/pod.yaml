@@ -43,7 +43,7 @@ spec:
             secretName: env-$PROJECT_NAME_SHORT
 #        - name: image-store
 #          persistentVolumeClaim:
-#            claimName: pvc-$PROJECT_NAME_SHORT_PVC__NODASH
+#            claimName: pvc-$PROJECT_NAME_PVC__NODASH
 #            readOnly: false
 
 

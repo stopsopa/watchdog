@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# used in
+# git@github.com:stopsopa/watchdog.git
+
 GITSTORAGESOURCE="git@bitbucket.org:phaseii/doc.git"
 
 GITSTORAGETARGETDIR="pii-watchdog"

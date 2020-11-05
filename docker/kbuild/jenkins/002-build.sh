@@ -417,9 +417,9 @@ DEPLOYMENT_FILE="$ROOT/docker/kbuild/deployment.yaml";
 printf "\nDEPLOYMENT_TAG=\"$TAG\"\n" >> "$LOCALENV"
 
 # OVERRIDE PROJECT_NAME
-PROJECT_NAME_SHORT_GENERATED="${PROJECT_NAME_SHORT}-migration"
+PROJECT_NAME_GENERATED="${PROJECT_NAME_SHORT}-migration"
 
-printf "\nPROJECT_NAME_SHORT_GENERATED=\"$PROJECT_NAME_SHORT_GENERATED\"\n" >> "$LOCALENV"
+printf "\nPROJECT_NAME_GENERATED=\"$PROJECT_NAME_GENERATED\"\n" >> "$LOCALENV"
 
 DEPLOYMENT_FILE="$(/bin/bash "$ROOT/bash/envrender.sh" "$LOCALENV" "$DEPLOYMENT_FILE" --rmfirst --clear --gen "jenkins-build-tmp")"
 
@@ -435,7 +435,7 @@ DEP="$(node "$ROOT/bash/kuber/getold.js" "$DEPLOYMENT_FILE" 0 metadata.name)"
 
 kubectl rollout status "deployment.v1.apps/$DEP"
 
-MIGRATION_DEPLOYMENT="${PROJECT_NAME_SHORT_GENERATED}"
+MIGRATION_DEPLOYMENT="${PROJECT_NAME_GENERATED}"
 
 POD="$(/bin/bash "$ROOT/bash/kuber/get-name-of-n-pod-of-the-deployment.sh" "$MIGRATION_DEPLOYMENT")"
 
@@ -531,9 +531,9 @@ DEPLOYMENT_FILE="$ROOT/docker/kbuild/deployment.yaml";
 
 printf "\nDEPLOYMENT_TAG=\"$TAG\"\n" >> "$ROOT/.env"
 
-PROJECT_NAME_SHORT_GENERATED="${PROJECT_NAME_SHORT}"
+PROJECT_NAME_GENERATED="${PROJECT_NAME_SHORT}"
 
-printf "\nPROJECT_NAME_SHORT_GENERATED=\"$PROJECT_NAME_SHORT_GENERATED\"\n" >> "$ROOT/.env"
+printf "\nPROJECT_NAME_GENERATED=\"$PROJECT_NAME_GENERATED\"\n" >> "$ROOT/.env"
 
 DEPLOYMENT_FILE="$(/bin/bash "$ROOT/bash/envrender.sh" "$ROOT/.env" "$DEPLOYMENT_FILE" --rmfirst --clear --gen "jenkins-build-tmp")"
 
