@@ -3,6 +3,8 @@ const fs        = require('fs');
 
 const template  = require('lodash/template');
 
+const se        = require('nlab/se');
+
 const th        = msg => new Error(`server-template.js error: ${msg}`);
 
 /**
