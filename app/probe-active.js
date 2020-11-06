@@ -13,6 +13,8 @@ const log           = require('inspc');
 
 const se            = require('nlab/se');
 
+const promiseall    = require('nlab/promiseall');
+
 const emsg          = msg => `jsonfetch: ${msg}`;
 
 const th            = msg => new Error(emsg(msg));
@@ -21,9 +23,25 @@ module.exports = async function () {
 
   try {
 
-    const data = await jsonfetch('http://example.com/');
+    const data = await jsonfetch('http://example.com/', {
+      nobody: true,
+    });
 
-    delete data.body; // to reduce log size
+    // const common    = 'lymphomahub.com/__ping';
+    //
+    // const expected  = `https://${common}`;
+    //
+    // let [
+    //   resWWW,
+    //   resHttp,
+    // ] = await promiseall([
+    //   jsonfetch(`https://www.${common}`, {
+    //     nobody: true,
+    //   }),
+    //   jsonfetch(`http://${common}`, {
+    //     nobody: true,
+    //   }),
+    // ]);
 
     return { // this object should have only two keys: 'probe' and 'data' (where data is optional)
 
@@ -37,6 +55,10 @@ module.exports = async function () {
       // Any deviation from those conditions will cause driver to throw "Invalid probe error'.
       probe: data.status === 200,
       ...data
+
+      // probe: resWWW.status === 308 && resHttp.status === 308 && resWWW.headers.location === expected && resHttp.headers.location === expected,
+      // resWWW,
+      // resHttp,
     }
 
   }
