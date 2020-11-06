@@ -1,4 +1,8 @@
 /**
+ *
+ * node app/lib/buildtime.js --test
+ *
+ *
  * 2020-10-26_00-59-37_prod_git_commit_hash_unobtainable
  *  if no .git directory present
  *
@@ -54,7 +58,7 @@ if (fs.existsSync(file)) {
 
 (async function () {
 
-  let hash = '';
+  let lib = {};
 
   try {
 
@@ -66,52 +70,110 @@ if (fs.existsSync(file)) {
 
     tmp = tmp.stdout;
 
-    hash = trim(tmp);
+    tmp = trim(tmp, '-_ ')
+
+    lib.githash = trim(tmp);
+
+    try {
+
+      // throw new Error('');
+      if (lib.githash) {
+
+        let tmp = await cmd(['git', 'show', '-s', '--format=%ci', lib.githash]);
+
+        tmp = tmp.stdout;
+
+        tmp = tmp.replace(/^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}).*/g, '$1');
+
+        tmp = tmp.replace(/ /g, '_').replace(/[^\d_]+/g, '-')
+
+        tmp = trim(tmp);
+
+        tmp = trim(tmp, '-_ ')
+
+        lib.gittime = tmp;
+      }
+    }
+    catch (e) {
+
+      // log.dump({
+      //   tmp: se(e),
+      // })
+    }
   }
   catch (e) {
 
     // log.dump({
-    //   hash: se(e),
+    //   lib: se(e),
     // })
   }
 
-  try {
+  lib.mode = 'prod';
 
-    // throw new Error('');
+  lib.time = (new Date()).toISOString().substring(0, 19).replace('T', '_').replace(/:/g, '-')
 
-    let tmp = await cmd(['git', 'show', '-s', '--format=%ci', hash]);
+  console.log({
+    buildtime: lib
+  })
 
-    tmp = tmp.stdout;
+// PROJECT_NAME              : watchdog
+// PROJECT_NAME_SHORT        : watchdog
+// TZ                        : UTC
+// NODE_PORT                 : 80
+// NODE_HOST                 : 0.0.0.0
+// TAG                       : 0.0.1
+// PROJECT_NAME_DOCKER_IMAGE : socket-test
+// DEPLOYMENT_TAG            : 0.0.38-master
+// BUILD_NUMBER              : 57
+// BUILD_TIME                : 2020-11-06 15:31:58
+// GIT_COMMIT                : 47fad9b4
 
-    tmp = tmp.replace(/^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}).*/g, '$1');
+function buildtime(d) {
 
-    tmp = tmp.replace(/ /g, '_').replace(/[^\d_]+/g, '-')
+  if (process.env.GIT_COMMIT) {
 
-    tmp = trim(tmp);
-
-    hash += '_' + tmp;
+    d.githash = process.env.GIT_COMMIT;
   }
-  catch (e) {
 
-    // log.dump({
-    //   tmp: se(e),
-    // })
+  if (process.env.BUILD_TIME) {
+
+    d.gittime = process.env.BUILD_TIME.replace(/:/g, '-').replace(/ /g, '_');
   }
 
-  hash = trim(hash, '-_ ')
+  const t = [];
 
-  const time = (new Date()).toISOString().substring(0, 19).replace('T', '_').replace(/:/g, '-') + '_prod' + (hash ? ('_' + hash) : '');
+  d.time      && t.push(d.time);
+
+  d.mode      && t.push(d.mode);
+
+  d.githash   && t.push(d.githash);
+
+  d.gittime   && t.push(d.gittime);
+
+  return t.join('_');
+}
+
+  lib = `
+module.exports = (${buildtime.toString()}(${JSON.stringify(lib, null, 4)}))
+`
 
   if ( ! fs.existsSync(dir) ) {
 
     throw th(`Directory '${dir}' doesn't exist and i can't create it`);
   }
 
-  fs.writeFileSync(file, `module.exports = '${time}'`);
+  fs.writeFileSync(file, lib);
 
   if ( ! fs.existsSync(file)) {
 
     throw th(`Can't create file '${file}'`);
+  }
+
+  if (process.argv.includes('--test')) {
+
+    console.log({
+      test: require(file),
+    });
   }
 })();
 

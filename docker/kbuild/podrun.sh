@@ -124,5 +124,7 @@ source .env
 
 (cd app && node lib/preprocessor.js)
 
+export NODE_ENV="production"
+
 node server.js
 
