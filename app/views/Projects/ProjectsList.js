@@ -110,8 +110,8 @@ export default function ProjectsList() {
               <div>
                 <StatusComponent {...getStatusPoject(p.id)}/>
                 <div className="flags">
-                  {getProjectInArchiveMode(p.id) && <ArchiveIcon content={`At least one probe have archive mode ON`}/>}
-                  {getProjectInServiceMode(p.id) && <ServiceIcon content={`At least one probe have service mode ON`}/>}
+                  {getProjectInArchiveMode(p.id) && <ArchiveIcon content={`At least one probe is in archive mode`}/>}
+                  {getProjectInServiceMode(p.id) && <ServiceIcon content={`At least one probe is in service mode`}/>}
                 </div>
               </div>
             </Link>
