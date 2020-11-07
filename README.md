@@ -15,22 +15,18 @@
 - [ ] (NAAA REJECTED) ctrl+s shrtcut
 - [x] add ace editor
 - [ ] update live graph and list below
+- [ ] service flag
 - [ ] commenting individual logs
 - [x] current time on the graph
-- [ ] add icon informing about collecting full log when probe=true
+- [x] add icon informing about collecting full log when probe=true - archive mode
 - [ ] extend project - add telegram integration with proxy users management - sending to to particular use but to group (to group id)
 - [x] status icon
 - [x] widget informing about incomming execution (for active) or incomming request (for passive) expected trigger (countdown)
 - [ ] creating new probes by copying settings from another
 
-
-
 https://github.com/stopsopa/watchdog
 
-
 https://www.geeksforgeeks.org/how-to-use-animation-on-favicon-image/#:~:text=An%20animated%20favicon%20is%20created,within%20a%20specific%20time%20frame.&text=Note%3A%20Animated%20images%20of%20type%20GIF%20will%20work%20in%20Firefox%20browser.
-
-
 
 --------- logger ----
 

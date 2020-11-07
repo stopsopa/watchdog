@@ -53,5 +53,15 @@
                 display: block;
             }
         }
+        .flags {
+            display: inline-block;
+            flex-grow: 1;
+            text-align: right;
+            .archive-icon {
+                svg {
+                    top: 1px;
+                }
+            }
+        }
     }
 }

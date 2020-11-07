@@ -16,6 +16,8 @@ import FitText from '../../components/FitText';
 
 import StatusComponent from '../StatusComponent'
 
+import ArchiveIcon from '../ArchiveIcon';
+
 import {
   Breadcrumb,
   List,
@@ -164,6 +166,10 @@ export default function Project() {
                       <Icon name={(p.type === 'active') ? `paper plane` : `assistive listening systems`} />
                       {` `}
                       <StatusComponent {...getStatusProbe(p.id)} />
+
+                      <div className="flags">
+                        {p.detailed_log && <ArchiveIcon content={`Archive mode ON`}/>}
+                      </div>
                     </div>
                   </Link>
                   <div className="helpers">
