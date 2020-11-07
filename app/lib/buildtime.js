@@ -122,7 +122,6 @@ if (fs.existsSync(file)) {
 // NODE_PORT                 : 80
 // NODE_HOST                 : 0.0.0.0
 // TAG                       : 0.0.1
-// PROJECT_NAME_DOCKER_IMAGE : socket-test
 // DEPLOYMENT_TAG            : 0.0.38-master
 // BUILD_NUMBER              : 57
 // BUILD_TIME                : 2020-11-06 15:31:58

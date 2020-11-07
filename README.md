@@ -21,9 +21,11 @@
 - [x] add icon informing about collecting full log when probe=true - archive mode
 - [ ] extend project - add telegram integration with proxy users management - sending to to particular use but to group (to group id)
 - [x] status icon
+- [ ] some probes are disabled icon
 - [x] widget informing about incomming execution (for active) or incomming request (for passive) expected trigger (countdown)
 - [ ] creating new probes by copying settings from another
 - [ ] whether icons https://www.s-ings.com/typicons/
+- [ ] issue fix, updating probe updates list of probes in other browser instance
 
 https://github.com/stopsopa/watchdog
 
