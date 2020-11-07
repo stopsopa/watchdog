@@ -82,6 +82,7 @@ module.exports = knex => extend(knex, prototype, {
             }),
             enabled: false,
             detailed_log: false,
+            service_mode: false,
             code: def[extra.type],
             ...extra,
         }
@@ -112,6 +113,8 @@ module.exports = knex => extend(knex, prototype, {
         row.enabled = Boolean(row.enabled);
 
         row.detailed_log = Boolean(row.detailed_log);
+
+        row.service_mode = Boolean(row.service_mode);
         //
         // if (typeof row.config === 'string') {
         //
@@ -137,6 +140,8 @@ module.exports = knex => extend(knex, prototype, {
         row.enabled = Boolean(row.enabled);
 
         row.detailed_log = Boolean(row.detailed_log);
+
+        row.service_mode = Boolean(row.service_mode);
 
         // if (typeof row.roles !== 'undefined') {
         //
@@ -335,6 +340,9 @@ module.exports = knex => extend(knex, prototype, {
                 new Type('bool'),
             ]),
             detailed_log: new Required([
+                new Type('bool'),
+            ]),
+            service_mode: new Required([
                 new Type('bool'),
             ]),
             interval_ms: new Required([

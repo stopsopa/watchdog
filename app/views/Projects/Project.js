@@ -18,6 +18,8 @@ import StatusComponent from '../StatusComponent'
 
 import ArchiveIcon from '../ArchiveIcon';
 
+import ServiceIcon from '../ServiceIcon';
+
 import {
   Breadcrumb,
   List,
@@ -169,6 +171,7 @@ export default function Project() {
 
                       <div className="flags">
                         {p.detailed_log && <ArchiveIcon content={`Archive mode ON`}/>}
+                        {p.service_mode && <ServiceIcon content={`Service mode ON`}/>}
                       </div>
                     </div>
                   </Link>

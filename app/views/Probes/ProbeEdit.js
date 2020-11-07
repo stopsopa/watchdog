@@ -23,6 +23,8 @@ import IntervalInput from '../../components/IntervalInput/IntervalInput';
 
 import ArchiveIcon from '../ArchiveIcon';
 
+import ServiceIcon from '../ServiceIcon';
+
 import {
   Breadcrumb,
   List,
@@ -265,6 +267,17 @@ export default function ProbeEdit() {
                   className="warning"
                 ><ArchiveIcon content={`archive mode`}/> Save detailed logs also for "probe": true</NoInput>
                 {errors.detailed_log && <div className="error">{errors.detailed_log}</div>}
+              </Form.Field>
+              <Form.Field
+                disabled={loading}
+                error={!!errors.service_mode}
+              >
+                <NoInput
+                  checked={Boolean(form.service_mode)}
+                  onChange={() => actionProbesFormFieldEdit('service_mode', !form.service_mode)}
+                  className="warning"
+                ><ServiceIcon content={`service mode`}/> Means that this probe still have to be tuned in the future</NoInput>
+                {errors.service_mode && <div className="error">{errors.service_mode}</div>}
               </Form.Field>
               <Form.Field
                 disabled={loading}

@@ -485,6 +485,40 @@ export const getProjectInArchiveMode = id => {
 
   return false;
 }
+export const getProjectInServiceMode = id => {
+
+  const list = getStoreAssoc(`status`);
+
+  try {
+
+    const keys = Object.keys(list);
+
+    for (let i = 0, l = keys.length, t ; i < l ; i += 1 ) {
+
+      t = list[keys[i]];
+
+      if ( ! t.db || ! t.db.project_id || t.db.project_id !== id ) {
+
+        continue;
+      }
+
+      if ( t.db.service_mode ) {
+
+        return true;
+      }
+    }
+  }
+  catch (e) {
+
+    log.dump({
+      getProjectInAServiceMode_catch_error: e,
+      project_id: id,
+      list,
+    });
+  }
+
+  return false;
+}
 
 export const setStatusReset = () => setStoreAssocDelete(`status`);
 

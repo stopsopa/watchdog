@@ -41,7 +41,8 @@ select  id,
         updated,
         project_id,
         password,
-        detailed_log 
+        detailed_log,
+        service_mode
 from :table: 
 where project_id = :project_id 
 order by created

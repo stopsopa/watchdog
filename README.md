@@ -15,7 +15,7 @@
 - [ ] (NAAA REJECTED) ctrl+s shrtcut
 - [x] add ace editor
 - [ ] update live graph and list below
-- [ ] service flag
+- [x] service flag
 - [ ] commenting individual logs
 - [x] current time on the graph
 - [x] add icon informing about collecting full log when probe=true - archive mode

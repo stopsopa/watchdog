@@ -1,0 +1,12 @@
+.service-icon  {
+    display: inline-block;
+    position: relative;
+    width: 21px;
+    height: 18px;
+    svg {
+        width: 18px;
+        position: absolute;
+        top: 5px;
+        left: 0;
+    }
+}

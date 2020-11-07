@@ -45,9 +45,12 @@ import {
   StoreContext as StoreContextAssoc,
   getStatusPoject,
   getProjectInArchiveMode,
+  getProjectInServiceMode,
 } from '../../_storage/storeAssoc'
 
 import ArchiveIcon from '../ArchiveIcon';
+
+import ServiceIcon from '../ServiceIcon';
 
 export default function ProjectsList() {
 
@@ -108,6 +111,7 @@ export default function ProjectsList() {
                 <StatusComponent {...getStatusPoject(p.id)}/>
                 <div className="flags">
                   {getProjectInArchiveMode(p.id) && <ArchiveIcon content={`At least one probe have archive mode ON`}/>}
+                  {getProjectInServiceMode(p.id) && <ServiceIcon content={`At least one probe have service mode ON`}/>}
                 </div>
               </div>
             </Link>
