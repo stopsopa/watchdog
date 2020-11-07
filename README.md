@@ -1,7 +1,7 @@
 
 # todo
 
-- [ ] single dev.sh running everything (webpack build and dev server)
+- [ ] single server.sh running everything (webpack build and dev server)
 - [x] refresh param ?_=time (browser cache)
 - [ ] extend webpack to be able to import semantic ui css
 - [ ] parameter to skip cache-loader in webpack.config.js for docker image build mode
@@ -23,6 +23,7 @@
 - [x] status icon
 - [x] widget informing about incomming execution (for active) or incomming request (for passive) expected trigger (countdown)
 - [ ] creating new probes by copying settings from another
+- [ ] whether icons https://www.s-ings.com/typicons/
 
 https://github.com/stopsopa/watchdog
 

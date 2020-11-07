@@ -19,7 +19,7 @@ server:
 	node server.js
 
 dev:
-	/bin/bash dev.sh
+	/bin/bash server.sh
 
 esdeleteindex:
 	@echo "\n\n    node server.js --delete\n\n"

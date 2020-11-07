@@ -22,4 +22,6 @@ yarn add open-cli
 #node "$_ROOT/node_modules/.bin/open-cli" http://0.0.0.0:$NODE_PORT
 sleep 1 && node "$_ROOT/node_modules/.bin/open-cli" http://0.0.0.0:$NODE_PORT &
 
+export NODE_ENV="development"
+
 nodemon --ignore public/dist --ignore var -- server.js --verbose
