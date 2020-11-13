@@ -12,7 +12,6 @@
 - [x] log stats page, listen to get parameters
 - [x] fix resizing of the graph with selection (it would require to convert positon of mouse to percentage of with of the svg - not worth of effort)
 - [x] buttons to navigate from logs to edit probe and back
-- [ ] (NAAA REJECTED) ctrl+s shrtcut
 - [x] add ace editor
 - [ ] update live graph and list below
 - [x] service flag
@@ -25,7 +24,7 @@
 - [x] widget informing about incomming execution (for active) or incomming request (for passive) expected trigger (countdown)
 - [ ] creating new probes by copying settings from another
 - [ ] whether icons https://www.s-ings.com/typicons/
-- [ ] issue fix, updating probe updates list of probes in other browser instance
+- [x] issue fix, updating probe updates list of probes in other browser instance
 
 https://github.com/stopsopa/watchdog
 

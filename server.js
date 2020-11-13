@@ -202,7 +202,7 @@ const estool = (async function () {
 
         require('./app/io').bind({
           io,
-          bind: require('./app/socket'),
+          bind: require('./app/server-socket'),
         });
 
       }());

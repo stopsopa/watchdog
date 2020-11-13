@@ -291,17 +291,31 @@ export const actionProbesListPopulate = ({
   socket.emit('probes_list_populate', project_id);
 
   const probes_list_populate = ({
+    project_id: incomming_project_id,
     list,
   }) => {
 
-    dispatch({
-      type: PROBES_LIST_POPULATE,
-      payload: list,
-    })
+    if (incomming_project_id == project_id) {
 
-    onLoad({
-      list,
-    });
+      dispatch({
+        type: PROBES_LIST_POPULATE,
+        payload: list,
+      })
+
+      onLoad({
+        list,
+      });
+    }
+    else {
+
+      log.dump({
+        probes_list_populate_else: {
+          incomming_project_id,
+          project_id
+        }
+      })
+    }
+
   }
 
   socket.on('probes_list_populate', probes_list_populate);

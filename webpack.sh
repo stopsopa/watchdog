@@ -37,7 +37,7 @@ mkdir -p override
 #mkdir -p "$_ROOT/public/dist"
 #if [ -e dist ]; then echo 'dist symlink already exist'; else ln -s ../public/dist dist; fi
 
-node "$_ROOT/app/lib/buildtime.js" # run only during build time
+node "$_ROOT/app/lib/buildtimer.js" # run only during build time
 
 node "$_ROOT/app/lib/preprocessor.js" # run on server execution with fresh .env
 

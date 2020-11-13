@@ -15,7 +15,7 @@ source "$_ROOT/.env"
 
 /bin/bash testport.sh
 
-node app/lib/buildtime.js
+node app/lib/buildtimer.js
 
 yarn add open-cli
 

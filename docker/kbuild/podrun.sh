@@ -122,9 +122,9 @@ cd /home/node/app
 
 source .env
 
-(cd app && node lib/preprocessor.js)
-
 export NODE_ENV="production"
+
+(cd app && node lib/preprocessor.js)
 
 node server.js
 

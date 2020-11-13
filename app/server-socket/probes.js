@@ -51,6 +51,7 @@ order by created
       });
 
       target.emit('probes_list_populate', {
+        project_id,
         list,
       })
     }

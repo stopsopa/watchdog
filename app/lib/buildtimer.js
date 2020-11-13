@@ -1,6 +1,6 @@
 /**
  *
- * node app/lib/buildtime.js --test
+ * node app/lib/buildtimer.js --test
  *
  *
  * 2020-10-26_00-59-37_prod_git_commit_hash_unobtainable
@@ -24,16 +24,16 @@ const cmd = require('./cmd');
 
 const se = require('nlab/se');
 
+const th = msg => new Error(`buildtimer.js error: ${msg}`);
+
 const webpack = require('../../config')('production');
 
 if ( typeof webpack.server.buildtime !== 'string') {
 
-  throw new Error(`webpack.server.buildtime is not a string`);
+  throw th(`webpack.server.buildtime is not a string`);
 }
 
 const file = webpack.server.buildtime;
-
-const th = msg => new Error(`buildtime.js error: ${msg}`);
 
 console.log("");
 
