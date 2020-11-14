@@ -628,7 +628,7 @@ export const actionFetchFullRangeStats = ({
         l: true // live
       });
 
-      if (current.length > 400) {
+      if (current.length > 10000) {
 
         current = current.splice(current.length - 400)
       }
@@ -643,7 +643,7 @@ export const actionFetchFullRangeStats = ({
         l: true // live
       })
 
-      if (current.length > 400) {
+      if (current.length > 10000) {
 
         current = current.splice(current.length - 400)
       }
