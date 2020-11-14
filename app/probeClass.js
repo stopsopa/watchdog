@@ -169,30 +169,30 @@ function tool(db) {
 
 
 
-      try {
-
-        if (db.id == 17) {
-
-          logg.dump({
-            proble_17_status_method: probe,
-            nextTriggerRelativeToLastEsLogAfterApplyingIntervalUnixtimestampMilliseconds,
-            nextTriggerFromNowMilliseconds,
-            db: (function (db) {
-
-              delete db.code;
-              return db;
-            }({...db})),
-            lastTimeLoggedInEsUnixtimestampMilliseconds,
-          }, 5)
-
-        }
-      }
-      catch (e) {
-
-        logg.dump({
-          error_17_status_method: e
-        })
-      }
+      // try {
+      //
+      //   if (db.id == 17) {
+      //
+      //     logg.dump({
+      //       proble_17_status_method: probe,
+      //       nextTriggerRelativeToLastEsLogAfterApplyingIntervalUnixtimestampMilliseconds,
+      //       nextTriggerFromNowMilliseconds,
+      //       db: (function (db) {
+      //
+      //         delete db.code;
+      //         return db;
+      //       }({...db})),
+      //       lastTimeLoggedInEsUnixtimestampMilliseconds,
+      //     }, 5)
+      //
+      //   }
+      // }
+      // catch (e) {
+      //
+      //   logg.dump({
+      //     error_17_status_method: e
+      //   })
+      // }
 
 
 
@@ -235,22 +235,22 @@ function tool(db) {
       probe                 = null;
 
 
-      try {
-
-        if (db.id == 17) {
-
-          logg.dump({
-            proble_17_reset_destruct_null: probe,
-          }, 5)
-
-        }
-      }
-      catch (e) {
-
-        logg.dump({
-          error_17_reset_destruct_null: e
-        })
-      }
+      // try {
+      //
+      //   if (db.id == 17) {
+      //
+      //     logg.dump({
+      //       proble_17_reset_destruct_null: probe,
+      //     }, 5)
+      //
+      //   }
+      // }
+      // catch (e) {
+      //
+      //   logg.dump({
+      //     error_17_reset_destruct_null: e
+      //   })
+      // }
 
       log                   = undefined;
 
@@ -328,25 +328,27 @@ function tool(db) {
           ({
             probe,
             ...log
-          } = await this.prodRunActive());
+          } = await this.prodRunActive({
+            trigger: 'nextTriggerFromNowMilliseconds > 1000'
+          }));
 
-          try {
-
-            if (db.id == 17) {
-
-              logg.dump({
-                proble_17_trigger_smaller: probe,
-                log,
-              }, 5)
-
-            }
-          }
-          catch (e) {
-
-            logg.dump({
-              error_17_trigger_smaller: e
-            })
-          }
+          // try {
+          //
+          //   if (db.id == 17) {
+          //
+          //     logg.dump({
+          //       proble_17_trigger_smaller: probe,
+          //       log,
+          //     }, 5)
+          //
+          //   }
+          // }
+          // catch (e) {
+          //
+          //   logg.dump({
+          //     error_17_trigger_smaller: e
+          //   })
+          // }
 
           this.ioTriggerStatus()
         }
@@ -366,23 +368,23 @@ function tool(db) {
             ...log
           } = await this.prodRunActiveLog());
 
-          try {
-
-            if (db.id == 17) {
-
-              logg.dump({
-                proble_17_run: probe,
-                log,
-              }, 5)
-
-            }
-          }
-          catch (e) {
-
-            logg.dump({
-              error_17_run: e
-            })
-          }
+          // try {
+          //
+          //   if (db.id == 17) {
+          //
+          //     logg.dump({
+          //       proble_17_run: probe,
+          //       log,
+          //     }, 5)
+          //
+          //   }
+          // }
+          // catch (e) {
+          //
+          //   logg.dump({
+          //     error_17_run: e
+          //   })
+          // }
 
           this.ioTriggerStatus()
 
@@ -717,7 +719,12 @@ function tool(db) {
 
       return data;
     },
-    prodRunActive: async function (forceRebuild) {
+    prodRunActive: async function (opt = {}) {
+
+      const {
+        forceRebuild,
+        ...rest
+      } = opt;
 
       let data;
 
@@ -728,7 +735,7 @@ function tool(db) {
           currentBinary = cls.evaluateFunction();
         }
 
-        data = await currentBinary();
+        data = await currentBinary(rest);
 
         if ( ! isObject(data) ) {
 

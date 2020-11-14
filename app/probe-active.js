@@ -19,7 +19,9 @@ const emsg          = msg => `jsonfetch: ${msg}`;
 
 const th            = msg => new Error(emsg(msg));
 
-module.exports = async function () {
+module.exports = async function ({
+  trigger, // normally undefined but it can have value 'nextTriggerFromNowMilliseconds > 1000'
+}) {
 
   try {
 
