@@ -27,8 +27,16 @@ export default ({
   status = 'unknown', // unknown, disabled, ok, error
   state,
   className,
+  key,
   ...rest
 }) => {
+
+  if ( Number.isInteger(key) ) {
+
+    log.dump({
+      render: key,
+    })
+  }
 
   const [ left, setLeft ] = useState(false);
 

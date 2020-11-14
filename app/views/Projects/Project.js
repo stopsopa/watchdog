@@ -70,6 +70,23 @@ import {
 
 export default function Project() {
 
+  const [ k , setK ] = useState(0);
+
+  window.k = (function () {
+    if ( ! Number.isInteger(window.t)) {
+
+      window.t = 0;
+    }
+    return () => {
+
+      log.dump({
+        t: window.t,
+      });
+
+      setK(++window.t);
+    }
+  }())
+
   const { id } = useParams();
 
   const [ deleting, setDeleting ] = useState(false);
@@ -141,7 +158,7 @@ export default function Project() {
                 <h1>{`Project "${form.name}"`}</h1>
               </div>
               <div>
-                <StatusComponent {...getStatusPoject(form.id)} />
+                <StatusComponent {...getStatusPoject(form.id)} key={k} />
                 <span className="add-probe-span">
                   add probe:
                 </span>
