@@ -99,7 +99,7 @@ export function StoreAssocProvider(props) {
     else {
       log.dump('StoreAssocProvider socket not available yet')
     }
-  }, [socket]);
+  }, [socket ? socket.id : undefined]);
 
   return (<StoreContext.Provider value={{
     state,
