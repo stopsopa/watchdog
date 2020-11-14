@@ -693,10 +693,10 @@ export const actionFetchFullRangeStats = ({
 
     const {
       log: logg,
-      assocKeyFullRange,
+      key,
     } = data ||  {}
 
-    setStoreAssoc(assocKeyFullRange, logg);
+    setStoreAssoc(key, logg);
 
     // onLoad(data);
   }
