@@ -149,7 +149,10 @@ function buildtime(d) {
 
   d.gittime   && t.push(d.gittime);
 
-  return t.join('_');
+  return {
+    toString  : () => t.join('_'),
+    getObj    : () => d,
+  }
 }
 
   lib = `

@@ -53,6 +53,7 @@ import {
   setStatusReset,
   setStoreAssoc,
   setStoreAssocDelete,
+  getStoreAssoc,
 } from './storeAssoc'
 
 export const StoreContext = createContext();
@@ -96,6 +97,41 @@ export function StoreSocketProvider(props) {
     socket.on('connect', () => {
 
       log.dump('Connection renewed')
+
+      socket.on('git_status', data => {
+
+        const {
+          NODE_ENV,  // : "production"
+          githash,   // : "66c9be4"
+          gittime,   // : "2020-11-13_23-53-19"
+          mode,      // : "prod"
+          time,      // : "2020-11-14_00-30-22"
+        } = data;
+
+        const prev = getStoreAssoc(`git_status`);
+
+        if ( typeof prev === 'undefined' ) {
+
+          setStoreAssoc('git_status', data);
+        }
+        else {
+
+          if (prev.NODE_ENV === 'production') {
+
+            if (time !== prev.time) {
+
+              try {
+
+                location.reload();
+              }
+              catch (e) {
+
+                throw new Error(`git_status error: Can't reload the page`);
+              }
+            }
+          }
+        }
+      });
 
       socket.emit('status_all_probes')
 
