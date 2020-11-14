@@ -635,7 +635,6 @@ export default function ProbeLog() {
       probe_id,
       startDate: startDateMidnight,
       endDate,
-      key: assocKeyFullRange
     });
   }, [search.get('d'), search.get('o')]);
 

@@ -16,6 +16,8 @@ import del from 'nlab/del';
 
 const assocKeySelection     = 'log_selection';
 
+const assocKeyFullRange     = 'log_full_range';
+
 /**
  *
  *
@@ -120,9 +122,61 @@ export function StoreAssocProvider(props) {
 
       (function () {
 
-        const probe_status_update = data => {
+        const probe_status_update = ({
+          state,
+          live_log,
+        }) => {
 
-          setStoreAssoc(`status.${data.db.id}`, data);
+          setStoreAssoc(`status.${state.db.id}`, state);
+
+          const probe_id = getStoreAssoc('log_page_current_probe_id');
+
+          const {
+            probe_id: pid,
+            id,
+            ...rest
+          } = live_log;
+
+          if (pid === probe_id) {
+
+            let current = getStoreAssoc(assocKeyFullRange) || []
+
+            current.push({
+              ...rest,
+              l: true // live
+            });
+
+            if (current.length > 10000) {
+
+              current = current.splice(current.length - 10000)
+            }
+
+            setStoreAssoc(assocKeyFullRange, current);
+
+            current = getStoreAssoc(assocKeySelection) || [];
+
+            current.push({
+              ...rest,
+              id,
+              l: true // live
+            })
+
+            if (current.length > 10000) {
+
+              current = current.splice(current.length - 10000)
+            }
+
+            setStoreAssoc(assocKeySelection, current);
+          }
+          else {
+
+            // log.dump({
+            //   probes_logs_full_live: {
+            //     probe_id,
+            //     different_probe: live_log,
+            //   }
+            // })
+          }
         }
 
         socket.on('probe_status_update', probe_status_update)
@@ -581,7 +635,6 @@ export const actionFetchFullRangeStats = ({
   probe_id,
   startDate,
   endDate,
-  key,
   onLoad = () => {},
 }) => {
 
@@ -599,68 +652,24 @@ export const actionFetchFullRangeStats = ({
     endDate,
   });
 
+  setStoreAssoc('log_page_current_probe_id', probe_id);
+
   const probes_logs_full = data => {
 
     const {
       list,
     } = data ||  {}
 
-    setStoreAssoc(key, list);
+    setStoreAssoc(assocKeyFullRange, list);
   }
   socket.on('probes_logs_full', probes_logs_full);
 
 
 
-  const probes_logs_full_live = row => {
 
-    const {
-      probe_id: pid,
-      id,
-      ...rest
-    } = row;
 
-    if (pid === probe_id) {
 
-      let current = getStoreAssoc(key) || []
 
-      current.push({
-        ...rest,
-        l: true // live
-      });
-
-      if (current.length > 10000) {
-
-        current = current.splice(current.length - 10000)
-      }
-
-      setStoreAssoc(key, current);
-
-      current = getStoreAssoc(assocKeySelection) || [];
-
-      current.push({
-        ...rest,
-        id,
-        l: true // live
-      })
-
-      if (current.length > 10000) {
-
-        current = current.splice(current.length - 10000)
-      }
-
-      setStoreAssoc(assocKeySelection, current);
-    }
-    else {
-
-      // log.dump({
-      //   probes_logs_full_live: {
-      //     probe_id,
-      //     different_probe: row,
-      //   }
-      // })
-    }
-  }
-  socket.on('probes_logs_full_live', probes_logs_full_live);
 
   const probes_logs_selection = data => {
 
@@ -682,16 +691,12 @@ export const actionFetchFullRangeStats = ({
 
   const probes_logs_selected_log = data => {
 
-    log.dump({
-      probes_logs_selected_log: data,
-    })
-
     const {
       log: logg,
-      key,
+      assocKeyFullRange,
     } = data ||  {}
 
-    setStoreAssoc(key, logg);
+    setStoreAssoc(assocKeyFullRange, logg);
 
     // onLoad(data);
   }
@@ -705,13 +710,13 @@ export const actionFetchFullRangeStats = ({
 
     if (socket) {
 
+      setStoreAssocDelete('log_page_current_probe_id')
+
       socket.off('probes_logs_full', probes_logs_full);
 
       socket.off('probes_logs_selection', probes_logs_selection);
 
       socket.off('probes_logs_selected_log', probes_logs_selected_log);
-
-      socket.off('probes_logs_full_live', probes_logs_full_live);
 
       // socket.off('probes_run_code', probes_run_code);
     }

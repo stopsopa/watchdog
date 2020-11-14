@@ -270,9 +270,12 @@ function tool(db) {
       //   currentBinary,
       // })
     },
-    ioTriggerStatus: function () {
+    ioTriggerStatus: function (live_log) {
 
-      io.emit('probe_status_update', this.state());
+      io.emit('probe_status_update', {
+        state: this.state(),
+        live_log,
+      });
     },
     construct: async function () {
 
@@ -397,8 +400,6 @@ function tool(db) {
           //     error_17_run: e
           //   })
           // }
-
-          this.ioTriggerStatus()
 
           activeTimeoutHandler = setTimeout(() => run(), intervalMilliseconds);
         }
@@ -560,14 +561,12 @@ function tool(db) {
 
             logg.t(`probe timeout   ${db.enabled ? 'enabled ' : 'disabled'} [${String(db.type).padStart(8, ' ')}:${String(db.id).padStart(6, ' ')}] [project:${String(db.project_id).padStart(6, ' ')}]       interval: ${ms(intervalMilliseconds)}`);
 
-            this.ioTriggerStatus()
-
-            io.emit('probes_logs_full_live', {
+            this.ioTriggerStatus({
               f: created.toISOString(),
               p: probe,
               id: esresult.body._id,
               probe_id: db.id
-            });
+            })
 
             return;
           }
@@ -668,15 +667,13 @@ function tool(db) {
 
         lastTimeLoggedInEsUnixtimestampMilliseconds = created.getTime();
 
-        io.emit('probes_logs_full_live', {
+        this.ioTriggerStatus({
           f: created.toISOString(),
           p: probe,
           id: esresult.body._id,
           probe_id: db.id
-        });
+        })
       }
-
-      this.ioTriggerStatus()
 
       await this.passiveWatchdog({
         lastEs: body
@@ -734,12 +731,12 @@ function tool(db) {
 
           lastTimeLoggedInEsUnixtimestampMilliseconds = created.getTime();
 
-          io.emit('probes_logs_full_live', {
+          this.ioTriggerStatus({
             f: created.toISOString(),
             p: probe,
             id: esresult.body._id,
             probe_id: db.id
-          });
+          })
         }
       }
       catch (e) {
