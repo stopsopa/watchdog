@@ -177,7 +177,11 @@ function tool(db) {
             proble_17_status_method: probe,
             nextTriggerRelativeToLastEsLogAfterApplyingIntervalUnixtimestampMilliseconds,
             nextTriggerFromNowMilliseconds,
-            db,
+            db: (function (db) {
+
+              delete db.code;
+              return db;
+            }({...db})),
             lastTimeLoggedInEsUnixtimestampMilliseconds,
           }, 5)
 
