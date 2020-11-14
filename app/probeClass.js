@@ -186,7 +186,7 @@ function tool(db) {
       catch (e) {
 
         logg.dump({
-          error_17_run: e
+          error_17_status_method: e
         })
       }
 
@@ -244,7 +244,7 @@ function tool(db) {
       catch (e) {
 
         logg.dump({
-          error_17_run: e
+          error_17_reset_destruct_null: e
         })
       }
 
@@ -340,7 +340,7 @@ function tool(db) {
           catch (e) {
 
             logg.dump({
-              error_17_run: e
+              error_17_trigger_smaller: e
             })
           }
 
