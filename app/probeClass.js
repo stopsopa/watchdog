@@ -562,6 +562,13 @@ function tool(db) {
 
             this.ioTriggerStatus()
 
+            io.emit('probes_logs_full_live', {
+              f: created.toISOString(),
+              p: probe,
+              id: esresult.body._id,
+              probe_id: db.id
+            });
+
             return;
           }
         }
@@ -660,6 +667,13 @@ function tool(db) {
       else {
 
         lastTimeLoggedInEsUnixtimestampMilliseconds = created.getTime();
+
+        io.emit('probes_logs_full_live', {
+          f: created.toISOString(),
+          p: probe,
+          id: esresult.body._id,
+          probe_id: db.id
+        });
       }
 
       this.ioTriggerStatus()
@@ -719,6 +733,13 @@ function tool(db) {
         else {
 
           lastTimeLoggedInEsUnixtimestampMilliseconds = created.getTime();
+
+          io.emit('probes_logs_full_live', {
+            f: created.toISOString(),
+            p: probe,
+            id: esresult.body._id,
+            probe_id: db.id
+          });
         }
       }
       catch (e) {

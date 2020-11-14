@@ -906,13 +906,13 @@ export default function ProbeLog() {
                             key={i}
                             width={(function (x) {
                               return x < 5 ? 5 : x;
-                            }(w(d.t) - x))}
+                            }(w(d.f || d.t) - x))}
 
                             height="380"
                             y="20"
 
                             x={x}
-                            fill={d.p ? '#65dcb5' : '#e65424'}
+                            fill={d.p ? (d.l ? '#b3b3b3' : '#65dcb5') : '#e65424'}
                           />
                         );
                       })}
@@ -989,6 +989,7 @@ export default function ProbeLog() {
                     return (
                       <tr key={i} className={classnames('select_log', {
                         error: !r.p,
+                        live: r.l,
                       })} onClick={() => fetchSelectedLog(r.id)}>
                         <th>{i + 1}</th>
                         <td>{r.id}</td>

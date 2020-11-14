@@ -13,14 +13,14 @@
 - [x] fix resizing of the graph with selection (it would require to convert positon of mouse to percentage of with of the svg - not worth of effort)
 - [x] buttons to navigate from logs to edit probe and back
 - [x] add ace editor
-- [ ] update live graph and list below
+- [x] update live graph and list below
 - [x] service flag
 - [ ] commenting individual logs
 - [x] current time on the graph
 - [x] add icon informing about collecting full log when probe=true - archive mode
 - [ ] extend project - add telegram integration with proxy users management - sending to to particular use but to group (to group id)
 - [x] status icon
-- [ ] some probes are disabled icon
+- [ ] 'some probes are disabled' icon
 - [x] widget informing about incomming execution (for active) or incomming request (for passive) expected trigger (countdown)
 - [ ] creating new probes by copying settings from another
 - [ ] whether icons https://www.s-ings.com/typicons/

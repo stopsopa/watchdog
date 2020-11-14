@@ -34,6 +34,9 @@
                 &.error {
                     background-color: #fdd1d0;
                 }
+                &.live {
+                    color: #adadad;
+                }
                 & > td {
                     font-family: monospace;
                 }

@@ -14,6 +14,8 @@ import set from 'nlab/set';
 
 import del from 'nlab/del';
 
+const assocKeySelection     = 'log_selection';
+
 /**
  *
  *
@@ -604,15 +606,66 @@ export const actionFetchFullRangeStats = ({
     } = data ||  {}
 
     setStoreAssoc(key, list);
-
-    // onLoad(data);
   }
+  socket.on('probes_logs_full', probes_logs_full);
+
+
+
+  const probes_logs_full_live = row => {
+
+    const {
+      probe_id: pid,
+      id,
+      ...rest
+    } = row;
+
+    if (pid === probe_id) {
+
+      let current = getStoreAssoc(key) || []
+
+      current.push({
+        ...rest,
+        l: true // live
+      });
+
+      if (current.length > 400) {
+
+        current = current.splice(current.length - 400)
+      }
+
+      setStoreAssoc(key, current);
+
+      current = getStoreAssoc(assocKeySelection) || [];
+
+      current.push({
+        ...rest,
+        id,
+        l: true // live
+      })
+
+      if (current.length > 400) {
+
+        current = current.splice(current.length - 400)
+      }
+
+      setStoreAssoc(assocKeySelection, current);
+    }
+    else {
+
+      // log.dump({
+      //   probes_logs_full_live: {
+      //     probe_id,
+      //     different_probe: row,
+      //   }
+      // })
+    }
+  }
+  socket.on('probes_logs_full_live', probes_logs_full_live);
 
   const probes_logs_selection = data => {
 
     const {
       list = [],
-      key,
       error,
     } = data ||  {}
 
@@ -621,16 +674,11 @@ export const actionFetchFullRangeStats = ({
       notificationsAdd(String(error), 'error');
     }
 
-    log.dump({
-      probes_logs_selection: {
-        key,
-        list,
-      }
-    })
-    setStoreAssoc(key, list);
-
-    // onLoad(data);
+    setStoreAssoc(assocKeySelection, list);
   }
+  socket.on('probes_logs_selection', probes_logs_selection);
+
+
 
   const probes_logs_selected_log = data => {
 
@@ -647,11 +695,6 @@ export const actionFetchFullRangeStats = ({
 
     // onLoad(data);
   }
-
-  socket.on('probes_logs_full', probes_logs_full);
-
-  socket.on('probes_logs_selection', probes_logs_selection);
-
   socket.on('probes_logs_selected_log', probes_logs_selected_log);
 
   // const probes_run_code = data => actionProbesSetTestResult(data);
@@ -667,6 +710,8 @@ export const actionFetchFullRangeStats = ({
       socket.off('probes_logs_selection', probes_logs_selection);
 
       socket.off('probes_logs_selected_log', probes_logs_selected_log);
+
+      socket.off('probes_logs_full_live', probes_logs_full_live);
 
       // socket.off('probes_run_code', probes_run_code);
     }
@@ -699,7 +744,6 @@ export const actionFetchSelectionStats = ({
     probe_id,
     startDate,
     endDate,
-    key,
   });
 };
 

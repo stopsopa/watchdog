@@ -182,7 +182,7 @@ module.exports = async ({
                 list.push({
                   p: t.probe,
                   f: t.created,
-                  t: t.created,
+                  // t: t.created,
                 })
 
                 continue;
@@ -270,7 +270,6 @@ module.exports = async ({
     probe_id,
     startDate,
     endDate,
-    key,
   }) => {
 
     // log.dump({
@@ -278,7 +277,6 @@ module.exports = async ({
     //     probe_id,
     //     startDate,
     //     endDate,
-    //     key,
     //   }
     // })
 
@@ -346,7 +344,6 @@ module.exports = async ({
 
       socket.emit('probes_logs_selection', {
         list,
-        key,
       })
     }
     catch (e) {
@@ -364,7 +361,6 @@ module.exports = async ({
 
       socket.emit('probes_logs_selection', {
         error: e,
-        key,
       })
     }
   }
