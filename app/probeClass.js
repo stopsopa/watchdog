@@ -332,23 +332,23 @@ function tool(db) {
             trigger: 'nextTriggerFromNowMilliseconds > 1000'
           }));
 
-          // try {
-          //
-          //   if (db.id == 17) {
-          //
-          //     logg.dump({
-          //       proble_17_trigger_smaller: probe,
-          //       log,
-          //     }, 5)
-          //
-          //   }
-          // }
-          // catch (e) {
-          //
-          //   logg.dump({
-          //     error_17_trigger_smaller: e
-          //   })
-          // }
+          try {
+
+            if (db.id == 17) {
+
+              logg.dump({
+                proble_17_trigger_smaller: probe,
+                log,
+              }, 5)
+
+            }
+          }
+          catch (e) {
+
+            logg.dump({
+              error_17_trigger_smaller: e
+            })
+          }
 
           this.ioTriggerStatus()
         }
@@ -725,6 +725,25 @@ function tool(db) {
         forceRebuild,
         ...rest
       } = opt;
+
+
+      try {
+
+        if (db.id == 17) {
+
+          logg.dump({
+            proble_17_rest: probe,
+            rest,
+          }, 5)
+
+        }
+      }
+      catch (e) {
+
+        logg.dump({
+          error_17_rest: e
+        })
+      }
 
       let data;
 
