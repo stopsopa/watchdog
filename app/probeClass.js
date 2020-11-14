@@ -173,7 +173,7 @@ function tool(db) {
 
         if (db.id == 17) {
 
-          log.dump({
+          logg.dump({
             proble_17_status_method: probe,
             nextTriggerRelativeToLastEsLogAfterApplyingIntervalUnixtimestampMilliseconds,
             nextTriggerFromNowMilliseconds,
@@ -235,7 +235,7 @@ function tool(db) {
 
         if (db.id == 17) {
 
-          log.dump({
+          logg.dump({
             proble_17_reset_destruct_null: probe,
           }, 5)
 
@@ -330,7 +330,7 @@ function tool(db) {
 
             if (db.id == 17) {
 
-              log.dump({
+              logg.dump({
                 proble_17_trigger_smaller: probe,
                 log,
               }, 5)
@@ -366,7 +366,7 @@ function tool(db) {
 
             if (db.id == 17) {
 
-              log.dump({
+              logg.dump({
                 proble_17_run: probe,
                 log,
               }, 5)
