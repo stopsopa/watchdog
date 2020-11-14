@@ -630,7 +630,7 @@ export const actionFetchFullRangeStats = ({
 
       if (current.length > 10000) {
 
-        current = current.splice(current.length - 400)
+        current = current.splice(current.length - 10000)
       }
 
       setStoreAssoc(key, current);
@@ -645,7 +645,7 @@ export const actionFetchFullRangeStats = ({
 
       if (current.length > 10000) {
 
-        current = current.splice(current.length - 400)
+        current = current.splice(current.length - 10000)
       }
 
       setStoreAssoc(assocKeySelection, current);
