@@ -57,14 +57,14 @@ export default ({
 
   const refresh = () => {
 
-    if ( project) {
+    if ( project ) {
 
       setData(getStatusPoject(project));
 
       return true;
     }
 
-    if ( probe) {
+    if ( probe ) {
 
       setData(getStatusProbe(probe));
 
@@ -78,9 +78,7 @@ export default ({
 
     if ( ! nextTriggerFromNowMilliseconds ) {
 
-      const stop = refresh()
-
-      if (stop) {
+      if (refresh()) {
 
         return;
       }
