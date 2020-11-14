@@ -29,6 +29,11 @@ import {
   getStatusPoject,
 } from '../_storage/storeAssoc'
 
+
+import {
+  StoreContext as StoreContextSocket,
+} from '../_storage/storeSocket';
+
 export default ({
   project,
   probe,
@@ -37,6 +42,15 @@ export default ({
 }) => {
 
   useContext(StoreContextAssoc);
+
+  let {
+    state: socket,
+  } = useContext(StoreContextSocket);
+
+  if ( ! socket ) {
+
+    socket = {}
+  }
 
   const [ data, setData ] = useState({});
 
@@ -138,7 +152,7 @@ export default ({
 
       return clear;
     }
-  }, [nextTriggerFromNowMilliseconds]);
+  }, [nextTriggerFromNowMilliseconds, socket.id]);
 
   return (
     <div className={classnames('status-component', className)} {...rest}>

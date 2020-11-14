@@ -21,7 +21,7 @@ import log from 'inspc';
 
   const {
     state: socket,
-  } = useContext(storeSocket.StoreContext);
+  } = useContext(StoreContextSocket);
 
 
    useEffect(() => {
