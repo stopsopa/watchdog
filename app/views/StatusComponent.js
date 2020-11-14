@@ -1,5 +1,5 @@
 
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
 
 import classnames from 'classnames';
 
@@ -23,20 +23,27 @@ import StatusIcon from './StatusIcon'
 
 import howMuchTimeLeftToNextTrigger from '../howMuchTimeLeftToNextTrigger';
 
+import {
+  StoreContext as StoreContextAssoc,
+  getStatusProbe,
+  getStatusPoject,
+} from '../_storage/storeAssoc'
+
 export default ({
-  status = 'unknown', // unknown, disabled, ok, error
-  state,
+  project,
+  probe,
   className,
-  key,
   ...rest
 }) => {
 
-  if ( Number.isInteger(key) ) {
+  useContext(StoreContextAssoc);
 
-    log.dump({
-      render: key,
-    })
-  }
+  const [ data, setData ] = useState({});
+
+  const {
+    status = 'unknown', // unknown, disabled, ok, error,
+    state,
+  } = data || {};
 
   const [ left, setLeft ] = useState(false);
 
@@ -48,7 +55,36 @@ export default ({
   }
   catch (e) {}
 
+  const refresh = () => {
+
+    if ( project) {
+
+      setData(getStatusPoject(project));
+
+      return true;
+    }
+
+    if ( probe) {
+
+      setData(getStatusProbe(probe));
+
+      return true;
+    }
+
+    return false;
+  }
+
   useEffect(() => {
+
+    if ( ! nextTriggerFromNowMilliseconds ) {
+
+      const stop = refresh()
+
+      if (stop) {
+
+        return;
+      }
+    }
 
     if (nextTriggerFromNowMilliseconds > 0) {
 
@@ -81,7 +117,7 @@ export default ({
             //   })
             // });
 
-            clear()
+            // clear()
           }
           else {
 
@@ -94,6 +130,8 @@ export default ({
             errr: e
           })
         }
+
+        refresh();
       }
 
       handler = setInterval(run, 1000);

@@ -728,7 +728,7 @@ export default function ProbeLog() {
                 className="right"
               />
 
-              <StatusComponent {...getStatusProbe(form.id)} className="right"/>
+              <StatusComponent probe={form.id} className="right"/>
             </h1>
 
             <div className="chart">

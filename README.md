@@ -25,6 +25,8 @@
 - [ ] creating new probes by copying settings from another
 - [ ] whether icons https://www.s-ings.com/typicons/
 - [x] issue fix, updating probe updates list of probes in other browser instance
+- [x] issue fix, probes countdown - not always lowest number of seconds
+- [ ] restart on update
 
 https://github.com/stopsopa/watchdog
 

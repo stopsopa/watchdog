@@ -57,7 +57,6 @@ import {
 
 import {
   StoreContext as StoreContextAssoc,
-  getStoreAssoc,
   getStatusProbe,
   getStatusPoject,
 } from '../../_storage/storeAssoc'
@@ -69,23 +68,6 @@ import {
 } from '../../components/Notifications/storeNotifications';
 
 export default function Project() {
-
-  const [ k , setK ] = useState(0);
-
-  window.k = (function () {
-    if ( ! Number.isInteger(window.t)) {
-
-      window.t = 0;
-    }
-    return () => {
-
-      log.dump({
-        t: window.t,
-      });
-
-      setK(++window.t);
-    }
-  }())
 
   const { id } = useParams();
 
@@ -158,7 +140,7 @@ export default function Project() {
                 <h1>{`Project "${form.name}"`}</h1>
               </div>
               <div>
-                <StatusComponent {...getStatusPoject(form.id)} key={k} />
+                <StatusComponent project={form.id} />
                 <span className="add-probe-span">
                   add probe:
                 </span>
@@ -184,7 +166,7 @@ export default function Project() {
                     <div>
                       <Icon name={(p.type === 'active') ? `paper plane` : `assistive listening systems`} />
                       {` `}
-                      <StatusComponent {...getStatusProbe(p.id)} />
+                      <StatusComponent probe={p.id} />
 
                       <div className="flags">
                         {p.detailed_log && <ArchiveIcon content={`Archive mode ON`}/>}

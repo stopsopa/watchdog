@@ -103,7 +103,7 @@ export default function LoggersList() {
             <Link to={`/projects/${p.id}`}>
               <FitText text={p.name} />
               <div>
-                <StatusComponent {...getStatusPoject(p.id)}/>
+                <StatusComponent project={p.id}/>
               </div>
             </Link>
             <div className="helpers">

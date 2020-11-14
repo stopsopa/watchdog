@@ -108,7 +108,7 @@ export default function ProjectsList() {
             <Link to={`/projects/${p.id}`}>
               <FitText text={p.name} />
               <div>
-                <StatusComponent {...getStatusPoject(p.id)}/>
+                <StatusComponent project={p.id}/>
                 <div className="flags">
                   {getProjectInArchiveMode(p.id) && <ArchiveIcon content={`At least one probe is in archive mode`}/>}
                   {getProjectInServiceMode(p.id) && <ServiceIcon content={`At least one probe is in service mode`}/>}
