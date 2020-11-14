@@ -167,6 +167,31 @@ function tool(db) {
         lastTimeLoggedInEsUnixtimestampMilliseconds,
       });
 
+
+
+      try {
+
+        if (db.id == 17) {
+
+          log.dump({
+            proble_17_status_method: probe,
+            nextTriggerRelativeToLastEsLogAfterApplyingIntervalUnixtimestampMilliseconds,
+            nextTriggerFromNowMilliseconds,
+            db,
+            lastTimeLoggedInEsUnixtimestampMilliseconds,
+          }, 5)
+
+        }
+      }
+      catch (e) {
+
+        logg.dump({
+          error_17_run: e
+        })
+      }
+
+
+
       const state = {
         db: code ? db : dbNoCode,
         probe,
@@ -204,6 +229,24 @@ function tool(db) {
       activeTimeoutHandler  = null;
 
       probe                 = null;
+
+
+      try {
+
+        if (db.id == 17) {
+
+          log.dump({
+            proble_17_reset_destruct_null: probe,
+          }, 5)
+
+        }
+      }
+      catch (e) {
+
+        logg.dump({
+          error_17_run: e
+        })
+      }
 
       log                   = undefined;
 
@@ -283,6 +326,24 @@ function tool(db) {
             ...log
           } = await this.prodRunActive());
 
+          try {
+
+            if (db.id == 17) {
+
+              log.dump({
+                proble_17_trigger_smaller: probe,
+                log,
+              }, 5)
+
+            }
+          }
+          catch (e) {
+
+            logg.dump({
+              error_17_run: e
+            })
+          }
+
           this.ioTriggerStatus()
         }
         else {
@@ -300,6 +361,24 @@ function tool(db) {
             probe,
             ...log
           } = await this.prodRunActiveLog());
+
+          try {
+
+            if (db.id == 17) {
+
+              log.dump({
+                proble_17_run: probe,
+                log,
+              }, 5)
+
+            }
+          }
+          catch (e) {
+
+            logg.dump({
+              error_17_run: e
+            })
+          }
 
           this.ioTriggerStatus()
 
