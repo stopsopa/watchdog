@@ -21,11 +21,11 @@ let man;
 
 const th = msg => new Error(`probeDriver.js error: ${msg}`);
 
-async function register(db, onServerStart) {
+async function register(db) {
 
   let cls = probeClass(db);
 
-  await cls.construct(onServerStart);
+  await cls.construct();
 
   probes[db.id] = cls;
 }

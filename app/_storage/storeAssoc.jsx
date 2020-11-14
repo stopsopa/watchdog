@@ -88,13 +88,65 @@ export function StoreAssocProvider(props) {
 
     if (socket) {
 
-      socket.on('status_all_probes', ({
-        list,
-      }) => {
+      const unmout = [];
 
-        setStoreAssoc('status', list);
-      })
+      (function () {
 
+        const status_all_probes = ({
+          list,
+        }) => {
+
+          setStoreAssoc('status', list);
+        }
+
+        socket.on('status_all_probes', status_all_probes)
+
+        unmout.push(() => socket.off('status_all_probes', status_all_probes))
+      }());
+
+      (function () {
+
+        const probe_status_destruct = id => {
+
+          setStoreAssoc(`status.${id}`);
+        }
+
+        socket.on('probe_status_destruct', probe_status_destruct)
+
+        unmout.push(() => socket.off('probe_status_destruct', probe_status_destruct))
+      }());
+
+      (function () {
+
+        const probe_status_update = data => {
+
+          setStoreAssoc(`status.${data.db.id}`, data);
+        }
+
+        socket.on('probe_status_update', probe_status_update)
+
+        unmout.push(() => socket.off('probe_status_update', probe_status_update))
+      }());
+
+      (function () {
+
+        const probe_status_delete = id => {
+
+          setStoreAssocDelete(`status.${id}`);
+        }
+
+        socket.on('probe_status_delete', probe_status_delete)
+
+        unmout.push(() => socket.off('probe_status_delete', probe_status_delete))
+      }());
+
+      return () => {
+
+        while (unmout.length) {
+
+          unmout.pop()();
+        }
+      }
     }
     else {
       log.dump('StoreAssocProvider socket not available yet')
