@@ -24,7 +24,7 @@ module.exports = ({
 
   let buildtime = false;
 
-  // if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === 'production') {
 
     try {
 
@@ -36,11 +36,7 @@ module.exports = ({
 
       throw th(`require(${webpack.server.buildtime}) failed: ` + String(e));
     }
-  // }
-
-  log.dump({
-    buildtime,
-  })
+  }
 
   socket.emit('git_status', {
     NODE_ENV: process.env.NODE_ENV || 'undefined',
