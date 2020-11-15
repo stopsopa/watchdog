@@ -124,25 +124,20 @@ export function StoreAssocProvider(props) {
 
         const probe_status_update = ({
           state,
-          live_log,
+          esid,
         }) => {
 
           setStoreAssoc(`status.${state.db.id}`, state);
 
           const probe_id = getStoreAssoc('log_page_current_probe_id');
 
-          const {
-            probe_id: pid,
-            id,
-            ...rest
-          } = live_log;
-
-          if (pid === probe_id) {
+          if (state.db.id === probe_id) {
 
             let current = getStoreAssoc(assocKeyFullRange) || []
 
             current.push({
-              ...rest,
+              f: state.lastTimeLoggedInEsUnixtimestampMilliseconds_ISOString,
+              p: state.probe,
               l: true // live
             });
 
@@ -156,8 +151,9 @@ export function StoreAssocProvider(props) {
             current = getStoreAssoc(assocKeySelection) || [];
 
             current.push({
-              ...rest,
-              id,
+              id: esid,
+              f: state.lastTimeLoggedInEsUnixtimestampMilliseconds_ISOString,
+              p: state.probe,
               l: true // live
             })
 

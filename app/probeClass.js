@@ -270,11 +270,11 @@ function tool(db) {
       //   currentBinary,
       // })
     },
-    ioTriggerStatus: function (live_log) {
+    ioTriggerStatus: function (esid) {
 
       io.emit('probe_status_update', {
         state: this.state(),
-        live_log,
+        esid,
       });
     },
     construct: async function () {
@@ -561,12 +561,7 @@ function tool(db) {
 
             logg.t(`probe timeout   ${db.enabled ? 'enabled ' : 'disabled'} [${String(db.type).padStart(8, ' ')}:${String(db.id).padStart(6, ' ')}] [project:${String(db.project_id).padStart(6, ' ')}]       interval: ${ms(intervalMilliseconds)}`);
 
-            this.ioTriggerStatus({
-              f: created.toISOString(),
-              p: probe,
-              id: esresult.body._id,
-              probe_id: db.id
-            })
+            this.ioTriggerStatus(esresult.body._id)
 
             return;
           }
@@ -667,12 +662,7 @@ function tool(db) {
 
         lastTimeLoggedInEsUnixtimestampMilliseconds = created.getTime();
 
-        this.ioTriggerStatus({
-          f: created.toISOString(),
-          p: probe,
-          id: esresult.body._id,
-          probe_id: db.id
-        })
+        this.ioTriggerStatus(esresult.body._id)
       }
 
       await this.passiveWatchdog({
@@ -731,12 +721,7 @@ function tool(db) {
 
           lastTimeLoggedInEsUnixtimestampMilliseconds = created.getTime();
 
-          this.ioTriggerStatus({
-            f: created.toISOString(),
-            p: probe,
-            id: esresult.body._id,
-            probe_id: db.id
-          })
+          this.ioTriggerStatus(esresult.body._id)
         }
       }
       catch (e) {
