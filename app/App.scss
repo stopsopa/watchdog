@@ -1,13 +1,23 @@
 .brand {
     display: flex;
+    flex-wrap: wrap;
     align-items: stretch;
-    & > span.name {
+    & > div:first-child {
+        flex-shrink: 0;
+    }
+    & > div:nth-child(2) {
+        display: flex;
+    }
+    & > div > img {
+    }
+    & > div > span.name {
         font-family: "Alegreya",serif;
         font-size: 36px;
         line-height: 39px;
+        //color: red;
     }
-    & > a {
-        line-height: 39px;
+    & > div > a {
+        line-height: 48px;
         padding-left: 10px;
         padding-right: 10px;
         &:hover {

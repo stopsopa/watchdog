@@ -44,22 +44,24 @@ export default function App() {
   return (
     <>
       <div className="brand">
-        <img src="/watchdog.svg" width="40" />
-        <span className="name">WATCHDOG</span>
-
-        <NavLink
-          to="/projects"
-          activeClassName="active"
-        >
-          Projects
-        </NavLink>
-        <NavLink
-          to="/loggers"
-          activeClassName="active"
-        >
-          Loggers
-        </NavLink>
-
+        <div>
+          <img src="/watchdog.svg" width="40" height="40" />
+          <span className="name">WATCHDOG</span>
+        </div>
+        <div>
+          <NavLink
+            to="/projects"
+            activeClassName="active"
+          >
+            Projects
+          </NavLink>
+          <NavLink
+            to="/loggers"
+            activeClassName="active"
+          >
+            Loggers
+          </NavLink>
+        </div>
       </div>
       <hr />
       {socket ? (
