@@ -864,14 +864,14 @@ export default function ProbeLog() {
                         setSelectedStart(offsetGivenDateByNumberOfSeconds(startDateMidnight, parseInt(rangeSeconds * widthRatio, 10) || 0));
                         setSelectedEnd(null);
                         setMouseButtonIsDown(true);
-                        log('onMouseDown')
+                        // log('onMouseDown')
                       }}
                       onMouseMove={e => {
 
                         setWidthRatio(svgDomWithRatioByWithOfPartOfFullWith(e.nativeEvent.offsetX)) // ???
 
                         if ( ! selectedStart || ! mouseButtonIsDown ) {
-                          log('onMouseMove return')
+                          // log('onMouseMove return')
                           return
                         }
 
