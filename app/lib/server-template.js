@@ -14,6 +14,67 @@ const th        = msg => new Error(`server-template.js error: ${msg}`);
     tempatefile     : path.resolve(web, 'index.html'),
     isProd          : process.env.NODE_ENV === "production",
   })
+
+ full example:
+
+    (function () {
+
+      const ifDevUseFileModificationTime = (function () {
+
+        if (process.env.NODE_ENV !== "production") {
+
+          try {
+
+            const w           = eval('require')('./webpack.config');
+
+            return path.resolve(w.output.path, w.output.filename.replace(/\[name\]/g, Object.keys(w.entry)[0]));
+          }
+          catch (e) {
+
+            log.dump({
+              ifDevUseFileModificationTime_error: e,
+            })
+          }
+        }
+      }());
+
+      const template = require('./app/lib/server-template')({
+        buildtimefile   : webpack.server.buildtime,
+        tempatefile     : path.resolve(web, 'index.html'),
+        isProd          : process.env.NODE_ENV === "production",
+      })
+
+      app.get('*', (req, res) => {
+
+        let mtime;
+
+        if (ifDevUseFileModificationTime) {
+
+          try {
+
+            if (fs.existsSync(ifDevUseFileModificationTime)) {
+
+              const stats = fs.statSync(ifDevUseFileModificationTime);
+
+              mtime = (stats.mtime).toISOString().substring(0, 19).replace('T', '_').replace(/:/g, '-') + '_dev_mtime'
+            }
+          }
+          catch (e) {}
+        }
+
+        let tmp = template({
+          mode            : process.env.NODE_ENV || 'undefined',
+          mtime,
+        });
+
+        res.send(tmp);
+      });
+    }());
+
+ and in index.html use:
+
+
+ <link rel="stylesheet" href="/other/normalize.css<%= mtime ? `?_=` + mtime : `?__` %>">
  */
 
 module.exports = ({
@@ -96,7 +157,9 @@ module.exports = ({
 
     try {
 
-        content = template(replace(content, buildtime));
+        content = replace(content, buildtime);
+
+        content = template(content);
     }
     catch (e) {
 

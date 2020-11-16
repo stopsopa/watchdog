@@ -8,20 +8,20 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="shortcut icon" width="32px">
     <title>Puppeteer scrapper</title>
-    <link rel="stylesheet" href="/other/normalize.css?__">
-    <link rel="stylesheet" href="/public/semantic-ui-css/semantic.min.css?__">
-    <link rel="stylesheet" href="/public/react-datepicker/dist/react-datepicker.css?__">
-    <link rel="stylesheet" href="/public/tippy.js/dist/tippy.css?__">
-    <link rel="stylesheet" href="/other/home.css?__">
-    <link rel="stylesheet" href="/dist/index.bundle.css?__">
+    <link rel="stylesheet" href="/other/normalize.css<%= mtime ? `?_=` + mtime : `?__` %>">
+    <link rel="stylesheet" href="/public/semantic-ui-css/semantic.min.css<%= mtime ? `?_=` + mtime : `?__` %>">
+    <link rel="stylesheet" href="/public/react-datepicker/dist/react-datepicker.css<%= mtime ? `?_=` + mtime : `?__` %>">
+    <link rel="stylesheet" href="/public/tippy.js/dist/tippy.css<%= mtime ? `?_=` + mtime : `?__` %>">
+    <link rel="stylesheet" href="/other/home.css<%= mtime ? `?_=` + mtime : `?__` %>">
+    <link rel="stylesheet" href="/dist/index.bundle.css<%= mtime ? `?_=` + mtime : `?__` %>">
 
 <!--    https://fonts.google.com/specimen/Alegreya?preview.text=WATCHDOG&preview.text_type=custom&sidebar.open=true&selection.family=Alegreya-->
     <link href="https://fonts.googleapis.com/css2?family=Alegreya&display=swap" rel="stylesheet">
 </head>
 <body class="mode-<%= mode %>">
 <div id="app"></div>
-<script src="/preprocessed.js?__"></script>
-<script src="/dist/runtime.bundle.js?__"></script>
-<script src="/dist/index.bundle.js?__"></script>
+<script src="/preprocessed.js<%= mtime ? `?_=` + mtime : `?__` %>"></script>
+<script src="/dist/runtime.bundle.js<%= mtime ? `?_=` + mtime : `?__` %>"></script>
+<script src="/dist/index.bundle.js<%= mtime ? `?_=` + mtime : `?__` %>"></script>
 </body>
 </html>
