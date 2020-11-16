@@ -469,11 +469,11 @@ export const getStatusPoject = id => {
   }
   catch (e) {
 
-    log.dump({
-      getStatusPoject_catch_error: e,
-      project_id: id,
-      list,
-    });
+    // log.dump({
+    //   getStatusPoject_catch_error: e,
+    //   project_id: id,
+    //   list,
+    // });
   }
 
   return {
