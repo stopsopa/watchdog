@@ -272,6 +272,11 @@ function tool(db) {
     },
     ioTriggerStatus: function (esid) {
 
+      if ( typeof esid !== 'string' ) {
+
+        throw th(`ioTriggerStatus() esid is not a string`)
+      }
+
       io.emit('probe_status_update', {
         state: this.state(),
         esid,
@@ -365,7 +370,7 @@ function tool(db) {
           //   })
           // }
 
-          this.ioTriggerStatus()
+          // this.ioTriggerStatus()
         }
         else {
 
@@ -423,10 +428,13 @@ function tool(db) {
         }
         catch (e) {
 
-          logg.dump({
-            probe_id: db.id,
-            cantextract_lastTimeLoggedInEsUnixtimestampMilliseconds_from_es_for_passive: se(e),
-          })
+          if ( ! (typeof row.hits !== 'undefined' && String(e) === `TypeError: Cannot read property '_source' of undefined`) ) {
+
+            logg.dump({
+              probe_id: db.id,
+              cantextract_lastTimeLoggedInEsUnixtimestampMilliseconds_from_es_for_passive: se(e),
+            })
+          }
         }
 
         try {
@@ -438,17 +446,19 @@ function tool(db) {
         }
         catch (e) {
 
-          logg.dump({
-            probe_id: db.id,
-            cantextract_passive_construct: {
-              catch: 'extracting catch exception: row.hits.hits[0]._source',
-              error: se(e),
-              row,
-            },
-          })
+          if ( ! (typeof row.hits !== 'undefined' && String(e) === `TypeError: Cannot read property '_source' of undefined`) ) {
+
+            logg.dump({
+              probe_id: db.id,
+              cantextract_passive_construct: {
+                error: se(e),
+                row,
+              },
+            })
+          }
         }
 
-        this.ioTriggerStatus();
+        // this.ioTriggerStatus();
 
         if ( probe === false ) {
 
@@ -463,7 +473,7 @@ function tool(db) {
         });
       }
 
-      this.ioTriggerStatus();
+      // this.ioTriggerStatus();
     },
     passiveWatchdog: async function (opt = {}) {
 
