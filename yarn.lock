@@ -4906,10 +4906,10 @@ nlab@^0.0.53:
     inspc "^0.0.16"
     md5 "^2.2.1"
 
-nlab@^0.0.92:
-  version "0.0.92"
-  resolved "https://registry.yarnpkg.com/nlab/-/nlab-0.0.92.tgz#d5aeee17c50b4d0ff8a09113b63fa724f9835093"
-  integrity sha512-XVrIbaMhtHylkY/xBNwk6i/q821ZUELGu3eiMUjDsl+Dq25VWmxLJPkZK9KrT3dFq1gDBERbBzV5imWstXGzUA==
+nlab@^0.0.96:
+  version "0.0.96"
+  resolved "https://registry.yarnpkg.com/nlab/-/nlab-0.0.96.tgz#c6d8329c097c86ca2fed424bca78ac8bec18a74f"
+  integrity sha512-wbrPxZZ8u6r6M8DhGeT7Z2a0KbtLIjU6i0X6znJ33ogxA8/UJrzy+jKRfFb/xyEMhZ35+em0APKicX/NeDx3og==
   dependencies:
     inspc "^0.0.19"
     md5 "^2.2.1"
