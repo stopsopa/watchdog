@@ -61,7 +61,7 @@ torun:
 	@(cd migrations && make -s torun)
 
 mrevert:
-	@(cd migrations && make -s mrevert)
+	@(cd migrations && make -s nitrorevert)
 
 mtest:
 	@(cd migrations && make -s mtest)
