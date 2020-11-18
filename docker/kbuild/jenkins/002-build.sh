@@ -465,7 +465,7 @@ function revertmigration {
     set -x
 
     set +e
-      kubectl exec -i "$POD" -- /bin/bash migrations/CI/move.sh $CURRENTMIGRATIONS
+      kubectl exec -i "$POD" -- /bin/bash migrations/CI/move.sh --nitro $CURRENTMIGRATIONS
       EXITCODE="$?"
       if [ "$EXITCODE" != "0" ]; then
         echo "======================== node migrations/CI/move.sh crashed - here is pod output =========================== vvv";
@@ -475,7 +475,7 @@ function revertmigration {
       fi
     set -e
 
-#    kubectl exec -i "$POD" -- /bin/bash -c "export MIGRATION_MODE=true && /bin/bash migrations/CI/move.sh $CURRENTMIGRATIONS"
+#    kubectl exec -i "$POD" -- /bin/bash -c "export MIGRATION_MODE=true && /bin/bash migrations/CI/move.sh --nitro $CURRENTMIGRATIONS"
 
     kubectl delete deploy "$MIGRATION_DEPLOYMENT"
 
@@ -485,7 +485,7 @@ function revertmigration {
 TRAPS=("revertmigration" "${TRAPS[@]}")
 
 set +e
-  kubectl exec -i "$POD" -- /bin/bash migrations/CI/mrun.sh
+  kubectl exec -i "$POD" -- /bin/bash migrations/CI/mrun.sh --nitro
   EXITCODE="$?"
   if [ "$EXITCODE" != "0" ]; then
     echo "======================== node migrations/CI/mrun.sh crashed - here is pod output =========================== vvv";
