@@ -1,4 +1,77 @@
 
+
+NITRO="0";
+
+PARAMS=""
+while (( "$#" )); do
+  case "$1" in
+    --nitro)
+      NITRO="1";
+      shift;
+      ;;
+    --) # end argument parsing
+      shift;
+      while (( "$#" )); do          # optional
+        if [ "$1" = "&&" ]; then
+          PARAMS="$PARAMS \&\&"
+        else
+          if [ "$PARAMS" = "" ]; then
+            PARAMS="\"$1\""
+          else
+            PARAMS="$PARAMS \"$1\""
+#          PARAMS="$(cat <<EOF
+#$PARAMS
+#- "$1"
+#EOF
+#)"
+          fi
+        fi
+        shift;                      # optional
+      done                          # optional if you need to pass: /bin/bash $0 -f -c -- -f "multi string arg"
+      break;
+      ;;
+    -*|--*=) # unsupported flags
+      echo "$0 Error: Unsupported flag $1" >&2
+      exit 1;
+      ;;
+    *) # preserve positional arguments
+      if [ "$1" = "&&" ]; then
+          PARAMS="$PARAMS \&\&"
+      else
+        if [ "$PARAMS" = "" ]; then
+            PARAMS="\"$1\""
+        else
+          PARAMS="$PARAMS \"$1\""
+        fi
+      fi
+      shift;
+      ;;
+  esac
+done
+
+trim() {
+    local var="$*"
+    # remove leading whitespace characters
+    var="${var#"${var%%[![:space:]]*}"}"
+    # remove trailing whitespace characters
+    var="${var%"${var##*[![:space:]]}"}"
+    echo -n "$var"
+}
+
+PARAMS="$(trim "$PARAMS")"
+
+eval set -- "$PARAMS"
+
+
+
+
+
+
+
+
+
+
+
 export MIGRATION_MODE=true
 
 function cleanup {
@@ -53,7 +126,13 @@ fi
 
 MCOUNT_BEFORE="$(node "$_DIR/mcountdb.js")"
 
-(cd "$_DIR/.." && make -s migrate)
+if [ "$NITRO" = "1" ]; then
+
+  (cd "$_DIR/.." && node CI/nitro/migrate.js)
+else
+
+  (cd "$_DIR/.." && make -s migrate)
+fi
 
 MCOUNT_AFTER="$(node "$_DIR/mcountdb.js")"
 
@@ -73,7 +152,14 @@ if [ "$DIFF" != "$TORUN" ]; then
     MCOUNT_BEFORE_LOOP="$MCOUNT_AFTER"
     while true
     do
-        (cd "$_DIR/.." && make -s mrevert)
+
+        if [ "$NITRO" = "1" ]; then
+
+          (cd "$_DIR/.." && node CI/nitro/migrate.js revert)
+        else
+
+          (cd "$_DIR/.." && make -s mrevert)
+        fi
 
         MCOUNT_AFTER_LOOP="$(node "$_DIR/mcountdb.js")"
 

@@ -1,11 +1,11 @@
 /**
  * run all remaining migration
  *
- *    node CI/executor/migrate.js
+ *    node CI/nitro/migrate.js
  *
  * revert last executed migration
  *
- *    node CI/executor/migrate.js revert
+ *    node CI/nitro/migrate.js revert
  *
  */
 const fs = require('fs');
@@ -30,7 +30,9 @@ const prototype         = knex.prototype;
 
 const config = require(path.resolve(__dirname, '..', '..', 'ormconfig.js'));
 
-const th = msg => new Error(`executor/migrate.js error: ${msg}`);
+const th = msg => new Error(`nitro/migrate.js error: ${msg}`);
+
+const mysql = require('../../../app/models/mysql'); //
 
 knex.init({
   def: 'mysql',
@@ -82,21 +84,22 @@ knex.init({
     //      https://github.com/knex/knex/issues/2820#issuecomment-481710112
     //          trick with propagateCreateError to
     acquireConnectionTimeout: 60000, // 60000 its default value: http://knexjs.org/#Installation-acquireConnectionTimeout
-    models: new Proxy({
-      common: knex => extend(knex, prototype, {}),
-    }, {
-      get(target, propKey, receiver) {
-
-        if (typeof target[propKey] !== 'undefined') {
-
-          return target[propKey];
-        }
-
-        const keys = Object.keys(target);
-
-        throw `No such mysql manager '${propKey}', registered managers are: ` + keys.join(', ');
-      },
-    }),
+    models: mysql,
+    // models: new Proxy({
+    //   common: knex => extend(knex, prototype, {}),
+    // }, {
+    //   get(target, propKey, receiver) {
+    //
+    //     if (typeof target[propKey] !== 'undefined') {
+    //
+    //       return target[propKey];
+    //     }
+    //
+    //     const keys = Object.keys(target);
+    //
+    //     throw `No such mysql manager '${propKey}', registered managers are: ` + keys.join(', ');
+    //   },
+    // }),
   }
 });
 
@@ -346,20 +349,35 @@ CREATE TABLE \`${migrationsTableName}\` (
 
       await knex().transaction(async trx => {
 
-        console.log('');
+        try {
 
-        const queryRunner = {
-          query: (...args) => trx.raw(...args)
-        };
+          console.log('');
 
-        console.log(`${String(m.i).padStart(4, ' ')} ${String(m.file.file).padEnd(30, ' ')} reverting`);
+          const queryRunner = {
+            query: (...args) => trx.raw(...args).then(result => result[0]),
+            trx,
+          };
 
-        await m.mod.down(queryRunner);
+          console.log(`${String(m.i).padStart(4, ' ')} ${String(m.file.file).padEnd(30, ' ')} reverting`);
 
-        await trx.raw(
-          `delete from \`${migrationsTableName}\` where name = ?`,
-          [`auto${m.file.n}`]
-        );
+          await m.mod.down(queryRunner);
+
+          await trx.raw(
+            `delete from \`${migrationsTableName}\` where timestamp = ?`,
+            [m.file.n]
+          );
+        }
+        catch (e) {
+
+          log.dump({
+            m,
+            e,
+          }, 5)
+
+          trx.rollback();
+
+          throw e;
+        }
       });
 
       console.log(`\n    reverted\n`);
@@ -371,31 +389,48 @@ CREATE TABLE \`${migrationsTableName}\` (
 
       await knex().transaction(async trx => {
 
-        console.log('');
+        let m
 
-        const queryRunner = {
-          query: (...args) => trx.raw(...args)
-        };
+        try {
 
-        for ( let key of keys ) {
+          console.log('');
 
-          const m = mods[key];
+          const queryRunner = {
+            query: (...args) => trx.raw(...args).then(result => result[0]),
+            trx,
+          };
 
-          if ( m.status.db ) {
+          for ( let key of keys ) {
 
-            console.log(`${String(m.i).padStart(4, ' ')} ${String(m.file.file).padEnd(30, ' ')} already executed`);
+            m = mods[key];
 
-            continue;
+            if ( m.status.db ) {
+
+              console.log(`${String(m.i).padStart(4, ' ')} ${String(m.file.file).padEnd(45, ' ')} already executed`);
+
+              continue;
+            }
+
+            console.log(`${String(m.i).padStart(4, ' ')} ${String(m.file.file).padEnd(45, ' ')} executing`);
+
+            await m.mod.up(queryRunner);
+
+            await trx.raw(
+              `insert into \`${migrationsTableName}\` (timestamp, name) values (?, ?)`,
+              [m.file.n, `auto${m.file.n}`]
+            );
           }
+        }
+        catch (e) {
 
-          console.log(`${String(m.i).padStart(4, ' ')} ${String(m.file.file).padEnd(30, ' ')} executing`);
+          log.dump({
+            m,
+            e,
+          }, 5)
 
-          await m.mod.up(queryRunner);
+          trx.rollback();
 
-          await trx.raw(
-            `insert into \`${migrationsTableName}\` (timestamp, name) values (?, ?)`,
-            [m.file.n, `auto${m.file.n}`]
-          );
+          throw e;
         }
       });
 

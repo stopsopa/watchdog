@@ -32,8 +32,12 @@ torun: # how many migrations with next mrun will be executed
 	@(cd CI && /bin/bash torun.sh)
 mrun: # Execute all prepared (NEW) migrations
 	@(cd CI && /bin/bash mrun.sh);
+nitrorun: # much faster version of mrun (after optimisation)
+	@(cd CI && /bin/bash mrun.sh --nitro);
 mmove:
 	@printf "\n(cd CI && /bin/bash move.sh [int])\n\n";
+nitromove:
+	@printf "\n(cd CI && /bin/bash move.sh --nitro [int])\n\n";
 mrevert: # Reverts ONE migration back
 	@(cd CI && /bin/bash link.sh)
 	@(cd CI && node info.js)

@@ -52,10 +52,10 @@ diff:
 	@(cd migrations && make -s diff)
 
 mrun:
-	@(cd migrations && make -s mrun)
+	@(cd migrations && make -s nitrorun)
 
 mmove:
-	@(cd migrations && make -s mmove)
+	@(cd migrations && make -s nitromove)
 
 torun:
 	@(cd migrations && make -s torun)

@@ -1,13 +1,15 @@
 /**
  *
  * // just string
- * node CI/executor/convert-migration-in-ts-syntax-to-vanila-node.js src/migration/1602541889003-auto.ts string
+ * node CI/nitro/convert-migration-in-ts-syntax-to-vanila-node.js src/migration/1602541889003-auto.ts string
  *
  * // create instance
- * node CI/executor/convert-migration-in-ts-syntax-to-vanila-node.js src/migration/1602541889003-auto.ts
+ * node CI/nitro/convert-migration-in-ts-syntax-to-vanila-node.js src/migration/1602541889003-auto.ts
  *
  */
 const fs = require('fs');
+
+const path = require('path');
 
 const log = require('inspc');
 
@@ -28,14 +30,14 @@ const tool = opt => {
 
       // remove
       //     import {MigrationInterface, QueryRunner} from "typeorm";
-      c = c.replace(/import\s+{\s*MigrationInterface\s*,\s*QueryRunner\s*}\s*from\s+"typeorm"\s*;?/g, '');
+      c = c.replace(/import\s+{\s*MigrationInterface\s*,\s*QueryRunner\s*}\s*from\s+"typeorm"\s*;?/ig, '');
 
 
       // if found:
 
 //`export class auto1602281400784 implements MigrationInterface {
 //    name = 'auto1602281400784'`
-      if (/export\s+class\s+[a-z\d]+\s+implements\s+MigrationInterface\s+{(\s+name)\s*=(\s*'[a-z\d]+')/g.test(c)) {
+      if (/export\s+class\s+[a-z_\d]+\s+implements\s+MigrationInterface\s+{(\s+name)\s*=(\s*'[a-z\d]+')/ig.test(c)) {
 
         // replace
 
@@ -45,14 +47,14 @@ const tool = opt => {
 
 //`module.exports = {
 //    name: 'auto1602281400784'`
-        c = c.replace(/export\s+class\s+[a-z\d]+\s+implements\s+MigrationInterface\s+{(\s+name)\s*=(\s*'[a-z\d]+')/g, 'module.exports = {$1:$2');
+        c = c.replace(/export\s+class\s+[a-z\d]+\s+implements\s+MigrationInterface\s+{(\s+name)\s*=(\s*'[a-z\d]+')/ig, 'module.exports = {$1:$2');
 
         // public async up(queryRunner: QueryRunner): Promise<void> {
         // public async down(queryRunner: QueryRunner): Promise<void> {
         // to
         // up: async function (queryRunner) {
         // down: async function (queryRunner) {
-        c = c.replace(/\s*public\s+async\s+(up|down)\(queryRunner:\s*QueryRunner\):\s*Promise<[a-z]+>\s*{/g, ',\n$1: async function (queryRunner) {');
+        c = c.replace(/\s*public\s+async\s+(up|down)\(queryRunner:\s*QueryRunner\):\s*Promise<[a-z]+>\s*{/ig, ',\n$1: async function (queryRunner) {');
 
       }
       else {
@@ -64,14 +66,14 @@ const tool = opt => {
 
 //`module.exports = {
 //    name: 'auto'`
-        c = c.replace(/export\s+class\s+[a-z\d]+\s+implements\s+MigrationInterface\s+{(\s+)/g, `module.exports = {$1name: 'auto'$1`);
+        c = c.replace(/export\s+class\s+[a-z_\d]+\s+implements\s+MigrationInterface\s+{(\s+)/ig, `module.exports = {$1name: 'auto'$1`);
 
         // public async up(queryRunner: QueryRunner): Promise<void> {
         // public async down(queryRunner: QueryRunner): Promise<void> {
         // to
         // up: async function (queryRunner) {
         // down: async function (queryRunner) {
-        c = c.replace(/\s*public\s+async\s+(up|down)\(queryRunner:\s*QueryRunner\):\s*Promise<[a-z]+>\s*{/g, ',\n$1: async function (queryRunner) {');
+        c = c.replace(/\s*public\s+async\s+(up|down)\(queryRunner:\s*QueryRunner\):\s*Promise<[a-z]+>\s*{/ig, ',\n$1: async function (queryRunner) {');
 
       }
 
@@ -129,7 +131,7 @@ if (require.main === module) {
       migrationFile: process.argv[2],
     });
 
-    const module = requireFromString(code, process.argv[2]);
+    const module = requireFromString(code, path.resolve(process.cwd(), process.argv[2]));
 
     log.dump({
       module,

@@ -4,7 +4,7 @@
 
 
 
-// var requireFromString = require('./migrations/CI/executor/require-from-string');
+// var requireFromString = require('./migrations/CI/nitro/require-from-string');
 //
 // const path = require('path');
 //
@@ -29,6 +29,7 @@ var Module = require('module');
 var path = require('path');
 
 module.exports = function requireFromString(code, filename, opts) {
+
   if (typeof filename === 'object') {
     opts = filename;
     filename = undefined;
