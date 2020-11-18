@@ -36,7 +36,8 @@ if [ "$TORUN" = "0" ]; then
     cd "$_DIRR"
 
     # make mrevert
-    (node "$_DIRR/node_modules/.bin/ts-node" "$_DIRR/node_modules/.bin/typeorm" migration:revert)
+#    (node "$_DIRR/node_modules/.bin/ts-node" "$_DIRR/node_modules/.bin/typeorm" migration:revert)
+    node CI/nitro/migrate.js revert
 
     cd "$_DIR"
 fi
@@ -50,4 +51,4 @@ fi
 
 { green "\n\nexecuting last migration:\n\n"; } 2>&3
 
-/bin/bash "$_DIR/mrun.sh"
+/bin/bash "$_DIR/mrun.sh" --nitro

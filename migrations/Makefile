@@ -42,14 +42,18 @@ mrevert: # Reverts ONE migration back
 	@(cd CI && /bin/bash link.sh)
 	@(cd CI && node info.js)
 	@node node_modules/.bin/ts-node node_modules/.bin/typeorm migration:revert
+nitrorevert: # Reverts ONE migration back
+	@(cd CI && /bin/bash link.sh)
+	@(cd CI && node info.js)
+	@node CI/nitro/migrate.js revert
 fixtures:
 	@(cd CI && /bin/bash link.sh)
 	node recreate-db.js
-	make -s mrun
+	make -s nitrorun
 minfo: # Script to determine how many migrations were executed until now (from DB)
 	@(cd CI && /bin/bash link.sh)
 	@(cd CI && node info.js)
-mtest: mrun
+mtest: nitrorun
 	@(cd CI && /bin/bash mtest.sh)
 
 # for CI  ^^^

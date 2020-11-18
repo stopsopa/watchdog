@@ -98,7 +98,8 @@ if [ "$DIFF" -lt "0" ]; then
     { green "\n>>> reverting: $COUNTER of $LOOP <<<"; } 2>&3
 
 #    (cd .. && make mrevert)
-    (cd .. && node node_modules/.bin/ts-node node_modules/.bin/typeorm migration:revert)
+#    (cd .. && node node_modules/.bin/ts-node node_modules/.bin/typeorm migration:revert)
+    (cd .. && node CI/nitro/migrate.js revert)
 
     let COUNTER=COUNTER+1;
   done
