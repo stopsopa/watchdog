@@ -187,6 +187,11 @@ if [ "$DIFF" -lt "0" ]; then
     CODE="$?"
 
     let COUNTER=COUNTER+1;
+
+    if [ "$CODE" != "0" ]; then
+
+      break ;
+    fi
   done
 fi
 
