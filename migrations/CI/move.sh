@@ -68,8 +68,20 @@ eval set -- "$PARAMS"
 
 
 
+CODE="0"
 
-TRAPS=()
+function final {
+
+  if [ "$CODE" = "0" ]; then
+
+    { green "\n   All good: TARGET: $TARGET, TOTAL: $TOTAL, DONE: $DONE\n"; } 2>&3
+  else
+
+    { red "\n   Error: TARGET: $TARGET, TOTAL: $TOTAL, DONE: $DONE\n"; } 2>&3
+  fi
+}
+
+TRAPS=("final")
 
 function trigger_traps {
 
@@ -91,7 +103,7 @@ function un {
     unset MIGRATION_MODE;
 }
 
-TRAPS+=('un')
+TRAPS=("un" "${TRAPS[@]}") # add to beginning of the array
 
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 
@@ -131,7 +143,7 @@ if [[ "$TARGET" -gt "$TOTAL" ]]; then
   exit 1
 fi
 
-if [[ "$TARGET" -lt "1" ]]; then
+if [[ "$TARGET" -lt "0" ]]; then
 
   { red "\n   TARGET ($TARGET) should not be smallert than 1\n"; } 2>&3
 
@@ -172,6 +184,8 @@ if [ "$DIFF" -lt "0" ]; then
       (cd .. && node node_modules/.bin/ts-node node_modules/.bin/typeorm migration:revert)
     fi
 
+    CODE="$?"
+
     let COUNTER=COUNTER+1;
   done
 fi
@@ -185,7 +199,7 @@ if [ "$DIFF" -gt "0" ]; then
       node "$_DIR/info.js" --move-back
   }
 
-  TRAPS+=('cleanup')
+  TRAPS=("cleanup" "${TRAPS[@]}") # add to beginning of the array
 
   node "$_DIR/info.js" --move-back
 
@@ -195,13 +209,13 @@ if [ "$DIFF" -gt "0" ]; then
 
   if [ "$NITRO" = "1" ]; then
 
-    /bin/bash "$_DIR/mrun.sh" --nitro
+    /bin/bash "$_DIR/mrun.sh" --nitro $1
   else
 
     /bin/bash "$_DIR/mrun.sh"
   fi
 
-  exit 0;
+  CODE="$?"
 fi
 
 CURRENTAFTER="$(node "$_DIR/info.js" --current)"
@@ -213,10 +227,7 @@ if [ "$CURRENTAFTER" != "$TARGET" ]; then
   exit 1
 fi
 
-
-{ green "\n   All good: TARGET: $TARGET, TOTAL: $TOTAL, DONE: $DONE\n"; } 2>&3
-
-exit 0
+exit $CODE;
 
 
 

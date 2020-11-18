@@ -122,7 +122,7 @@ if [ "$DIFF" -gt "0" ]; then
 
   DONE="execute $DIFF migrations";
 
-  /bin/bash "$_DIR/mrun.sh"
+  /bin/bash "$_DIR/mrun.sh" --nitro
 
   exit 0;
 fi

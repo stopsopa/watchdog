@@ -7,6 +7,10 @@
  *
  *    node CI/nitro/migrate.js revert
  *
+ * rollout migration to the particular migration specified by number
+ *
+ *    node CI/nitro/migrate.js 6
+ *
  */
 const fs = require('fs');
 
@@ -33,6 +37,42 @@ const config = require(path.resolve(__dirname, '..', '..', 'ormconfig.js'));
 const th = msg => new Error(`nitro/migrate.js error: ${msg}`);
 
 const mysql = require('../../../app/models/mysql'); //
+
+// https://i.imgur.com/mWzuQWP.png
+const color = (function (c) {
+  return (...args) => c[args.pop()] + args.join('') + c.reset;
+}({
+  Bright      : "\x1b[1m",
+  Dim         : "\x1b[2m",
+  Underscore  : "\x1b[4m",
+  Blink       : "\x1b[5m",
+  Reverse     : "\x1b[7m",
+  Hidden      : "\x1b[8m",
+  FgBlack     : "\x1b[30m",
+  FgRed       : "\x1b[31m", // red
+  FgGreen     : "\x1b[32m", // green
+  FgYellow    : "\x1b[33m", // yellow
+  FgBlue      : "\x1b[34m",
+  FgMagenta   : "\x1b[35m", // magenta
+  FgCyan      : "\x1b[36m", // cyan
+  FgWhite     : "\x1b[37m",
+  BgBlack     : "\x1b[40m",
+  BgRed       : "\x1b[41m",
+  BgGreen     : "\x1b[42m",
+  BgYellow    : "\x1b[43m",
+  BgBlue      : "\x1b[44m",
+  BgMagenta   : "\x1b[45m",
+  BgCyan      : "\x1b[46m",
+  BgWhite     : "\x1b[47m",
+  r           : "\x1b[31m", // red
+  g           : "\x1b[32m", // green
+  y           : "\x1b[33m", // yellow
+  m           : "\x1b[35m", // magenta
+  c           : "\x1b[36m", // cyan
+  reset       : "\x1b[0m",
+}));
+
+const c = (...args) => process.stdout.write(color(...args));
 
 knex.init({
   def: 'mysql',
@@ -107,14 +147,28 @@ knex.init({
 
   let mode = 'migrations';
 
+  let num;
+
   if ( typeof process.argv[2] === 'string') {
 
-    if (process.argv[2] !== 'revert') {
+    switch (true) {
+      case process.argv[2] === 'revert':
 
-      throw th(`process.argv[2] !== 'revert'`);
+        mode = 'revert'
+
+        break;
+      case /^\d+$/.test(process.argv[2]):
+
+        mode = 'rollout'
+
+        num = parseInt(process.argv[2], 10);
+
+        break;
+      default:
+
+        throw th(`process.argv[2] !== 'revert' nor 'revert'`);
+
     }
-
-    mode = 'revert';
   }
 
   try {
@@ -268,26 +322,6 @@ CREATE TABLE \`${migrationsTableName}\` (
 
     const keys = Object.keys(all);
 
-    if (mode === 'revert') {
-
-      let i = 0;
-
-      for ( let key of keys ) {
-
-        i += 1;
-
-        const status = all[key];
-
-        const file = filesbufforkey[key];
-
-        // log.dump({
-        //   i,
-        //   status,
-        //   file,
-        // })
-      }
-    }
-
     let i = 0;
 
     const mods = {};
@@ -347,92 +381,133 @@ CREATE TABLE \`${migrationsTableName}\` (
 
       const m = values[index];
 
-      await knex().transaction(async trx => {
+      const trx = await knex().transaction();
 
-        try {
+      try {
 
-          console.log('');
+        console.log('');
 
-          const queryRunner = {
-            query: (...args) => trx.raw(...args).then(result => result[0]),
-            trx,
-          };
+        const queryRunner = {
+          query: (...args) => {
 
-          console.log(`${String(m.i).padStart(4, ' ')} ${String(m.file.file).padEnd(30, ' ')} reverting`);
+            if (args.length === 1) {
 
-          await m.mod.down(queryRunner);
+              console.log(args[0])
+            }
+            else {
 
-          await trx.raw(
-            `delete from \`${migrationsTableName}\` where timestamp = ?`,
-            [m.file.n]
-          );
-        }
-        catch (e) {
+              log.dump(args)
+            }
 
-          log.dump({
-            m,
-            e,
-          }, 5)
+            return trx.raw(...args).then(result => result[0])
+          },
+          trx,
+        };
 
-          trx.rollback();
+        c(`${String(m.i).padStart(4, ' ')} ${String(m.file.file).padEnd(30, ' ')} reverting\n`, 'y');
 
-          throw e;
-        }
-      });
+        await m.mod.down(queryRunner);
 
-      console.log(`\n    reverted\n`);
+        await trx.raw(
+          `delete from \`${migrationsTableName}\` where timestamp = ?`,
+          [m.file.n]
+        );
+
+        trx.commit();
+      }
+      catch (e) {
+
+        log.dump({
+          m,
+          e,
+        }, 5)
+
+        trx.rollback();
+
+        throw e;
+      }
+
+      c(`\n    reverted\n`, 'y');
     }
 
-    if (mode === 'migrations') {
+    if (mode === 'migrations' || mode === 'rollout') {
+
+      let go = num !== 0;
 
       const keys = Object.keys(mods);
 
-      await knex().transaction(async trx => {
+      const trx = await knex().transaction();
 
-        let m
+      let m
 
-        try {
+      try {
 
-          console.log('');
+        console.log('');
 
-          const queryRunner = {
-            query: (...args) => trx.raw(...args).then(result => result[0]),
-            trx,
-          };
+        const queryRunner = {
+          query: (...args) => {
 
-          for ( let key of keys ) {
+            if (args.length === 1) {
 
-            m = mods[key];
+              console.log(args[0])
+            }
+            else {
 
-            if ( m.status.db ) {
-
-              console.log(`${String(m.i).padStart(4, ' ')} ${String(m.file.file).padEnd(45, ' ')} already executed`);
-
-              continue;
+              log.dump(args)
             }
 
-            console.log(`${String(m.i).padStart(4, ' ')} ${String(m.file.file).padEnd(45, ' ')} executing`);
+            return trx.raw(...args).then(result => result[0])
+          },
+          trx,
+        };
 
-            await m.mod.up(queryRunner);
+        for ( let key of keys ) {
 
-            await trx.raw(
-              `insert into \`${migrationsTableName}\` (timestamp, name) values (?, ?)`,
-              [m.file.n, `auto${m.file.n}`]
-            );
+          m = mods[key];
+
+          if (mode === 'rollout' && m.i > num) {
+
+            go = false;
           }
+
+          if ( ! go ) {
+
+            c(`${String(m.i).padStart(4, ' ')} ${String(m.file.file).padEnd(45, ' ')} not executing - rollout ${num}\n`, 'y');
+
+            continue;
+          }
+
+          if ( m.status.db ) {
+
+            c(`${String(m.i).padStart(4, ' ')} ${String(m.file.file).padEnd(45, ' ')} already executed\n`, 'y');
+
+            continue;
+          }
+
+          c(`${String(m.i).padStart(4, ' ')} ${String(m.file.file).padEnd(45, ' ')} executing\n`, 'y');
+
+          await m.mod.up(queryRunner);
+
+          await trx.raw(
+            `insert into \`${migrationsTableName}\` (timestamp, name) values (?, ?)`,
+            [m.file.n, `auto${m.file.n}`]
+          );
         }
-        catch (e) {
 
-          log.dump({
-            m,
-            e,
-          }, 5)
+        trx.commit();
+      }
+      catch (e) {
 
-          trx.rollback();
+        log.dump({
+          m,
+          e,
+          completed: trx.isCompleted(),
+        }, 5)
 
-          throw e;
-        }
-      });
+        trx.rollback();
+
+        throw e;
+      }
 
       console.log(`\n    all up to date\n`);
     }
