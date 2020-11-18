@@ -72,14 +72,14 @@ eval set -- "$PARAMS"
 
 
 
-export MIGRATION_MODE=true
-
-function cleanup {
-
-    unset MIGRATION_MODE;
-}
-
-trap cleanup EXIT;
+#export MIGRATION_MODE=true
+#
+#function cleanup {
+#
+#    unset MIGRATION_MODE;
+#}
+#
+#trap cleanup EXIT;
 
 exec 3<> /dev/null
 function red {
@@ -134,58 +134,70 @@ else
   (cd "$_DIR/.." && make -s migrate)
 fi
 
-MCOUNT_AFTER="$(node "$_DIR/mcountdb.js")"
+CODE="$?"
 
-DIFF="$(($MCOUNT_AFTER - $MCOUNT_BEFORE))"
+if [ "$CODE" = "0" ]; then
 
-#if [ "$MCOUNT_AFTER" = "$MCOUNT_BEFORE" ]; then
-#
-#    { red "[ERROR]:After executing 'make -s migrate' number of migrations in db is the same - something is not quite right"; } 2>&3
-#
-#    exit 1;
-#fi
+  { green "mrun [OK]"; } 2>&3
+else
 
-if [ "$DIFF" != "$TORUN" ]; then
-
-#    { red "[ERROR]:Number of migrations in db before and after executing new migrations has changed from '$MCOUNT_BEFORE' to '$MCOUNT_AFTER', difference NOT match expected number of migrations to execute (diff should be '$TORUN' and is '$DIFF') - something is not ok, attempt to revert previous number of migrations"; } 2>&3
-    { red "[ERROR]:Number of migrations in db before and after executing new migrations has changed from '$MCOUNT_BEFORE' to '$MCOUNT_AFTER', difference NOT match expected number of migrations to execute (diff should be '$TORUN' and is '$DIFF') - something is not ok"; } 2>&3
-#
-#    MCOUNT_BEFORE_LOOP="$MCOUNT_AFTER"
-#    while true
-#    do
-#
-#        if [ "$NITRO" = "1" ]; then
-#
-#          (cd "$_DIR/.." && node CI/nitro/migrate.js revert)
-#        else
-#
-#          (cd "$_DIR/.." && make -s mrevert)
-#        fi
-#
-#        MCOUNT_AFTER_LOOP="$(node "$_DIR/mcountdb.js")"
-#
-#        if [ "$MCOUNT_BEFORE_LOOP" = "$MCOUNT_AFTER_LOOP" ]; then
-#
-#            { red "[ERROR]:Attempt to revert migration failed, number of migration after executing 'make mrevert' should decrease by one, but there is no change, entire loop should revert back migrations to '$MCOUNT_BEFORE' in database step by step - this loop failed"; } 2>&3
-#
-#            exit 1
-#        fi
-#
-#        if [ "$MCOUNT_AFTER_LOOP" = "$MCOUNT_BEFORE" ]; then
-#
-#            { red"[ERROR]: It looks like reverting migrations has been completed successfully, throwing error though (exit code 100) for CI to stop"; } 2>&3
-#
-#            exit 100
-#        fi
-#
-#        { green "revert loop successful (MCOUNT_BEFORE_LOOP: $MCOUNT_BEFORE_LOOP -> MCOUNT_AFTER_LOOP: $MCOUNT_AFTER_LOOP)"; } 2>&3
-#
-#        MCOUNT_BEFORE_LOOP="$MCOUNT_AFTER_LOOP"
-#    done
-#
-    exit 1;
+  { red "mrun [ERROR]"; } 2>&3
 fi
 
-{ green "[OK]: Number of migrations in db before and after executing new migrations has changed from '$MCOUNT_BEFORE' to '$MCOUNT_AFTER', difference match expected number of migrations to execute - looks good, carry on"; } 2>&3
+exit $CODE;
 
-exit 0;
+#MCOUNT_AFTER="$(node "$_DIR/mcountdb.js")"
+#
+#DIFF="$(($MCOUNT_AFTER - $MCOUNT_BEFORE))"
+#
+##if [ "$MCOUNT_AFTER" = "$MCOUNT_BEFORE" ]; then
+##
+##    { red "[ERROR]:After executing 'make -s migrate' number of migrations in db is the same - something is not quite right"; } 2>&3
+##
+##    exit 1;
+##fi
+#
+#if [ "$DIFF" != "$TORUN" ]; then
+#
+##    { red "[ERROR]:Number of migrations in db before and after executing new migrations has changed from '$MCOUNT_BEFORE' to '$MCOUNT_AFTER', difference NOT match expected number of migrations to execute (diff should be '$TORUN' and is '$DIFF') - something is not ok, attempt to revert previous number of migrations"; } 2>&3
+#    { red "[ERROR]:Number of migrations in db before and after executing new migrations has changed from '$MCOUNT_BEFORE' to '$MCOUNT_AFTER', difference NOT match expected number of migrations to execute (diff should be '$TORUN' and is '$DIFF') - something is not ok"; } 2>&3
+##
+##    MCOUNT_BEFORE_LOOP="$MCOUNT_AFTER"
+##    while true
+##    do
+##
+##        if [ "$NITRO" = "1" ]; then
+##
+##          (cd "$_DIR/.." && node CI/nitro/migrate.js revert)
+##        else
+##
+##          (cd "$_DIR/.." && make -s mrevert)
+##        fi
+##
+##        MCOUNT_AFTER_LOOP="$(node "$_DIR/mcountdb.js")"
+##
+##        if [ "$MCOUNT_BEFORE_LOOP" = "$MCOUNT_AFTER_LOOP" ]; then
+##
+##            { red "[ERROR]:Attempt to revert migration failed, number of migration after executing 'make mrevert' should decrease by one, but there is no change, entire loop should revert back migrations to '$MCOUNT_BEFORE' in database step by step - this loop failed"; } 2>&3
+##
+##            exit 1
+##        fi
+##
+##        if [ "$MCOUNT_AFTER_LOOP" = "$MCOUNT_BEFORE" ]; then
+##
+##            { red"[ERROR]: It looks like reverting migrations has been completed successfully, throwing error though (exit code 100) for CI to stop"; } 2>&3
+##
+##            exit 100
+##        fi
+##
+##        { green "revert loop successful (MCOUNT_BEFORE_LOOP: $MCOUNT_BEFORE_LOOP -> MCOUNT_AFTER_LOOP: $MCOUNT_AFTER_LOOP)"; } 2>&3
+##
+##        MCOUNT_BEFORE_LOOP="$MCOUNT_AFTER_LOOP"
+##    done
+##
+#    exit 1;
+#fi
+#
+#{ green "[OK]: Number of migrations in db before and after executing new migrations has changed from '$MCOUNT_BEFORE' to '$MCOUNT_AFTER', difference match expected number of migrations to execute - looks good, carry on"; } 2>&3
+#
+#exit 0;

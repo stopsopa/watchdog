@@ -96,14 +96,14 @@ function trigger_traps {
 
 trap trigger_traps EXIT;
 
-export MIGRATION_MODE=true
-
-function un {
-
-    unset MIGRATION_MODE;
-}
-
-TRAPS=("un" "${TRAPS[@]}") # add to beginning of the array
+#export MIGRATION_MODE=true
+#
+#function un {
+#
+#    unset MIGRATION_MODE;
+#}
+#
+#TRAPS=("un" "${TRAPS[@]}") # add to beginning of the array
 
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 

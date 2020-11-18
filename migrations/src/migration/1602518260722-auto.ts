@@ -9,7 +9,7 @@ export class auto1602518260722 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query("ALTER TABLE `probes` DROP FOREIGN KEY `FK_a17ab72f48c89fd16039aeb39e9`");
+        // await queryRunner.query("ALTER TABLE `probes` DROP FOREIGN KEY `FK_a17ab72f48c89fd16039aeb39e9`");
         await queryRunner.query("DROP TABLE `probes`");
     }
 

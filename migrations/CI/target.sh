@@ -1,13 +1,13 @@
 #!/bin/bash
 
-export MIGRATION_MODE=true
-
-function cleanup {
-
-    unset MIGRATION_MODE;
-}
-
-trap cleanup EXIT;
+#export MIGRATION_MODE=true
+#
+#function cleanup {
+#
+#    unset MIGRATION_MODE;
+#}
+#
+#trap cleanup EXIT;
 
 # return number of migration that supposed to be executed against db
 # based on numbr of migration files .ts

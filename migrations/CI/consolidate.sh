@@ -23,14 +23,14 @@ function trigger_traps {
 
 trap trigger_traps EXIT;
 
-export MIGRATION_MODE=true
-
-function un {
-
-    unset MIGRATION_MODE;
-}
-
-TRAPS+=('un')
+#export MIGRATION_MODE=true
+#
+#function un {
+#
+#    unset MIGRATION_MODE;
+#}
+#
+#TRAPS+=('un')
 
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 

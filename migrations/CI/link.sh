@@ -1,13 +1,13 @@
 #!/bin/bash
 
-export MIGRATION_MODE=true
-
-function cleanup {
-
-    unset MIGRATION_MODE;
-}
-
-trap cleanup EXIT;
+#export MIGRATION_MODE=true
+#
+#function cleanup {
+#
+#    unset MIGRATION_MODE;
+#}
+#
+#trap cleanup EXIT;
 
 _DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 

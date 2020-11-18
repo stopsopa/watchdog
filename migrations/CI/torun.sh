@@ -1,13 +1,13 @@
 #!/bin/bash
 
-export MIGRATION_MODE=true
-
-function cleanup {
-
-    unset MIGRATION_MODE;
-}
-
-trap cleanup EXIT;
+#export MIGRATION_MODE=true
+#
+#function cleanup {
+#
+#    unset MIGRATION_MODE;
+#}
+#
+#trap cleanup EXIT;
 
 # Return number of migration that should be executed agains db
 # Might be negative value, in this case it will mean how many migrations have to be reverted
