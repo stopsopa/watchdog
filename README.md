@@ -27,6 +27,7 @@
 - [x] issue fix, updating probe updates list of probes in other browser instance
 - [x] issue fix, probes countdown - not always lowest number of seconds
 - [x] restart on update
+- [ ] require-from-string
 
 https://github.com/stopsopa/watchdog
 
