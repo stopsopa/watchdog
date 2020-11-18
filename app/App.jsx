@@ -24,7 +24,7 @@ import ProbeEdit from './views/Probes/ProbeEdit';
 
 import ProbeLog from './views/Probes/ProbeLog';
 
-import LoggersList from './views/Logger/LoggersList';
+import UsersList from './views/Users/UsersList';
 
 import './App.scss'
 
@@ -56,10 +56,10 @@ export default function App() {
             Projects
           </NavLink>
           <NavLink
-            to="/loggers"
+            to="/users"
             activeClassName="active"
           >
-            Loggers
+            Users
           </NavLink>
         </div>
       </div>
@@ -109,9 +109,9 @@ export default function App() {
 
 
           <Route
-            path="/loggers"
+            path="/users"
             exact={true}
-            component={LoggersList}
+            component={UsersList}
           />
 
 
