@@ -30,17 +30,50 @@ const tool = opt => {
       //     import {MigrationInterface, QueryRunner} from "typeorm";
       c = c.replace(/import\s+{\s*MigrationInterface\s*,\s*QueryRunner\s*}\s*from\s+"typeorm"\s*;?/g, '');
 
-      // export class auto1602541889003 implements MigrationInterface {
-      // to
-      // module.exports = {
-      c = c.replace(/export\s+class\s+[a-z\d]+\s+implements\s+MigrationInterface\s+{(\s+name)\s*=(\s*'[a-z\d]+')/g, 'module.exports = {$1:$2');
 
-      // public async up(queryRunner: QueryRunner): Promise<void> {
-      // public async down(queryRunner: QueryRunner): Promise<void> {
-      // to
-      // up: async function (queryRunner) {
-      // down: async function (queryRunner) {
-      c = c.replace(/\s*public\s+async\s+(up|down)\(queryRunner:\s*QueryRunner\):\s*Promise<void>\s*{/g, ',\n$1: async function (queryRunner) {');
+      // if found:
+
+//`export class auto1602281400784 implements MigrationInterface {
+//    name = 'auto1602281400784'`
+      if (/export\s+class\s+[a-z\d]+\s+implements\s+MigrationInterface\s+{(\s+name)\s*=(\s*'[a-z\d]+')/g.test(c)) {
+
+        // replace
+
+//`export class auto1602281400784 implements MigrationInterface {
+//    name = 'auto1602281400784'`
+        // to
+
+//`module.exports = {
+//    name: 'auto1602281400784'`
+        c = c.replace(/export\s+class\s+[a-z\d]+\s+implements\s+MigrationInterface\s+{(\s+name)\s*=(\s*'[a-z\d]+')/g, 'module.exports = {$1:$2');
+
+        // public async up(queryRunner: QueryRunner): Promise<void> {
+        // public async down(queryRunner: QueryRunner): Promise<void> {
+        // to
+        // up: async function (queryRunner) {
+        // down: async function (queryRunner) {
+        c = c.replace(/\s*public\s+async\s+(up|down)\(queryRunner:\s*QueryRunner\):\s*Promise<[a-z]+>\s*{/g, ',\n$1: async function (queryRunner) {');
+
+      }
+      else {
+
+        // replace
+
+//`export class auto1602281400784 implements MigrationInterface {
+        // to
+
+//`module.exports = {
+//    name: 'auto'`
+        c = c.replace(/export\s+class\s+[a-z\d]+\s+implements\s+MigrationInterface\s+{(\s+)/g, `module.exports = {$1name: 'auto'$1`);
+
+        // public async up(queryRunner: QueryRunner): Promise<void> {
+        // public async down(queryRunner: QueryRunner): Promise<void> {
+        // to
+        // up: async function (queryRunner) {
+        // down: async function (queryRunner) {
+        c = c.replace(/\s*public\s+async\s+(up|down)\(queryRunner:\s*QueryRunner\):\s*Promise<[a-z]+>\s*{/g, ',\n$1: async function (queryRunner) {');
+
+      }
 
       return c;
     },
