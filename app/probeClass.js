@@ -7,6 +7,8 @@ const logg = require('inspc');
 
 const mkdirp = require('mkdirp');
 
+const requireFromString = require('require-from-string');
+
 const isObject = require('nlab/isObject');
 
 const ms        = require('nlab/ms');
@@ -111,29 +113,31 @@ function tool(db) {
         file = path.resolve(dir, `probe_${db.type}_${db.id}.js`);
       }
 
-      if ( fs.existsSync(file) ) {
-
-        fs.unlinkSync(file);
-      }
-
-      if ( fs.existsSync(file) ) {
-
-        throw th(`Can't remove file '${file}'`);
-      }
-
-      fs.writeFileSync(file, db.code);
+      // if ( fs.existsSync(file) ) {
+      //
+      //   fs.unlinkSync(file);
+      // }
+      //
+      // if ( fs.existsSync(file) ) {
+      //
+      //   throw th(`Can't remove file '${file}'`);
+      // }
+      //
+      // fs.writeFileSync(file, db.code);
 
       let tmp;
 
       try {
 
-        delete require.cache[file];
+        // delete require.cache[file];
 
-        tmp = require(file);
+        // tmp = require(file);
+
+        tmp = requireFromString(db.code, file);
       }
       catch (e) {
 
-        delete require.cache[file];
+        // delete require.cache[file];
 
         e = se(e);
 
@@ -144,7 +148,7 @@ function tool(db) {
         throw err;
       }
 
-      delete require.cache[file];
+      // delete require.cache[file];
 
       const type = typeof tmp;
 

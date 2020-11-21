@@ -212,7 +212,8 @@ const estool = (async function () {
         const cls = require('./app/probeClass');
 
         cls.setup({
-          dir: path.resolve(__dirname, 'var', 'probes'),
+          // dir: path.resolve(__dirname, 'var', 'probes'),
+          dir: path.resolve(__dirname),
           es,
           io
         });
