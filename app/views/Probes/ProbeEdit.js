@@ -72,6 +72,7 @@ import {
 
   notificationsAdd,
 } from '../../components/Notifications/storeNotifications';
+import { setStoreAssoc, setStoreAssocDelete } from '../../_storage/storeAssoc'
 
 export default function ProbeEdit() {
 
@@ -154,9 +155,13 @@ export default function ProbeEdit() {
       onLoad: b,
     });
 
+    setStoreAssoc('log_page_current_probe_id', probe_id);
+
     return () => {
       probesUnbind();
       projectUnbind();
+
+      setStoreAssocDelete('log_page_current_probe_id');
     }
 
   }, []);

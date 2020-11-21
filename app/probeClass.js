@@ -274,16 +274,25 @@ function tool(db) {
       //   currentBinary,
       // })
     },
-    ioTriggerStatus: function (esid) {
+    ioTriggerStatus: function (opt = {}) {
 
       // if ( typeof esid !== 'string' ) {
       //
       //   throw th(`ioTriggerStatus() esid is not a string`)
       // }
 
+      if (opt.origin) {
+
+        logg.dump({
+          origin: opt.origin,
+          id: db.id,
+        })
+      }
+
       io.emit('probe_status_update', {
         state: this.state(),
-        esid,
+        esid: opt.esid,
+        origin: opt.origin
       });
     },
     construct: async function () {
@@ -464,7 +473,9 @@ function tool(db) {
           }
         }
 
-        this.ioTriggerStatus();
+        this.ioTriggerStatus({
+          origin: 'passive_contructor'
+        });
 
         if ( probe === false ) {
 
@@ -478,6 +489,10 @@ function tool(db) {
           minus,
         });
       }
+
+      this.ioTriggerStatus({
+        origin: 'end_contructor'
+      });
     },
     passiveWatchdog: async function (opt = {}) {
 
@@ -575,7 +590,9 @@ function tool(db) {
 
             logg.t(`probe timeout   ${db.enabled ? 'enabled ' : 'disabled'} [${String(db.type).padStart(8, ' ')}:${String(db.id).padStart(6, ' ')}] [project:${String(db.project_id).padStart(6, ' ')}]       interval: ${ms(intervalMilliseconds)}`);
 
-            this.ioTriggerStatus(esresult.body._id)
+            this.ioTriggerStatus({
+              esid: esresult.body._id,
+            })
 
             return;
           }
@@ -676,7 +693,9 @@ function tool(db) {
 
         lastTimeLoggedInEsUnixtimestampMilliseconds = created.getTime();
 
-        this.ioTriggerStatus(esresult.body._id)
+        this.ioTriggerStatus({
+          esid: esresult.body._id,
+        })
       }
 
       await this.passiveWatchdog({
@@ -735,7 +754,9 @@ function tool(db) {
 
           lastTimeLoggedInEsUnixtimestampMilliseconds = created.getTime();
 
-          this.ioTriggerStatus(esresult.body._id)
+          this.ioTriggerStatus({
+            esid: esresult.body._id,
+          })
         }
       }
       catch (e) {
