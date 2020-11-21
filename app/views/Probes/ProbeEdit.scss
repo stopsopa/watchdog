@@ -1,6 +1,9 @@
 
 
 #app .probe {
+    [type="submit"] {
+        z-index: 2;
+    }
     .right {
         float: right;
     }

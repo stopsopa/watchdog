@@ -112,7 +112,7 @@ export function StoreAssocProvider(props) {
 
         const probe_status_destruct = id => {
 
-          setStoreAssoc(`status.${id}`);
+          setStoreAssocDelete(`status.${id}`);
         }
 
         socket.on('probe_status_destruct', probe_status_destruct)
@@ -148,21 +148,24 @@ export function StoreAssocProvider(props) {
 
             setStoreAssoc(assocKeyFullRange, current);
 
-            current = getStoreAssoc(assocKeySelection) || [];
+            if (esid) {
 
-            current.push({
-              id: esid,
-              f: state.lastTimeLoggedInEsUnixtimestampMilliseconds_ISOString,
-              p: state.probe,
-              l: true // live
-            })
+              current = getStoreAssoc(assocKeySelection) || [];
 
-            if (current.length > 10000) {
+              current.push({
+                id: esid,
+                f: state.lastTimeLoggedInEsUnixtimestampMilliseconds_ISOString,
+                p: state.probe,
+                l: true // live
+              })
 
-              current = current.splice(current.length - 10000)
+              if (current.length > 10000) {
+
+                current = current.splice(current.length - 10000)
+              }
+
+              setStoreAssoc(assocKeySelection, current);
             }
-
-            setStoreAssoc(assocKeySelection, current);
           }
           else {
 

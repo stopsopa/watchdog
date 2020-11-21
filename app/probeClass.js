@@ -276,10 +276,10 @@ function tool(db) {
     },
     ioTriggerStatus: function (esid) {
 
-      if ( typeof esid !== 'string' ) {
-
-        throw th(`ioTriggerStatus() esid is not a string`)
-      }
+      // if ( typeof esid !== 'string' ) {
+      //
+      //   throw th(`ioTriggerStatus() esid is not a string`)
+      // }
 
       io.emit('probe_status_update', {
         state: this.state(),
@@ -385,6 +385,8 @@ function tool(db) {
           })
         }
 
+        this.ioTriggerStatus();
+
         const run = async () => {
 
           ({
@@ -462,7 +464,7 @@ function tool(db) {
           }
         }
 
-        // this.ioTriggerStatus();
+        this.ioTriggerStatus();
 
         if ( probe === false ) {
 
@@ -476,8 +478,6 @@ function tool(db) {
           minus,
         });
       }
-
-      // this.ioTriggerStatus();
     },
     passiveWatchdog: async function (opt = {}) {
 
