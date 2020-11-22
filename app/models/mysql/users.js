@@ -114,6 +114,29 @@ module.exports = knex => extend(knex, prototype, {
 
             row.label = label.join(' ');
         }([]));
+
+        (function () {
+
+            if (typeof row.password === 'string') {
+
+                if ( ! isObject(row.password) ) {
+
+                    try {
+
+                        row.password = JSON.parse(row.password);
+                    }
+                    catch (e) {
+
+                        row.password = {}
+                    }
+                }
+            }
+            if ( ! isObject(row.password) ) {
+
+                row.password = null;
+            }
+        }());
+
         //
         // row.detailed_log = Boolean(row.detailed_log);
         //
@@ -142,7 +165,10 @@ module.exports = knex => extend(knex, prototype, {
 
         delete row.label;
 
+        delete row.password;
+
         row.enabled = Boolean(row.enabled);
+
         //
         // row.detailed_log = Boolean(row.detailed_log);
         //
@@ -276,6 +302,8 @@ module.exports = knex => extend(knex, prototype, {
 
         delete data.label;
 
+        delete data.password;
+
         return data;
     },
     getValidators: function (mode, id, entityPrepared) {
@@ -290,10 +318,10 @@ module.exports = knex => extend(knex, prototype, {
                 new NotBlank(),
                 new Length({max: 50}),
             ]),
-            password: new Required([
-                new NotBlank(),
-                new Length({max: 255}),
-            ]),
+            // password: new Required([
+            //     new NotBlank(),
+            //     new Length({max: 255}),
+            // ]),
             email: new Required([
                 new NotBlank(),
                 new Email(),

@@ -11,6 +11,10 @@ const se = require('nlab/se');
 
 const th = msg => new Error(`users.js error: ${msg}`);
 
+const {
+  generate,
+} = require('../lib/password');
+
 module.exports = ({
   io,
   socket,
@@ -181,5 +185,44 @@ module.exports = ({
       })
     }
   })
+
+  socket.on(`users_set_password`, async ({
+    password,
+    id
+  }) => {
+
+    let error = false;
+
+    try {
+
+      if ( ! Number.isInteger(id) ) {
+
+        throw new Error(`id is not an integer`);
+      }
+
+      if (typeof password !== 'string') {
+
+        throw new Error(`password is not a string`);
+      }
+
+      password = password.trim();
+
+      if ( password.length < 8 ) {
+
+        throw new Error(`password should be at least 8 characters`);
+      }
+
+      await man.query(`update :table: set password = :password where id = :id`, {
+        password: JSON.stringify(generate(password), null, 4),
+        id,
+      });
+    }
+    catch (e) {
+
+      error = e.message;
+    }
+
+    socket.emit(`users_set_password`, error);
+  });
 
 }

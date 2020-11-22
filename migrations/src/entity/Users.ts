@@ -40,8 +40,8 @@ export class Users {
     })
     email: string;
 
-    @Column({
-        length: 255
+    @Column("mediumtext", {
+        nullable: true,
     })
     password: string;
 

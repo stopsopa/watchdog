@@ -267,6 +267,8 @@ function reducer(state, action) {
   }
 }
 
+export const getSocket = () => socket;
+
 // actions && selectors:
 
 export const setStoreAssoc = (key, value) => {
@@ -809,6 +811,7 @@ export const actionUsersEditFormPopulate = ({
   id,
   onLoad = () => {},
   users_delete = () => {},
+  users_set_password = () => {},
 }) => {
 
   setStoreAssocDelete(key);
@@ -824,7 +827,9 @@ export const actionUsersEditFormPopulate = ({
 
   socket.on('users_form_populate', users_form_populate);
 
-  socket.on('users_delete', users_delete);
+  users_delete && socket.on('users_delete', users_delete);
+
+  users_set_password && socket.on('users_set_password', users_set_password);
 
   return () => {
 
@@ -832,7 +837,9 @@ export const actionUsersEditFormPopulate = ({
 
       socket.off('users_form_populate', users_form_populate);
 
-      socket.off('users_delete', users_delete);
+      users_delete && socket.off('users_delete', users_delete);
+
+      users_set_password && socket.off('users_set_password', users_set_password);
     }
   }
 };

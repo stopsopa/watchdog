@@ -81,6 +81,8 @@ import {
   actionUsersEditFormPopulate,
   getStoreAssoc,
   actionUsersFormSubmit,
+
+  getSocket,
 } from '../../_storage/storeAssoc'
 
 const assocKeyUsersEdit     = 'users_form_populate';
@@ -103,6 +105,8 @@ export default function UsersEdit() {
 
   useContext(StoreContextProjects);
 
+  const socket = getSocket();
+
   let {
     id,
   } = useParams();
@@ -116,12 +120,27 @@ export default function UsersEdit() {
 
   const [ sending, setSending ] = useState(false);
 
+  const [ passwordModal, setShowPasswordModal ] = useState(false);
+
+  const [ password, setPassword ] = useState('');
+
+  const [ passwordError, setPasswordError ] = useState('');
+
+  const [ passwordSending, setPasswordSending ] = useState(false);
+
   const history = useHistory();
 
   const {
     form = {},
     errors = {},
   } = getStoreAssoc(assocKeyUsersEdit, {});
+
+  function closeModal() {
+    setShowPasswordModal(false);
+    setPasswordSending(false);
+    setPassword('');
+    setPasswordError('');
+  }
 
   useEffect(() => {
 
@@ -138,7 +157,7 @@ export default function UsersEdit() {
 
         if (Object.keys(errors).length === 0) {
 
-          history.push(`/users`);
+          // history.push(`/users`);
 
           notificationsAdd(`User '<b>${form.label}</b>' have been ${id ? 'edited': 'created'}`)
         }
@@ -154,6 +173,23 @@ export default function UsersEdit() {
       key: assocKeyUsersEdit,
       id,
       onLoad,
+      users_set_password: error => {
+
+        setPasswordSending(false);
+
+        if (error) {
+
+          setPasswordError(error);
+        }
+        else {
+
+          editField(`password`, true);
+
+          closeModal();
+
+          notificationsAdd(`Password saved`);
+        }
+      }
     });
 
   }, []);
@@ -216,26 +252,15 @@ export default function UsersEdit() {
               </Form.Field>
               {/*<Form.Field*/}
               {/*  disabled={loading}*/}
-              {/*  error={!!errors.description}*/}
+              {/*  error={!!errors.password}*/}
               {/*>*/}
-              {/*  <label>Description</label>*/}
-              {/*  <AceEditor*/}
-              {/*    value={form.description || ``}*/}
-              {/*    onChange={value => editField('description', value)}*/}
+              {/*  <label>Password</label>*/}
+              {/*  <input placeholder='Password' value={form.password || ''}*/}
+              {/*         onChange={e => editField('password', e.target.value)}*/}
+              {/*         autoComplete="nope"*/}
               {/*  />*/}
-              {/*  {errors.description && <div className="error">{errors.description}</div>}*/}
+              {/*  {errors.password && <div className="error">{errors.password}</div>}*/}
               {/*</Form.Field>*/}
-              <Form.Field
-                disabled={loading}
-                error={!!errors.password}
-              >
-                <label>Password</label>
-                <input placeholder='Password' value={form.password || ''}
-                       onChange={e => editField('password', e.target.value)}
-                       autoComplete="nope"
-                />
-                {errors.password && <div className="error">{errors.password}</div>}
-              </Form.Field>
               <Form.Field
                 disabled={loading}
                 error={!!errors.email}
@@ -257,6 +282,23 @@ export default function UsersEdit() {
                 >Enabled</NoInput>
                 {errors.enabled && <div className="error">{errors.enabled}</div>}
               </Form.Field>
+              {form.id && (
+                <Form.Field
+                  disabled={loading}
+                  error={!!errors.password}
+                >
+                  <label>Password</label>
+                  <Button size="mini" onClick={e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    setShowPasswordModal(true);
+                  }}>{form.password ? `reset` : `set`}</Button>
+                  <Icon name={form.password ? `check` : `close`} color={form.password ? null : 'red'}/>
+                  password {form.password ? 'set' : 'not set'}
+                  {errors.password && <div className="error">{errors.password}</div>}
+                </Form.Field>
+              )}
               <Form.Field disabled={sending}>
                 <Button type='submit'
                         autoComplete="nope"
@@ -265,6 +307,61 @@ export default function UsersEdit() {
                 </Button> {sending && `Sending data...`}
               </Form.Field>
             </Form>
+
+
+            <Modal
+              basic
+              size='small'
+              dimmer="blurring"
+              closeOnDimmerClick={true}
+              open={passwordModal}
+              onClose={closeModal}
+            >
+              <Header icon='key' content='Set password' />
+              <Modal.Content>
+                <p>Set password</p>
+                <Form onSubmit={e => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}>
+                  <Form.Field
+                    disabled={loading}
+                    error={!!passwordError}
+                  >
+                    <input value={password}
+                           onChange={e => setPassword(e.target.value)}
+                           autoComplete="nope"
+                    />
+                    {passwordError && <div className="modal-error">{passwordError}</div>}
+                  </Form.Field>
+                </Form>
+              </Modal.Content>
+              <Modal.Actions>
+                <Button
+                  disabled={passwordSending}
+                  onClick={() => {
+                    setPasswordSending(true)
+                    socket.emit('users_set_password', {
+                      id: form.id,
+                      password,
+                    });
+                  }}
+                >
+                  {passwordSending ?
+                    `Sending ...` :
+                    `Set password`
+                  }
+                </Button>
+                <Button
+                  basic
+                  color='green'
+                  inverted
+                  onClick={closeModal}
+                >
+                  <Icon name='remove' /> Close
+                </Button>
+              </Modal.Actions>
+            </Modal>
           </div>
         )}
       </div>
