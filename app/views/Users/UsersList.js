@@ -123,12 +123,12 @@ export default function UsersList() {
                   setDeleting(p);
                 }}
               />
-              <Button
-                size="mini"
-                as={Link}
-                color="olive"
-                to={`/users/edit/${p.id}`}
-              >Edit</Button>
+              {/*<Button*/}
+              {/*  size="mini"*/}
+              {/*  as={Link}*/}
+              {/*  color="olive"*/}
+              {/*  to={`/users/${p.id}`}*/}
+              {/*>Edit</Button>*/}
             </div>
           </div>
         ))}
