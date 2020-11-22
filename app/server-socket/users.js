@@ -18,36 +18,17 @@ module.exports = ({
 
   const man   = knex().model.users;
 
-  const users_list_populate = async (target, project_id) => {
+  const users_list_populate = async (target) => {
 
     log.dump({
-      users_list_populate: project_id,
+      users_list_populate: true,
     })
 
     try {
 
-      const list = await man.fetch(`
-select  id,
-        name,
-        description,
-        type,
-        enabled,
-        interval_ms,
-        created,
-        updated,
-        project_id,
-        password,
-        detailed_log,
-        service_mode
-from :table: 
-where project_id = :project_id 
-order by created
-`, {
-        project_id,
-      });
+      const list = await man.fetch(`select * from :table:`);
 
       target.emit('users_list_populate', {
-        project_id,
         list,
       })
     }
@@ -63,34 +44,27 @@ order by created
     }
   }
 
-  socket.on('users_list_populate', project_id => users_list_populate(socket, project_id));
+  socket.on('users_list_populate', () => users_list_populate(socket));
 
-  socket.on('users_form_populate', async ({
-    project_id,
-    user_id,
-    type,
-  }) => {
+  socket.on('users_form_populate', async id => {
 
     log.dump({
-      users_form_populate: {
-        project_id,
-        user_id,
-      }
+      users_form_populate: id
     })
 
     try {
 
       let form;
 
-      if (user_id) {
+      if (id) {
 
-        form = await man.find(user_id);
+        form = await man.find(id);
       }
       else {
 
         form = await man.initialize({
-          project_id,
-          type,
+          // project_id,
+          // type,
         });
       }
 
@@ -106,6 +80,104 @@ order by created
 
       socket.emit('users_form_populate', {
         error: `failed to fetch user by id '${id}' list from database`,
+      })
+    }
+  })
+
+
+
+  socket.on('users_form_submit', async ({
+    form
+  }) => {
+
+    log.dump({
+      users_form_submit: form,
+    })
+
+    try {
+
+      let id              = form.id;
+
+      const mode          = id ? 'edit' : 'create';
+
+      let entityPrepared  = man.prepareToValidate(form, mode);
+
+      const validators    = man.getValidators(mode, id, entityPrepared);
+
+      const errors        = await validator(entityPrepared, validators);
+
+      if ( ! errors.count() ) {
+
+        if (mode === 'edit') {
+
+          await man.update(entityPrepared, id);
+        }
+        else {
+
+          id = await man.insert(entityPrepared);
+        }
+
+        // await delay(300);
+
+        form = await man.find(id);
+
+        if ( ! form ) {
+
+          return socket.emit('users_form_populate', {
+            error: `Database state conflict: updated/created entity doesn't exist`,
+          })
+        }
+
+        await users_list_populate(io);
+      }
+
+      socket.emit('users_form_populate', {
+        form,
+        errors: errors.getTree(),
+        submitted: true,
+      })
+    }
+    catch (e) {
+
+      log.dump({
+        users_form_submit_error: e,
+      }, 2);
+
+      socket.emit('users_form_submit', {
+        error: `failed to fetch probe by id '${id}' list from database.......`,
+      })
+    }
+  })
+
+  socket.on('users_delete', async id => {
+
+    log.dump({
+      users_delete: id,
+    })
+
+    let found = {};
+
+    try {
+
+      found = await man.find(id);
+
+      await man.delete(id);
+
+      await users_list_populate(io);
+
+      socket.emit('users_delete', {
+        found,
+      })
+    }
+    catch (e) {
+
+      log.dump({
+        users_delete_error: e,
+      }, 2);
+
+      socket.emit('users_delete', {
+        error: `First remove all users of this project`,
+        found,
       })
     }
   })

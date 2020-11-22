@@ -7,6 +7,8 @@ const probes                    = require('./probes');
 
 const logger                    = require('./logger');
 
+const users                    = require('./users');
+
 // images.loadPaths();
 
 const managers = {
@@ -14,6 +16,7 @@ const managers = {
     projects,
     probes,
     logger,
+    users,
 };
 
 /**

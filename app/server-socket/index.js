@@ -12,4 +12,6 @@ module.exports = (...args) => {
   require('./logs')(...args);
 
   require('./logger')(...args);
+
+  require('./users')(...args);
 }

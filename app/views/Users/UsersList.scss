@@ -1,57 +1,31 @@
 
 
 #app .users-list {
-    .mono {
-        font-family: Courier, monospace;
-    }
-    .error {
-        color: #9f3a38;
-    }
-    display: flex;
-    flex-wrap: wrap;
-    align-content: flex-start;
-    & > .project {
-        flex-shrink: 0;
-        flex-grow: 0;
-        width: 220px;
-        padding: 5px;
-        margin: 5px;
-
-        background-color: #f1f1f1;
-        box-shadow: 0 0 2px #040404;
-
+    & > .user {
         display: flex;
-        flex-direction: column;
-
-        position: relative;
-
-        color: #414141;
-        a {
-            color: dimgray;
-            & > div {
-                display: flex;
+        align-items: center;
+        padding: 2px;
+        &.disabled > a {
+            color: gray;
+        }
+        & > :first-child {
+            flex-grow: 0;
+            min-width: 30px;
+        }
+        & > :nth-child(2) {
+            flex-grow: 1;
+            &:hover {
+                text-decoration: underline;
             }
         }
-        & > .helpers {
-            display: none;
-            position: absolute;
-            top: -12px;
-            right: -5px;
-            a, button {
-                font-size: 8px;
-                padding: 2px;
-                border-radius: 0;
-                margin: 0;
-                margin-left: 3px;
-                &:hover {
-                    box-shadow: 0 0 2px #040404;
-                }
-            }
+        & > :last-child {
+            flex-grow: 0;
+        }
+        &:nth-child(2n) {
+            background-color: #f8f8f8;
         }
         &:hover {
-            .helpers {
-                display: block;
-            }
+            background-color: #e3e3e3;
         }
     }
 }

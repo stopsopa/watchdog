@@ -26,6 +26,8 @@ import ProbeLog from './views/Probes/ProbeLog';
 
 import UsersList from './views/Users/UsersList';
 
+import UsersEdit from './views/Users/UsersEdit';
+
 import './App.scss'
 
 import {
@@ -113,7 +115,16 @@ export default function App() {
             exact={true}
             component={UsersList}
           />
-
+          <Route
+            path="/users/create"
+            exact={true}
+            component={UsersEdit}
+          />
+          <Route
+            path="/users/:id"
+            exact={true}
+            component={UsersEdit}
+          />
 
           <Route
             exact={true}

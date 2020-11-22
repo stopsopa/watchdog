@@ -8,6 +8,8 @@ import React, {
 
 import './UsersList.scss';
 
+import classnames from 'classnames';
+
 import log from 'inspc';
 
 import FitText from '../../components/FitText';
@@ -44,8 +46,13 @@ import {
 
 import {
   StoreContext as StoreContextAssoc,
-  getStatusPoject,
+  actionUsersListPopulate,
+  setStoreAssoc,
+  setStoreAssocDelete,
+  getStoreAssoc, actionUsersDelete,
 } from '../../_storage/storeAssoc'
+
+const assocKeyUsersList     = 'users_list_populate';
 
 export default function UsersList() {
 
@@ -57,17 +64,16 @@ export default function UsersList() {
 
   function deleteItem(deleting) {
     setDeleting(false);
-    actionProjectsDelete(deleting.id);
+    actionUsersDelete(deleting.id);
   }
-
-  useContext(StoreContextProjects);
 
   useContext(StoreContextAssoc);
 
   useEffect(() => {
 
-    return actionProjectsListPopulate({
-      projects_delete: ({
+    return actionUsersListPopulate({
+      key: assocKeyUsersList,
+      users_delete: ({
         error,
         found,
       }) => {
@@ -78,7 +84,7 @@ export default function UsersList() {
         }
         else {
 
-          notificationsAdd(`User "${found.name}" has been removed`)
+          notificationsAdd(`User "${found.label}" has been removed`)
         }
       }
     });
@@ -98,15 +104,15 @@ export default function UsersList() {
         >Create user</Breadcrumb.Section>
       </Breadcrumb>
       <div className="users-list">
-        {getProjectList().map(p => (
-          <div className='project' key={p.id}>
+        {getStoreAssoc(assocKeyUsersList, []).map(p => (
+          <div className={classnames('user', {
+            disabled: !p.enabled
+          })} key={p.id}>
+            <div>{p.id}</div>
             <Link to={`/users/${p.id}`}>
-              <FitText text={p.name} />
-              <div>
-                <StatusComponent project={p.id}/>
-              </div>
+              {p.label}
             </Link>
-            <div className="helpers">
+            <div className="actions">
               <Button
                 icon="trash"
                 size="mini"
@@ -139,7 +145,7 @@ export default function UsersList() {
         <Header icon='trash alternate outline' content='Deleting user...' />
         <Modal.Content>
           <p>Do you really want to delete user ?</p>
-          <p>"<b>{deleting.name}</b>" - (id: {deleting.id})</p>
+          <p>"<b>{deleting.label}</b>" - (id: {deleting.id})</p>
         </Modal.Content>
         <Modal.Actions>
           <Button

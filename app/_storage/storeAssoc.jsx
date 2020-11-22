@@ -306,7 +306,7 @@ export const setStoreAssocDelete = key => {
   });
 }
 
-export const getStoreAssoc = key => {
+export const getStoreAssoc = (key, def) => {
 
   if ( typeof key !== 'string') {
 
@@ -318,7 +318,7 @@ export const getStoreAssoc = key => {
     throw th(`getStoreAssoc key.trim() is an empty string`);
   }
 
-  return get(state.assoc, key);
+  return get(state.assoc, key, def);
 }
 
 /// from this point all below is customised for this project
@@ -768,4 +768,86 @@ export const actionDeleteSelectedLog = ({
     endDate,
     key,
   });
+};
+
+
+export const actionUsersListPopulate = ({
+  onLoad = () => {},
+  key,
+}) => {
+
+  if ( typeof key !== 'string') {
+
+    throw th(`actionUsersListPopulate key is not a string`);
+  }
+
+  setStoreAssocDelete(key);
+
+  socket.emit('users_list_populate');
+
+  const users_list_populate = ({ list, }) => {
+
+      setStoreAssoc(key, list)
+
+      onLoad({
+        list,
+      });
+  }
+
+  socket.on('users_list_populate', users_list_populate);
+
+  return () => {
+
+    socket && socket.off('users_list_populate', users_list_populate);
+
+    setStoreAssocDelete(key);
+  }
+};
+
+export const actionUsersEditFormPopulate = ({
+  key,
+  id,
+  onLoad = () => {},
+  users_delete = () => {},
+}) => {
+
+  setStoreAssocDelete(key);
+
+  socket.emit('users_form_populate', id);
+
+  const users_form_populate = (data) => {
+
+    setStoreAssoc(key, data);
+
+    onLoad(data);
+  }
+
+  socket.on('users_form_populate', users_form_populate);
+
+  socket.on('users_delete', users_delete);
+
+  return () => {
+
+    if (socket) {
+
+      socket.off('users_form_populate', users_form_populate);
+
+      socket.off('users_delete', users_delete);
+    }
+  }
+};
+
+export const actionUsersFormSubmit = ({
+  form,
+}) => {
+
+  socket.emit('users_form_submit', {
+    form,
+  });
+};
+
+
+export const actionUsersDelete = id => {
+
+  socket.emit('users_delete', id);
 };
