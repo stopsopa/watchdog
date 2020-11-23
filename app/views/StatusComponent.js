@@ -1,5 +1,5 @@
 
-import React, { useRef, useState, useEffect, useContext } from 'react';
+import React, { useRef, useState, useEffect, useContext, useMemo } from 'react';
 
 import classnames from 'classnames';
 
@@ -41,6 +41,10 @@ export default ({
   ...rest
 }) => {
 
+  const [ data, setData ] = useState({});
+
+  const [ left, setLeft ] = useState(false);
+
   useContext(StoreContextAssoc);
 
   let {
@@ -52,84 +56,51 @@ export default ({
     socket = {}
   }
 
-  const [ data, setData ] = useState({});
-
   const {
     status = 'unknown', // unknown, disabled, ok, error,
-    state,
   } = data || {};
-
-  const [ left, setLeft ] = useState(false);
-
-  let nextTriggerFromNowMilliseconds;
-
-  try {
-
-    nextTriggerFromNowMilliseconds = state.nextTriggerFromNowMilliseconds;
-  }
-  catch (e) {}
-
-  const refresh = () => {
-
-    if ( project ) {
-
-      setData(getStatusPoject(project));
-
-      return true;
-    }
-
-    if ( probe ) {
-
-      setData(getStatusProbe(probe));
-
-      return true;
-    }
-
-    return false;
-  }
 
   useEffect(() => {
 
-    if ( ! nextTriggerFromNowMilliseconds ) {
+    // if (project == 19) {
 
-      if (refresh()) {
+      let nextTriggerFromNowMilliseconds;
 
-        return;
-      }
-    }
+      let cache;
 
-    if (nextTriggerFromNowMilliseconds > 0) {
+      const run = () => {
 
-      let handler;
+        let d;
 
-      const clear = () => {
+        if ( project ) {
 
-        clearInterval(handler);
+          d = getStatusPoject(project)
+        }
 
-        setLeft(false);
-      }
+        if ( probe ) {
 
-      function run() {
+          d = getStatusProbe(probe);
+        }
 
         try {
+
+          if (d.state.nextTriggerFromNowMilliseconds !== cache) {
+
+            cache = d.state.nextTriggerFromNowMilliseconds;
+
+            setData(d);
+          }
 
           const {
             nextTriggerFromNowMilliseconds,
           } = howMuchTimeLeftToNextTrigger({
-            intervalMilliseconds : state.db.interval_ms,
-            lastTimeLoggedInEsUnixtimestampMilliseconds: state.lastTimeLoggedInEsUnixtimestampMilliseconds,
+            intervalMilliseconds : d.state.db.interval_ms,
+            lastTimeLoggedInEsUnixtimestampMilliseconds: d.state.lastTimeLoggedInEsUnixtimestampMilliseconds,
           });
 
           if (nextTriggerFromNowMilliseconds <= 0) {
 
-            // log.dump({
-            //   clear: howMuchTimeLeftToNextTrigger({
-            //     intervalMilliseconds : state.db.interval_ms,
-            //     lastTimeLoggedInEsUnixtimestampMilliseconds: state.lastTimeLoggedInEsUnixtimestampMilliseconds,
-            //   })
-            // });
-
-            // clear()
+            setLeft(false);
           }
           else {
 
@@ -138,21 +109,26 @@ export default ({
         }
         catch (e) {
 
-          log.dump({
-            errr: e
-          })
+          // log.dump({
+          //   StatusComponent_calc_error: e
+          // })
         }
-
-        refresh();
       }
 
-      handler = setInterval(run, 1000);
+      let handler = setInterval(run, 1000);
 
       run();
 
-      return clear;
-    }
-  }, [nextTriggerFromNowMilliseconds, socket.id]);
+      return () => {
+
+        clearInterval(handler);
+
+        setLeft(false);
+
+        setData({});
+      };
+    // }
+  }, [socket.id]);
 
   return (
     <div className={classnames('status-component', className)} {...rest}>

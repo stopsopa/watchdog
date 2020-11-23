@@ -374,19 +374,17 @@ export const getStatusProbe = id => {
   }
 }
 
-export const getStatusPoject = id => {
+export const getStatusPoject = (id, debug = false) => {
 
   let state = {};
 
   const list = getStoreAssoc(`status`);
 
+  // const p = []
+
   try {
 
     const keys = Object.keys(list);
-
-    let error = 0;
-
-    let probesInThisProject = 0;
 
     for (let i = 0, l = keys.length, t ; i < l ; i += 1 ) {
 
@@ -394,34 +392,57 @@ export const getStatusPoject = id => {
 
       if (t.db.project_id !== id) {
 
+        // debug && console.log(JSON.stringify({SKIP: {pid: t.db.project_id, m: t.nextTriggerFromNowMilliseconds}}))
+
         continue;
       }
 
       if (t.db.enabled === false) {
 
+        // debug && console.log(JSON.stringify({DISA: {pid: t.db.project_id, m: t.nextTriggerRelativeToLastEsLogAfterApplyingIntervalUnixtimestampMilliseconds}}))
+
         continue;
       }
 
-      let nextTriggerFromNowMilliseconds;
+      // p.push({
+      //   i,
+      //   t
+      // })
 
       try {
 
-        nextTriggerFromNowMilliseconds = t.nextTriggerFromNowMilliseconds;
+        if (
+          Number.isInteger(t.nextTriggerRelativeToLastEsLogAfterApplyingIntervalUnixtimestampMilliseconds) &&
+          t.nextTriggerRelativeToLastEsLogAfterApplyingIntervalUnixtimestampMilliseconds > 0 &&
+          (
+            state.nextTriggerRelativeToLastEsLogAfterApplyingIntervalUnixtimestampMilliseconds === undefined ||
+            state.nextTriggerRelativeToLastEsLogAfterApplyingIntervalUnixtimestampMilliseconds > t.nextTriggerRelativeToLastEsLogAfterApplyingIntervalUnixtimestampMilliseconds
+          )
+        ) {
+
+          // debug && console.log(JSON.stringify({IFIF: {i,id:t.db.id,s: state.nextTriggerRelativeToLastEsLogAfterApplyingIntervalUnixtimestampMilliseconds, t: t.nextTriggerRelativeToLastEsLogAfterApplyingIntervalUnixtimestampMilliseconds}}))
+
+          state = {...t};
+        }
+        else {
+
+          // debug && console.log(JSON.stringify({ELSE: {i,id:t.db.id,s: state.nextTriggerRelativeToLastEsLogAfterApplyingIntervalUnixtimestampMilliseconds, t: t.nextTriggerRelativeToLastEsLogAfterApplyingIntervalUnixtimestampMilliseconds}}))
+        }
       }
-      catch (e) {}
+      catch (e) {
 
-      if (
-        nextTriggerFromNowMilliseconds !== undefined &&
-        nextTriggerFromNowMilliseconds > 0 &&
-        (
-          state.nextTriggerFromNowMilliseconds === undefined ||
-          state.nextTriggerFromNowMilliseconds > nextTriggerFromNowMilliseconds
-        )
-      ) {
-
-        state = t;
+        // debug && console.log(`err: ${e.message}`)
       }
     }
+
+    // debug && console.log({
+    //   state,
+    //   p
+    // })
+
+    let probesInThisProject = 0;
+
+    let error = 0;
 
     for (let i = 0, l = keys.length, t ; i < l ; i += 1 ) {
 
