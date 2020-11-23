@@ -26,6 +26,15 @@ import all from 'nlab/all';
 
 import { formatToTimeZone } from 'date-fns-timezone';
 
+// import alphaid from 'nlab/alphaid';
+//
+// const next = (function () {
+//   let i = 100000000;
+//   return () => i++;
+// }());
+//
+// const t = alphaid('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789');
+
 import {
   StoreContext as StoreContextAssoc,
   getStoreAssoc,
@@ -38,6 +47,7 @@ import {
 
   getStatusPoject,
   getStatusProbe,
+  setStoreAssoc,
 } from '../../_storage/storeAssoc'
 
 const assocKeyFullRange     = 'log_full_range';
@@ -454,6 +464,8 @@ export default function ProbeLog() {
 
   useContext(StoreContextProjects);
 
+  const scrollElement = useRef(null);
+
   const history = useHistory();
 
   const search = new URLSearchParams(location.search);
@@ -690,6 +702,41 @@ export default function ProbeLog() {
 
     clockBridge = bridge();
   }
+
+  (function () {
+
+    if (scrollElement.current) {
+
+      const cond = scrollElement.current.offsetHeight + scrollElement.current.scrollTop === scrollElement.current.scrollHeight;
+
+      if (cond) {
+
+        // log.dump('scroll')
+
+        setTimeout(() => {
+
+          scrollElement.current.scrollTop = scrollElement.current.scrollHeight;
+
+        }, 0);
+      }
+      // else {
+      //
+      //   log.dump('not scroll')
+      // }
+    }
+
+    // window.k = () => {
+    //
+    //   const list = getStoreAssoc(assocKeySelection, []);
+    //
+    //   setStoreAssoc(assocKeySelection, [...list, {
+    //     f: (new Date()).toISOString(),
+    //     id: next(),
+    //     p: true
+    //   }])
+    //
+    // }
+  }());
 
   return (
     <div>
@@ -969,7 +1016,7 @@ export default function ProbeLog() {
               }))}
             </div>
 
-            <div className="list">
+            <div className="list" ref={scrollElement}>
               {assocSelection === null && (<div style={{textAlign:'center'}}>Loading...</div>)}
 
               {Array.isArray(assocSelection) && (assocSelection.length ? (
