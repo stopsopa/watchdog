@@ -14,4 +14,6 @@ module.exports = (...args) => {
   require('./logger')(...args);
 
   require('./users')(...args);
+
+  require('./groups')(...args);
 }

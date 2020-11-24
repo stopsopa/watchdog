@@ -5,7 +5,7 @@ import React, {
   useContext,
 } from 'react';
 
-import './UsersList.scss';
+import './GroupsList.scss';
 
 import classnames from 'classnames';
 
@@ -19,6 +19,7 @@ import {
 
 import {
   Link,
+  NavLink,
 } from 'react-router-dom';
 
 import {
@@ -27,14 +28,14 @@ import {
 
 import {
   StoreContext as StoreContextAssoc,
-  actionUsersListPopulate,
+  actionGroupsListPopulate,
   getStoreAssoc,
-  actionUsersDelete,
+  actionGroupsDelete,
 } from '../../_storage/storeAssoc'
 
-const assocKeyUsersList     = 'users_list_populate';
+const assocKeyGroupsList     = 'groups_list_populate';
 
-export default function UsersList() {
+export default function GroupsList() {
 
   const [ deleting, setDeleting ] = useState(false);
 
@@ -44,16 +45,16 @@ export default function UsersList() {
 
   function deleteItem(deleting) {
     setDeleting(false);
-    actionUsersDelete(deleting.id);
+    actionGroupsDelete(deleting.id);
   }
 
   useContext(StoreContextAssoc);
 
   useEffect(() => {
 
-    return actionUsersListPopulate({
-      key: assocKeyUsersList,
-      users_delete: ({
+    return actionGroupsListPopulate({
+      key: assocKeyGroupsList,
+      groups_delete: ({
         error,
         found,
       }) => {
@@ -64,7 +65,7 @@ export default function UsersList() {
         }
         else {
 
-          notificationsAdd(`User "${found.label}" has been removed`)
+          notificationsAdd(`Group "${found.name}" has been removed`)
         }
       }
     });
@@ -74,22 +75,21 @@ export default function UsersList() {
   return (
     <div>
       <Breadcrumb>
-        <Breadcrumb.Section>Users</Breadcrumb.Section>
+        <Breadcrumb.Section>Groups</Breadcrumb.Section>
         <Breadcrumb.Divider />
         <Breadcrumb.Section
+          // onClick={loginSignOut}
           size="mini"
           as={Link}
-          to="/users/create"
-        >Create user</Breadcrumb.Section>
+          to="/groups/create"
+        >Create group</Breadcrumb.Section>
       </Breadcrumb>
-      <div className="users-list">
-        {getStoreAssoc(assocKeyUsersList, []).map(p => (
-          <div className={classnames('user', {
-            disabled: !p.enabled
-          })} key={p.id}>
+      <div className="groups-list">
+        {getStoreAssoc(assocKeyGroupsList, []).map(p => (
+          <div className={classnames('group')} key={p.id}>
             <div>{p.id}</div>
-            <Link to={`/users/${p.id}`}>
-              {p.label}
+            <Link to={`/groups/${p.id}`}>
+              {p.name}
             </Link>
             <div className="actions">
               <Button
@@ -106,7 +106,7 @@ export default function UsersList() {
               {/*  size="mini"*/}
               {/*  as={Link}*/}
               {/*  color="olive"*/}
-              {/*  to={`/users/${p.id}`}*/}
+              {/*  to={`/groups/${p.id}`}*/}
               {/*>Edit</Button>*/}
             </div>
           </div>
@@ -116,15 +116,15 @@ export default function UsersList() {
       <Modal
         basic
         size='small'
-        dimmer="blurring"
+        //dimmer="blurring"
         closeOnDimmerClick={true}
         open={!!deleting}
         onClose={cancelDelete}
       >
-        <Header icon='trash alternate outline' content='Deleting user...' />
+        <Header icon='trash alternate outline' content='Deleting group...' />
         <Modal.Content>
-          <p>Do you really want to delete user ?</p>
-          <p>"<b>{deleting.label}</b>" - (id: {deleting.id})</p>
+          <p>Do you really want to delete group ?</p>
+          <p>"<b>{deleting.name}</b>" - (id: {deleting.id})</p>
         </Modal.Content>
         <Modal.Actions>
           <Button

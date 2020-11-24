@@ -2,9 +2,7 @@
 import React, {
   useEffect,
   useState,
-  useRef,
   useContext,
-  useReducer,
 } from 'react';
 
 import './UsersEdit.scss';
@@ -28,7 +26,6 @@ import {
 
 import {
   Link,
-  useHistory,
   useParams,
 } from 'react-router-dom';
 

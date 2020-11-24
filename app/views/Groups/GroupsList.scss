@@ -1,0 +1,31 @@
+
+
+#app .groups-list {
+    & > .group {
+        display: flex;
+        align-items: center;
+        padding: 2px;
+        &.disabled > a {
+            color: gray;
+        }
+        & > :first-child {
+            flex-grow: 0;
+            min-width: 30px;
+        }
+        & > :nth-child(2) {
+            flex-grow: 1;
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+        & > :last-child {
+            flex-grow: 0;
+        }
+        &:nth-child(2n) {
+            background-color: #f8f8f8;
+        }
+        &:hover {
+            background-color: #e3e3e3;
+        }
+    }
+}

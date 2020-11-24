@@ -796,6 +796,7 @@ export const actionDeleteSelectedLog = ({
 
 export const actionUsersListPopulate = ({
   onLoad = () => {},
+  users_delete = () => {},
   key,
 }) => {
 
@@ -807,6 +808,8 @@ export const actionUsersListPopulate = ({
   setStoreAssocDelete(key);
 
   socket.emit('users_list_populate');
+
+  users_delete && socket.on('users_delete', users_delete);
 
   const users_list_populate = ({ list, }) => {
 
@@ -823,6 +826,8 @@ export const actionUsersListPopulate = ({
 
     socket && socket.off('users_list_populate', users_list_populate);
 
+    users_delete && socket.off('users_delete', users_delete);
+
     setStoreAssocDelete(key);
   }
 };
@@ -831,7 +836,6 @@ export const actionUsersEditFormPopulate = ({
   key,
   id,
   onLoad = () => {},
-  users_delete = () => {},
   users_set_password = () => {},
 }) => {
 
@@ -848,8 +852,6 @@ export const actionUsersEditFormPopulate = ({
 
   socket.on('users_form_populate', users_form_populate);
 
-  users_delete && socket.on('users_delete', users_delete);
-
   users_set_password && socket.on('users_set_password', users_set_password);
 
   return () => {
@@ -857,8 +859,6 @@ export const actionUsersEditFormPopulate = ({
     if (socket) {
 
       socket.off('users_form_populate', users_form_populate);
-
-      users_delete && socket.off('users_delete', users_delete);
 
       users_set_password && socket.off('users_set_password', users_set_password);
     }
@@ -879,3 +879,96 @@ export const actionUsersDelete = id => {
 
   socket.emit('users_delete', id);
 };
+
+export const actionGroupsListPopulate = ({
+  onLoad = () => {},
+  groups_delete = () => {},
+  key,
+}) => {
+
+  if ( typeof key !== 'string') {
+
+    throw th(`actionGroupsListPopulate key is not a string`);
+  }
+
+  setStoreAssocDelete(key);
+
+  socket.emit('groups_list_populate');
+
+  groups_delete && socket.on('groups_delete', groups_delete);
+
+  const groups_list_populate = ({ list, }) => {
+
+    setStoreAssoc(key, list)
+
+    onLoad({
+      list,
+    });
+  }
+
+  socket.on('groups_list_populate', groups_list_populate);
+
+  return () => {
+
+    socket && socket.off('groups_list_populate', groups_list_populate);
+
+    groups_delete && socket.off('groups_delete', groups_delete);
+
+    setStoreAssocDelete(key);
+  }
+};
+
+export const actionGroupsEditFormPopulate = ({
+  key,
+  id,
+  onLoad = () => {},
+  groups_delete = () => {},
+  groups_set_password = () => {},
+}) => {
+
+  setStoreAssocDelete(key);
+
+  socket.emit('groups_form_populate', id);
+
+  const groups_form_populate = (data) => {
+
+    setStoreAssoc(key, data);
+
+    onLoad(data);
+  }
+
+  socket.on('groups_form_populate', groups_form_populate);
+
+  groups_delete && socket.on('groups_delete', groups_delete);
+
+  groups_set_password && socket.on('groups_set_password', groups_set_password);
+
+  return () => {
+
+    if (socket) {
+
+      socket.off('groups_form_populate', groups_form_populate);
+
+      groups_delete && socket.off('groups_delete', groups_delete);
+
+      groups_set_password && socket.off('groups_set_password', groups_set_password);
+    }
+  }
+};
+
+export const actionGroupsFormSubmit = ({
+  form,
+}) => {
+
+  socket.emit('groups_form_submit', {
+    form,
+  });
+};
+
+
+export const actionGroupsDelete = id => {
+
+  socket.emit('groups_delete', id);
+};
+
+

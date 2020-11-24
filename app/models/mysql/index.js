@@ -7,7 +7,9 @@ const probes                    = require('./probes');
 
 const logger                    = require('./logger');
 
-const users                    = require('./users');
+const users                     = require('./users');
+
+const groups                    = require('./groups');
 
 // images.loadPaths();
 
@@ -17,6 +19,7 @@ const managers = {
     probes,
     logger,
     users,
+    groups,
 };
 
 /**

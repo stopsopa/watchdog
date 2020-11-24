@@ -28,6 +28,10 @@ import UsersList from './views/Users/UsersList';
 
 import UsersEdit from './views/Users/UsersEdit';
 
+import GroupsList from './views/Groups/GroupsList';
+
+import GroupsEdit from './views/Groups/GroupsEdit';
+
 import './App.scss'
 
 import {
@@ -62,6 +66,12 @@ export default function App() {
             activeClassName="active"
           >
             Users
+          </NavLink>
+          <NavLink
+            to="/groups"
+            activeClassName="active"
+          >
+            Groups
           </NavLink>
         </div>
       </div>
@@ -124,6 +134,23 @@ export default function App() {
             path="/users/:id"
             exact={true}
             component={UsersEdit}
+          />
+
+
+          <Route
+            path="/groups"
+            exact={true}
+            component={GroupsList}
+          />
+          <Route
+            path="/groups/create"
+            exact={true}
+            component={GroupsEdit}
+          />
+          <Route
+            path="/groups/:id"
+            exact={true}
+            component={GroupsEdit}
           />
 
           <Route
