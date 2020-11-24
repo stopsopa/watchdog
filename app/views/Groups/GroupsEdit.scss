@@ -54,6 +54,12 @@
             }
         }
     }
+    [type='submit'] {
+        position: fixed;
+
+        bottom: 5px;
+        right: 5px;
+    }
 }
 .modal-error {
     color: #ef807e;

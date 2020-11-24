@@ -686,7 +686,6 @@ export const getProjectInNotAllEnabledMode = id => {
 
 export const setStatusReset = () => setStoreAssocDelete(`status`);
 
-
 export const actionFetchFullRangeStats = ({
   probe_id,
   startDate,
@@ -720,13 +719,6 @@ export const actionFetchFullRangeStats = ({
   }
   socket.on('probes_logs_full', probes_logs_full);
 
-
-
-
-
-
-
-
   const probes_logs_selection = data => {
 
     const {
@@ -742,8 +734,6 @@ export const actionFetchFullRangeStats = ({
     setStoreAssoc(assocKeySelection, list);
   }
   socket.on('probes_logs_selection', probes_logs_selection);
-
-
 
   const probes_logs_selected_log = data => {
 
