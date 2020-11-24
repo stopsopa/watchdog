@@ -386,9 +386,7 @@ export const actionProbesFormSubmit = ({
   form,
 }) => {
 
-  socket.emit('probes_form_submit', {
-    form,
-  });
+  socket.emit('probes_form_submit', form);
 };
 
 export const actionProbesFormReset = () => {
