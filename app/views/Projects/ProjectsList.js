@@ -46,11 +46,14 @@ import {
   getStatusPoject,
   getProjectInArchiveMode,
   getProjectInServiceMode,
+  getProjectInNotAllEnabledMode,
 } from '../../_storage/storeAssoc'
 
-import ArchiveIcon from '../ArchiveIcon';
+import ArchiveIcon        from '../ArchiveIcon';
 
-import ServiceIcon from '../ServiceIcon';
+import ServiceIcon        from '../ServiceIcon';
+
+import NotAllEnabledIcon  from '../NotAllEnabledIcon';
 
 export default function ProjectsList() {
 
@@ -110,8 +113,9 @@ export default function ProjectsList() {
               <div>
                 <StatusComponent project={p.id}/>
                 <div className="flags">
-                  {getProjectInArchiveMode(p.id) && <ArchiveIcon content={`At least one probe is in archive mode`}/>}
-                  {getProjectInServiceMode(p.id) && <ServiceIcon content={`At least one probe is in service mode`}/>}
+                  {getProjectInNotAllEnabledMode(p.id)  && <NotAllEnabledIcon content={`Not all probes are enabled`}/>}
+                  {getProjectInArchiveMode(p.id)        && <ArchiveIcon content={`At least one probe is in archive mode`}/>}
+                  {getProjectInServiceMode(p.id)        && <ServiceIcon content={`At least one probe is in service mode`}/>}
                 </div>
               </div>
             </Link>

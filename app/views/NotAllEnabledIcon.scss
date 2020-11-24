@@ -1,0 +1,12 @@
+.notallenabled-icon {
+    display: inline-block;
+    position: relative;
+    width: 21px;
+    height: 18px;
+    svg {
+        width: 18px;
+        position: absolute;
+        top: 2px;
+        left: 0;
+    }
+}

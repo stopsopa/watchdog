@@ -650,6 +650,40 @@ export const getProjectInServiceMode = id => {
   return false;
 }
 
+export const getProjectInNotAllEnabledMode = id => {
+
+  const list = getStoreAssoc(`status`);
+
+  try {
+
+    const keys = Object.keys(list);
+
+    for (let i = 0, l = keys.length, t ; i < l ; i += 1 ) {
+
+      t = list[keys[i]];
+
+      if ( ! t.db || ! t.db.project_id || t.db.project_id !== id ) {
+
+        continue;
+      }
+
+      if ( ! t.db.enabled ) {
+
+        return true;
+      }
+    }
+  }
+  catch (e) {
+
+    log.dump({
+      getProjectInNotAllEnabledMode_catch_error: e,
+      project_id: id,
+    });
+  }
+
+  return false;
+}
+
 export const setStatusReset = () => setStoreAssocDelete(`status`);
 
 
