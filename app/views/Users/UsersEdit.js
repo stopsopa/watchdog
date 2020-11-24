@@ -9,21 +9,7 @@ import React, {
 
 import './UsersEdit.scss';
 
-import isObject from 'nlab/isObject';
-
-import log from 'inspc';
-
-import all from 'nlab/all';
-
-import AceEditor from '../../components/AceEditor/AceEditor';
-
 import NoInput from '../../components/NoInput/NoInput';
-
-import IntervalInput from '../../components/IntervalInput/IntervalInput';
-
-import ArchiveIcon from '../ArchiveIcon';
-
-import ServiceIcon from '../ServiceIcon';
 
 import {
   Breadcrumb,
@@ -48,28 +34,9 @@ import {
 
 import {
   StoreContext as StoreContextProjects,
-
-  actionProjectsFormPopulate,
-  actionProjectsFormFieldEdit,
-  actionProjectsFormSubmit,
-
-  actionProbesFormPopulate,
-  actionProbesFormFieldEdit,
-  actionProbesFormSubmit,
-
-  actionProbesRunCode,
-
-  getProbesTestResult,
-
-  getProjectForm,
-  getProjectFormErrors,
-  getProbesForm,
-  getProbesFormErrors, actionProbesSetTestResult,
 } from '../../views/Projects/storeProjects'
 
 import {
-  StoreContext as StoreContextNotifications,
-
   notificationsAdd,
 } from '../../components/Notifications/storeNotifications';
 
@@ -77,7 +44,6 @@ import {
   StoreContext as StoreContextAssoc,
 
   setStoreAssoc,
-  setStoreAssocDelete,
   actionUsersEditFormPopulate,
   getStoreAssoc,
   actionUsersFormSubmit,
@@ -127,8 +93,6 @@ export default function UsersEdit() {
   const [ passwordError, setPasswordError ] = useState('');
 
   const [ passwordSending, setPasswordSending ] = useState(false);
-
-  const history = useHistory();
 
   const {
     form = {},

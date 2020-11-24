@@ -10,14 +10,6 @@ import './UsersList.scss';
 
 import classnames from 'classnames';
 
-import log from 'inspc';
-
-import FitText from '../../components/FitText';
-
-import StatusIcon from '../../views/StatusIcon'
-
-import StatusComponent from '../../views/StatusComponent'
-
 import {
   Button,
   Breadcrumb,
@@ -28,17 +20,7 @@ import {
 
 import {
   Link,
-  NavLink,
 } from 'react-router-dom';
-
-import {
-  StoreContext as StoreContextProjects,
-
-  actionProjectsListPopulate,
-  actionProjectsDelete,
-
-  getProjectList,
-} from '../../views/Projects/storeProjects';
 
 import {
   notificationsAdd,
@@ -47,9 +29,8 @@ import {
 import {
   StoreContext as StoreContextAssoc,
   actionUsersListPopulate,
-  setStoreAssoc,
-  setStoreAssocDelete,
-  getStoreAssoc, actionUsersDelete,
+  getStoreAssoc,
+  actionUsersDelete,
 } from '../../_storage/storeAssoc'
 
 const assocKeyUsersList     = 'users_list_populate';
@@ -97,7 +78,6 @@ export default function UsersList() {
         <Breadcrumb.Section>Users</Breadcrumb.Section>
         <Breadcrumb.Divider />
         <Breadcrumb.Section
-          // onClick={loginSignOut}
           size="mini"
           as={Link}
           to="/users/create"
@@ -137,7 +117,7 @@ export default function UsersList() {
       <Modal
         basic
         size='small'
-        //dimmer="blurring"
+        dimmer="blurring"
         closeOnDimmerClick={true}
         open={!!deleting}
         onClose={cancelDelete}
