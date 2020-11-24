@@ -158,7 +158,9 @@ export default function ProbeEdit() {
     setStoreAssoc('log_page_current_probe_id', probe_id);
 
     return () => {
+
       probesUnbind();
+
       projectUnbind();
 
       setStoreAssocDelete('log_page_current_probe_id');

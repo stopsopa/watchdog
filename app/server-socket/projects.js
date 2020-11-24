@@ -85,9 +85,9 @@ module.exports = ({
       projects_form_submit: form,
     })
 
-    try {
+    let id              = form.id;
 
-      let id              = form.id;
+    try {
 
       const mode          = id ? 'edit' : 'create';
 

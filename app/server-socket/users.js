@@ -98,9 +98,9 @@ module.exports = ({
       users_form_submit: form,
     })
 
-    try {
+    let id              = form.id;
 
-      let id              = form.id;
+    try {
 
       const mode          = id ? 'edit' : 'create';
 
@@ -175,14 +175,32 @@ module.exports = ({
     }
     catch (e) {
 
+      if (String(e).includes(`a foreign key constraint fails`)) {
+
+        let list = await man.queryColumn(`select group_concat(group_id) g from user_group where user_id = :id`, {
+          id,
+        });
+
+        list = (list || '').split(',').map(u => parseInt(u, 10)).filter(Boolean);
+
+        socket.emit('users_delete', {
+          error: `First remove user from all groups ` + list.map(id => `<a href="/groups/${id}">${id}</a>`).join(', '),
+          found,
+          list,
+          miliseconds: 15 * 1000
+        });
+      }
+      else {
+
+        socket.emit('users_delete', {
+          error: `Server error`,
+          found,
+        });
+      }
+
       log.dump({
         users_delete_error: e,
       }, 2);
-
-      socket.emit('users_delete', {
-        error: `First remove all users of this project`,
-        found,
-      })
     }
   })
 

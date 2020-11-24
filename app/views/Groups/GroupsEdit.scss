@@ -7,6 +7,53 @@
     .error {
         color: #9f3a38;
     }
+    .groups {
+        display: flex;
+        & > .added {
+            border: 1px solid gray;
+
+            min-width: 25%;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            & > h4 {
+                flex-grow: 0;
+            }
+            & > div {
+                flex-grow: 0;
+                display: flex;
+                padding: 1px;
+                & > span {
+                    flex-grow: 1;
+                }
+                & > button {
+                    flex-grow: 0;
+                }
+            }
+        }
+        & > .available {
+            border: 1px solid gray;
+
+            min-width: 25%;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            & > h4 {
+                flex-grow: 0;
+            }
+            & > div {
+                flex-grow: 0;
+                display: flex;
+                padding: 1px;
+                & > button {
+                    flex-grow: 0;
+                }
+                & > span {
+                    flex-grow: 1;
+                }
+            }
+        }
+    }
 }
 .modal-error {
     color: #ef807e;

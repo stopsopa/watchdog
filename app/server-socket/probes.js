@@ -127,9 +127,9 @@ order by created
       probes_form_submit: sample,
     })
 
-    try {
+    let id              = form.id;
 
-      let id              = form.id;
+    try {
 
       const mode          = id ? 'edit' : 'create';
 

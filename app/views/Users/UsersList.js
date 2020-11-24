@@ -9,6 +9,9 @@ import './UsersList.scss';
 
 import classnames from 'classnames';
 
+// https://github.com/atomiks/tippyjs-react#default-tippy
+import Tippy from '@tippyjs/react';
+
 import {
   Button,
   Breadcrumb,
@@ -56,11 +59,12 @@ export default function UsersList() {
       users_delete: ({
         error,
         found,
+        miliseconds,
       }) => {
 
         if ( typeof error === 'string' ) {
 
-          notificationsAdd(error, 'error');
+          notificationsAdd(error, 'error', miliseconds);
         }
         else {
 
@@ -91,6 +95,11 @@ export default function UsersList() {
             <Link to={`/users/${p.id}`}>
               {p.label}
             </Link>
+            <Tippy content={p.password ? `password set` : `password not set`}>
+              <span>
+                <Icon name={p.password ? `check` : `close`} color={p.password ? null : 'red'} />
+              </span>
+            </Tippy>
             <div className="actions">
               <Button
                 icon="trash"

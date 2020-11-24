@@ -7,6 +7,8 @@ import React, {
   useReducer,
 } from 'react';
 
+import all from 'nlab/all';
+
 import './GroupsEdit.scss';
 
 import {
@@ -47,11 +49,14 @@ import {
   actionGroupsEditFormPopulate,
   getStoreAssoc,
   actionGroupsFormSubmit,
+  actionUsersListPopulate,
 
   getSocket,
 } from '../../_storage/storeAssoc'
 
 const assocKeyGroupsEdit     = 'groups_form_populate';
+
+const assocKeyUsersList     = 'users_list_populate';
 
 const editField = (key, value) => {
 
@@ -110,11 +115,11 @@ export default function GroupsEdit() {
 
   useEffect(() => {
 
-    const onLoad = ({
+    const onLoad = ([{
       form = {},
       errors = {},
       submitted,
-    }) => {
+    }]) => {
 
       setLoading(false);
       setSending(false);
@@ -134,11 +139,13 @@ export default function GroupsEdit() {
       }
     }
 
-    return actionGroupsEditFormPopulate({
+    const [a, b] = all([a => a, () => {}], onLoad);
+
+    const groupUnbind = actionGroupsEditFormPopulate({
       // project_id,
       key: assocKeyGroupsEdit,
       id,
-      onLoad,
+      onLoad: a,
       groups_set_password: error => {
 
         setPasswordSending(false);
@@ -157,6 +164,18 @@ export default function GroupsEdit() {
         }
       }
     });
+
+    const usersUnbind = actionUsersListPopulate({
+      key: assocKeyUsersList,
+      onLoad: b,
+    });
+
+    return () => {
+
+      groupUnbind();
+
+      usersUnbind();
+    }
 
   }, []);
 
@@ -204,6 +223,45 @@ export default function GroupsEdit() {
                        autoComplete="nope"
                 />
                 {errors.name && <div className="error">{errors.name}</div>}
+              </Form.Field>
+              <Form.Field>
+                <label>Users:</label>
+                <div className="groups">
+                  <div className="added">
+                    <h4>In group</h4>
+                    {getStoreAssoc(assocKeyUsersList, []).filter(u => form.users.includes(u.id)).map(u => (
+                      <div key={u.id}>
+                        <span>{u.label}</span>
+                        <Button
+                          size="mini"
+                          onClick={e => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            editField('users', (form.users || []).filter(id => id !== u.id))
+                          }}
+                        >&gt;</Button>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="available">
+                    <h4>Available</h4>
+                    {getStoreAssoc(assocKeyUsersList, []).filter(u => !form.users.includes(u.id)).map(u => (
+                      <div key={u.id}>
+                        <Button
+                          size="mini"
+                          onClick={e => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const list = form.users || [];
+                            list.push(u.id);
+                            editField('users', list)
+                          }}
+                        >&lt;</Button>
+                        <span>{u.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </Form.Field>
               <Form.Field disabled={sending}>
                 <Button type='submit'

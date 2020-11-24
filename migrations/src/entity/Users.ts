@@ -81,5 +81,5 @@ export class Users {
             { name: 'group_id' }
         ],
     })
-    roles: Group[];
+    groups: Group[];
 }

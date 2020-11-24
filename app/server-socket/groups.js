@@ -94,9 +94,9 @@ module.exports = ({
       groups_form_submit: form,
     })
 
-    try {
+    let id              = form.id;
 
-      let id              = form.id;
+    try {
 
       const mode          = id ? 'edit' : 'create';
 
@@ -176,7 +176,7 @@ module.exports = ({
       }, 2);
 
       socket.emit('groups_delete', {
-        error: `First remove all groups of this project`,
+        error: `First detach all users from the group`,
         found,
       })
     }

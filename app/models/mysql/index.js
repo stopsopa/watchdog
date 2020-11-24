@@ -11,6 +11,8 @@ const users                     = require('./users');
 
 const groups                    = require('./groups');
 
+const user_groups                    = require('./user_groups');
+
 // images.loadPaths();
 
 const managers = {
@@ -20,6 +22,7 @@ const managers = {
     logger,
     users,
     groups,
+    user_groups,
 };
 
 /**

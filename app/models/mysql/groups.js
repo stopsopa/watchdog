@@ -1,6 +1,8 @@
 
 const abstract          = require('knex-abstract');
 
+const { Opt }           = abstract;
+
 const extend            = abstract.extend;
 
 const prototype         = abstract.prototype;
@@ -72,6 +74,7 @@ module.exports = knex => extend(knex, prototype, {
 
         return {
             name: '',
+            users: [],
             // enabled: true,
             ...extra,
         }
@@ -82,6 +85,19 @@ module.exports = knex => extend(knex, prototype, {
 
             return row;
         }
+
+        (function () {
+
+            if (typeof row.users === 'string') {
+
+                row.users = row.users.split(',').map(r => /^\d+$/.test(r) ? parseInt(r, 10) : r).filter(Boolean);
+            }
+
+            if ( ! Array.isArray(row.users) ) {
+
+                row.users = [];
+            }
+        }());
 
         // if (typeof row.roles === 'string') {
         //
@@ -164,7 +180,7 @@ module.exports = knex => extend(knex, prototype, {
             return row;
         }
 
-        // delete row.label;
+        delete row.users;
         //
         // delete row.password;
 
@@ -202,44 +218,125 @@ module.exports = knex => extend(knex, prototype, {
 
         return row;
     },
-    update: function (...args) {
+    updateUsers: async function (...args) {
+
+        let [debug, trx, groupId, usersIds] = a(args);
+
+        log.dump({
+            groupId,
+            usersIds,
+        })
+
+        await this.clearUsers(debug, trx, groupId);
+
+        log.dump({
+            list: await this.query(true, trx, 'select * from user_group where group_id = :id', {
+                id: groupId,
+            })
+        })
+
+        if (Array.isArray(usersIds)) {
+
+            for (let user_id of usersIds) {
+
+                await knex.model.user_groups.insert(true, trx, {
+                    group_id: groupId,
+                    user_id,
+                })
+            }
+        }
+    },
+    clearUsers: async function(...args) {
+
+        let [debug, trx, groupId] = a(args);
+
+        return await this.query(debug, trx, `delete from user_group where group_id = :id`, {
+            id: groupId,
+        });
+    },
+    update: async function (...args) {
 
         let [debug, trx, entity, id] = a(args);
 
-        // if (Array.isArray(entity.roles)) {
-        //
-        //     this.updateRoles(id, entity.roles)
-        // }
+        return await this.transactify(trx, async trx => {
 
-        return prototype.prototype.update.call(this, debug, trx, entity, id);
+            const {
+                users = [],
+              ...rest
+            } = entity;
+
+            log.dump({
+                users_update: users,
+                rest
+            })
+
+            await this.updateUsers(debug, trx, id, users);
+
+            return prototype.prototype.update.call(this, debug, trx, rest, id);
+        });
     },
     insert: async function (...args) {
 
         let [debug, trx, entity] = a(args);
 
-        // let roles = null;
-        //
-        // if (Array.isArray(entity.roles)) {
-        //
-        //     roles = entity.roles;
-        // }
-        //
-        // entity = this.toDb(Object.assign({}, entity));
+        return await this.transactify(trx, async trx => {
 
-        const id = await prototype.prototype.insert.call(this, debug, trx, entity);
+            let users = [];
 
-        // if (roles) {
-        //
-        //     await this.updateRoles(id, roles);
-        // }
+            if (Array.isArray(entity.users)) {
 
-        return id;
+                users = entity.users;
+            }
+
+            entity = this.toDb(Object.assign({}, entity));
+
+            const id = await prototype.prototype.insert.call(this, debug, trx, entity);
+
+            log.dump({
+                group_id: id
+            })
+
+            if (users) {
+
+                await this.updateUsers(trx, id, users);
+            }
+
+            return id;
+        });
     },
     delete: async function (id, ...args) {
 
-        // await this.clearRoles(id);
+        // await this.clearUsers(id);
 
         return await prototype.prototype.delete.call(this, id, ...args);
+    },
+    find: async function (...args) {
+
+        let [debug, trx, id] = a(args);
+
+        if ( ! id ) {
+
+            throw `groups.js::find(): id not specified or invalid`;
+        }
+
+        const query = `
+select              g.*, group_concat(ug.user_id) users
+from                \`group\` g
+          left join user_group ug
+                 on g.id = ug.group_id
+where               g.id = :id
+GROUP BY            g.id
+ORDER BY            id desc
+        `;
+
+        const params = {id};
+
+        const data = await this.queryOne(Opt({
+            ...debug,
+            both: false,
+        }), trx, query, params);
+
+        return this.fromDb(data);
     },
 //     find: function (...args) {
 //
@@ -311,6 +408,7 @@ module.exports = knex => extend(knex, prototype, {
 
         const collection = {
             id: new Optional(),
+            users: new Optional(),
             name: new Required([
                 new NotBlank(),
                 new Length({max: 50}),
