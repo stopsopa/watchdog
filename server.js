@@ -20,6 +20,15 @@ if (process.argv.includes('--telegram-test-forward-server')) { // localhost test
   process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY = "testserver" // http://... || testserver
 }
 
+if (typeof process.env.PROTECTED_TELEGRAM_TOKEN === 'string') {
+
+  const telegram = require('./app/lib/telegram');
+
+  telegram.config({
+    token: process.env.PROTECTED_TELEGRAM_TOKEN,
+  });
+}
+
 // log.dump({
 //   'process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY': process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY,
 //   'process.env.NODE_PORT': process.env.NODE_PORT,
