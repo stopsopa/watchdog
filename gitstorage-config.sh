@@ -3,9 +3,9 @@
 # used in
 # git@github.com:stopsopa/watchdog.git
 
-GITSTORAGESOURCE="git@bitbucket.org:phaseii/doc.git"
+GITSTORAGESOURCE="git@bitbucket.org:stopsopa/gitstorage.git"
 
-GITSTORAGETARGETDIR="pii-watchdog"
+GITSTORAGETARGETDIR="watchdog"
 
 GITSTORAGELIST=(
     ".env::$GITSTORAGETARGETDIR/.env"

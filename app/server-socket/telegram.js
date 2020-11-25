@@ -7,6 +7,8 @@ const validator = require('@stopsopa/validator');
 
 const se = require('nlab/se');
 
+const { extractRequest } = require('../lib/telegram')
+
 const th = msg => new Error(`telegram.js error: ${msg}`);
 
 module.exports = ({
@@ -17,13 +19,7 @@ module.exports = ({
   
   const forward = (req) => {
 
-    const forwarding = {
-      url       : req.url,
-      method    : req.method,
-      body      : req.body,
-      query     : req.query,
-      headers   : req.headers,
-    };
+    const forwarding = extractRequest(req);
 
     log.dump({
       forwarding,

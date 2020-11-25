@@ -37,9 +37,11 @@ tool.bind = (opt = {}) => {
 
   const telegramMiddleware = (function () {
 
+    const { extractRequest, middleware } = require('./lib/telegram');
+
     let list = [];
 
-    const middleware = {
+    const mid = {
       register                  : () => {},
       unregister                : () => {},
       expressMiddlewareForward  : false,
@@ -66,7 +68,7 @@ tool.bind = (opt = {}) => {
 
           console.log(`process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY="testserver", registering /telegram-webhook for to forward traffic to dev/local instance`);
 
-          middleware.register = fn => {
+          mid.register = fn => {
 
             console.log(`middleware.register`)
 
@@ -78,14 +80,14 @@ tool.bind = (opt = {}) => {
             list.push(fn);
           }
 
-          middleware.unregister = fn => {
+          mid.unregister = fn => {
 
             console.log(`middleware.unregister`)
 
             list = list.filter(f => f !== fn);
           }
 
-          middleware.expressMiddlewareForward = true;
+          mid.expressMiddlewareForward = true;
 
           app.all('/telegram-webhook', (req, res) => {
 
@@ -110,11 +112,7 @@ tool.bind = (opt = {}) => {
               telegramMiddleware_length: l,
               error,
               i,
-              url       : req.url,
-              method    : req.method,
-              body      : req.body,
-              query     : req.query,
-              headers   : req.headers,
+              ...extractRequest(req)
             })
           });
         }
@@ -137,21 +135,24 @@ tool.bind = (opt = {}) => {
 
           port = parseInt(port, 10);
 
-          const reg = /^\d+$/;
+          if (port) {
 
-          if ( ! reg.test(port) ) {
+            const reg = /^\d+$/;
 
-            throw th(`port don't match ${reg}`);
-          }
+            if ( ! reg.test(port) ) {
 
-          if (uri.protocol  === 'https:' && port != 443) {
+              throw th(`port don't match ${reg}`);
+            }
 
-            url += `:${port}`;
-          }
+            if (uri.protocol  === 'https:' && port != 443) {
 
-          if (uri.protocol  === 'http:' && port != 80) {
+              url += `:${port}`;
+            }
 
-            url += `:${port}`;
+            if (uri.protocol  === 'http:' && port != 80) {
+
+              url += `:${port}`;
+            }
           }
 
           console.log(`connecting to remote test telegram proxy server: ${url}`);
@@ -175,7 +176,7 @@ tool.bind = (opt = {}) => {
 
             console.log('connected to telegram proxy')
 
-            // run agains public server
+            // run against public server
             // fetch('/telegram-webhook?q1=v1&g2=v2', {
             //   method: 'post',
             //   headers: {
@@ -185,13 +186,7 @@ tool.bind = (opt = {}) => {
             // })
           });
 
-          socket.on('telegram-forward-webhook-traffic', data => {
-
-            log.dump({
-              received: true,
-              'telegram-forward-webhook-traffic': data,
-            }, 5)
-          });
+          socket.on('telegram-forward-webhook-traffic', middleware);
         }
       }
       else {
@@ -200,20 +195,11 @@ tool.bind = (opt = {}) => {
 
         app.all('/telegram-webhook', (req, res) => {
 
-          const telegramWebhook = {
-            mode: 'prod-no-proxy',
-            url       : req.url,
-            method    : req.method,
-            body      : req.body,
-            query     : req.query,
-            headers   : req.headers,
-          };
+          middleware(extractRequest(req));
 
-          log.dump({
-            telegramWebhook,
-          }, 4)
-
-          return res.json(telegramWebhook);
+          return res.json({
+            ok: true,
+          });
         });
       }
     }
@@ -222,7 +208,7 @@ tool.bind = (opt = {}) => {
       console.log(`process.env.PROTECTED_TELEGRAM_TOKEN NOT defined, NOT registering express /telegram-webhook middleware for telegram webhook`)
     }
 
-    return middleware;
+    return mid;
   }());
 
   io.on('connection', socket => {
