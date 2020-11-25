@@ -231,9 +231,9 @@ echo "======================== switching kubectl to target cluster =============
 
 /bin/bash "$ROOT/bash/kuber/switch-cluster.sh" "$PROTECTED_KUB_CLUSTER" 10
 
-echo "======================== creating/updating production secret with .env ===========================";
-
-/bin/bash "$ROOT/bash/kuber/create-secret-with-files-inside.sh" "env-$PROJECT_NAME_SHORT" "$ROOT/.env" .env
+#echo "======================== creating/updating production secret with .env ===========================";
+#
+#/bin/bash "$ROOT/bash/kuber/create-secret-with-files-inside.sh" "env-$PROJECT_NAME_SHORT" "$ROOT/.env" .env
 
 echo "======================== preparing_docker_build_files ===========================";
 
