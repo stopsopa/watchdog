@@ -281,13 +281,13 @@ function tool(db) {
       //   throw th(`ioTriggerStatus() esid is not a string`)
       // }
 
-      if (opt.origin) {
-
-        logg.dump({
-          origin: opt.origin,
-          id: db.id,
-        })
-      }
+      // if (opt.origin) {
+      //
+      //   logg.dump({
+      //     origin: opt.origin,
+      //     id: db.id,
+      //   })
+      // }
 
       io.emit('probe_status_update', {
         state: this.state(),

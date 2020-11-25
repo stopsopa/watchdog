@@ -606,11 +606,11 @@ export const getProjectInArchiveMode = id => {
   }
   catch (e) {
 
-    log.dump({
-      getProjectInArchiveMode_catch_error: e,
-      project_id: id,
-      list,
-    });
+    // log.dump({
+    //   getProjectInArchiveMode_catch_error: e,
+    //   project_id: id,
+    //   list,
+    // });
   }
 
   return false;

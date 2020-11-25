@@ -20,7 +20,7 @@ node app/lib/buildtimer.js
 yarn add open-cli
 
 #node "$_ROOT/node_modules/.bin/open-cli" http://0.0.0.0:$NODE_PORT
-sleep 1 && node "$_ROOT/node_modules/.bin/open-cli" http://0.0.0.0:$NODE_PORT &
+sleep 6 && node "$_ROOT/node_modules/.bin/open-cli" http://0.0.0.0:$NODE_PORT &
 
 export NODE_ENV="development"
 

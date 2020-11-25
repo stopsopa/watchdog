@@ -1,8 +1,35 @@
 
+const log           = require('inspc');
+
+const dotenv        = require('./app/lib/dotenv');
+
 require('dotenv-up')({
   override    : false,
   deep        : 1,
 }, true, 'index.server');
+
+if (process.argv.includes('--telegram-test-forward-server')) {
+
+  process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY = "testserver" // localclient || testserver
+
+  process.env.NODE_PORT = dotenv('CONDITIONAL_TELEGRAM_PROXY_LOCAL_PORT');
+
+  // process.env.PROTOCOL = "http"
+  //
+  // process.env.PORT = process.env.NODE_PORT
+  //
+  // process.env.HOST = '0.0.0.0';
+}
+
+// log.dump({
+//   'process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY': process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY,
+//   'process.env.NODE_PORT': process.env.NODE_PORT,
+//   'process.env.PROTOCOL': process.env.PROTOCOL,
+//   'process.env.PORT': process.env.PORT,
+//   'process.env.HOST': process.env.HOST,
+// })
+//
+// process.exit(0)
 
 (function () {
 
@@ -16,8 +43,6 @@ const path          = require('path');
 const fs            = require('fs');
 
 const express       = require('express');
-
-const log           = require('inspc');
 
 const delay         = require('nlab/delay');
 
@@ -92,21 +117,6 @@ app.use(requestIp.mw());
 //   })
 // });
 
-const env = name => {
-
-  if ( typeof process.env[name] !== 'string' ) {
-
-    throw new Error(`process.env.${name} doesn't exist`);
-  }
-
-  if ( ! process.env[name].trim() ) {
-
-    throw new Error(`process.env.${name} is an empty string`);
-  }
-
-  return process.env[name];
-}
-
 app.use(compression({filter: (req, res) => {
   if (req.headers['x-no-compression']) {
     // don't compress responses with this request header
@@ -143,9 +153,9 @@ const estool = (async function () {
 
   estool.init({
     default: {
-      schema      : env('PROTECTED_ES_DEFAULT_SCHEMA'),
-      host        : env('PROTECTED_ES_DEFAULT_HOST'),
-      port        : parseInt(env('PROTECTED_ES_DEFAULT_PORT'), 10),
+      schema      : dotenv('PROTECTED_ES_DEFAULT_SCHEMA'),
+      host        : dotenv('PROTECTED_ES_DEFAULT_HOST'),
+      port        : parseInt(dotenv('PROTECTED_ES_DEFAULT_PORT'), 10),
       username    : process.env.PROTECTED_ES_DEFAULT_USERNAME, // because es.js might work with servers without credentials (uprotected server)
       password    : process.env.PROTECTED_ES_DEFAULT_PASSWORD,
       prefix      : process.env.PROTECTED_ES_DEFAULT_INDEX_PREFIX,
@@ -203,6 +213,7 @@ const estool = (async function () {
         require('./app/io').bind({
           io,
           bind: require('./app/server-socket'),
+          app,
         });
 
       }());
@@ -390,14 +401,14 @@ const estool = (async function () {
       });
     }());
 
-    let port = parseInt(env('NODE_PORT'), 10);
+    let port = parseInt(dotenv('NODE_PORT'), 10);
 
     if ( port < 1 ) {
 
       throw new Error(`port < 1`);
     }
 
-    const host = env('NODE_HOST');
+    const host = dotenv('NODE_HOST');
 
 // for sockets
     server.listen( // ... we have to listen on server
