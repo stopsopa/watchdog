@@ -10,3 +10,4 @@ yarn-error.log
 .env.kub.prod
 .env.kub.test
 .env.kub.stage
+sensitive.txt

@@ -66,6 +66,7 @@ buildtime.js
 .env*
 !.env
 !.env.dist
+sensitive.txt
 
 
 

@@ -11,4 +11,5 @@ GITSTORAGELIST=(
     ".env::$GITSTORAGETARGETDIR/.env"
     ".env.kub.test::$GITSTORAGETARGETDIR/.env.kub.test"
     "gitstorage-config.sh::$GITSTORAGETARGETDIR/gitstorage-config.sh"
+    "sensitive.txt::$GITSTORAGETARGETDIR/sensitive.txt"
 )
