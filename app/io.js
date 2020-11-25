@@ -49,13 +49,13 @@ tool.bind = (opt = {}) => {
 
       console.log(`process.env.PROTECTED_TELEGRAM_TOKEN defined, registering express /telegram-webhook middleware for telegram webhook`)
 
-      // PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY="testserver" # localclient || testserver
+      // PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY="testserver" # http://... || testserver
 
       if (typeof process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY === 'string') {
 
         console.log(`process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY="${process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY}" defined`)
 
-        const reg = /^(localclient|testserver)$/;
+        const reg = /(^https?:\/\/.*$|^testserver$)/;
 
         if ( ! reg.test(process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY) ) {
 
@@ -118,17 +118,17 @@ tool.bind = (opt = {}) => {
             })
           });
         }
-        else { // forward handler: localclient mode
+        else { // forward handler: localclient mode http://...
 
           console.log(`process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY="testserver", registering /telegram-webhook proxy websocket traffic receiver`);
 
-          // PROTOCOL="http"
-          // HOST="watchdog.xxx.com"
-          // PORT="80"
+          const URL           = require('url').URL;
 
-          let url = `${dotenv('PROTOCOL')}://${dotenv('HOST')}`
+          const uri           = new URL(dotenv('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY'));
 
-          let port = dotenv('PORT');
+          let url = `${uri.protocol}//${uri.hostname}`
+
+          let port = uri.port;
 
           if (typeof process.env.CONDITIONAL_TELEGRAM_PROXY_LOCAL_PORT === 'string') {
 
@@ -144,12 +144,12 @@ tool.bind = (opt = {}) => {
             throw th(`port don't match ${reg}`);
           }
 
-          if (dotenv('PROTOCOL') === 'https' && port !== 443) {
+          if (uri.protocol  === 'https:' && port != 443) {
 
             url += `:${port}`;
           }
 
-          if (dotenv('PROTOCOL') === 'http' && port !== 80) {
+          if (uri.protocol  === 'http:' && port != 80) {
 
             url += `:${port}`;
           }

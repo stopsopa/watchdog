@@ -8,17 +8,16 @@ require('dotenv-up')({
   deep        : 1,
 }, true, 'index.server');
 
-if (process.argv.includes('--telegram-test-forward-server')) {
+if (process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY === 'testserver') { // prod .env.kub.xxx driven
 
-  process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY = "testserver" // localclient || testserver
+  process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY = "testserver" // http://... || testserver
+}
+
+if (process.argv.includes('--telegram-test-forward-server')) { // localhost test mode .env driven
 
   process.env.NODE_PORT = dotenv('CONDITIONAL_TELEGRAM_PROXY_LOCAL_PORT');
 
-  // process.env.PROTOCOL = "http"
-  //
-  // process.env.PORT = process.env.NODE_PORT
-  //
-  // process.env.HOST = '0.0.0.0';
+  process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY = "testserver" // http://... || testserver
 }
 
 // log.dump({
@@ -29,7 +28,7 @@ if (process.argv.includes('--telegram-test-forward-server')) {
 //   'process.env.HOST': process.env.HOST,
 // })
 //
-// process.exit(0)
+// process.exit(0);
 
 (function () {
 
