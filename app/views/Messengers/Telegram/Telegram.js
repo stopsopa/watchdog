@@ -30,11 +30,23 @@ import {
 
 import {
   StoreContext as StoreContextAssoc,
+
+  getStoreAssoc,
 } from '../../../_storage/storeAssoc';
+
+import './Telegram.scss'
 
 export default (props = {}) => {
 
   useContext(StoreContextAssoc);
+
+  const {
+    telegram = {},
+  } = getStoreAssoc('messengers_detection', {});
+
+  const {
+    PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY,
+  } = telegram || {};
 
   const [ loading, setLoading ] = useState(true);
 
@@ -55,8 +67,7 @@ export default (props = {}) => {
   }, []);
 
   return (
-    <div>
-
+    <div className="messenger-console-telegram">
       <Breadcrumb>
         <Breadcrumb.Section
           size="mini"
@@ -69,6 +80,22 @@ export default (props = {}) => {
           Telegram
         </Breadcrumb.Section>
       </Breadcrumb>
+      <div>
+        <table border="1" className="status">
+          <tbody>
+          <tr>
+            <td>Is PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY mode on:</td>
+            <td>{String(Boolean(PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY))}</td>
+          </tr>
+          {(typeof PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY === 'string') && (
+            <tr>
+              <td>PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY value</td>
+              <td>"{PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY}"</td>
+            </tr>
+          )}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

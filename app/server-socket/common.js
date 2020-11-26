@@ -44,7 +44,19 @@ module.exports = ({
       ...buildtime,
     },
     messengers_detection: {
-      telegram: typeof process.env.PROTECTED_TELEGRAM_TOKEN === 'string',
+      telegram: (function () {
+
+        const on = typeof process.env.PROTECTED_TELEGRAM_TOKEN === 'string';
+
+        if ( ! on ) {
+
+          return false;
+        }
+
+        return {
+          PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY: process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY,
+        }
+      }()),
     },
   });
 }
