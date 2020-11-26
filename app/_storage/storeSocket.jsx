@@ -139,15 +139,14 @@ export function StoreSocketProvider(props) {
     socket.on('server_status', ({
       git_status,
       messengers_detection,
-      PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server,
-      PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected,
+      getTelegramNodeServerStatus = {},
     }) => {
 
       setStoreAssoc('messengers_detection', messengers_detection);
 
-      setStoreAssoc('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server', PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server);
+      setStoreAssoc('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server', getTelegramNodeServerStatus.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server);
 
-      setStoreAssoc('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected);
+      setStoreAssoc('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', getTelegramNodeServerStatus.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected);
 
       const {
         NODE_ENV,  // : "production"

@@ -40,8 +40,7 @@ tool.bind = (opt = {}) => {
     const {
       extractRequest,
       middleware,
-      setPROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server,
-      setPROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected,
+      setTelegramNodeServerStatus,
     } = require('./lib/telegram');
 
     let list = [];
@@ -86,7 +85,7 @@ tool.bind = (opt = {}) => {
 
             io.emit('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', list.length);
 
-            setPROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected(list.length);
+            setTelegramNodeServerStatus('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', list.length)
           }
 
           mid.unregister = fn => {
@@ -97,7 +96,7 @@ tool.bind = (opt = {}) => {
 
             io.emit('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', list.length);
 
-            setPROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected(list.length);
+            setTelegramNodeServerStatus('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', list.length)
           }
 
           mid.expressMiddlewareForward = true;
@@ -186,7 +185,7 @@ tool.bind = (opt = {}) => {
 
             io.emit('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server', false);
 
-            setPROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server(false);
+            setTelegramNodeServerStatus('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server', false);
           });
 
           socket.on('connect', function () {
@@ -195,7 +194,7 @@ tool.bind = (opt = {}) => {
 
             io.emit('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server', true);
 
-            setPROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server(true);
+            setTelegramNodeServerStatus('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server', true);
 
             // run against public server
             // fetch('/telegram-webhook?q1=v1&g2=v2', {

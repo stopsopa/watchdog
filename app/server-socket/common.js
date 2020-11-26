@@ -18,8 +18,7 @@ const th = msg => new Error(`common.js error: ${msg}`);
 const webpack = require('../../config')(process.env.NODE_ENV);
 
 const {
-  getPROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server,
-  getPROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected,
+  getTelegramNodeServerStatus,
 } = require('../lib/telegram');
 
 module.exports = ({
@@ -63,7 +62,6 @@ module.exports = ({
         }
       }()),
     },
-    PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server : getPROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server(),
-    PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected   : getPROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected(),
+    getTelegramNodeServerStatus: getTelegramNodeServerStatus(),
   });
 }
