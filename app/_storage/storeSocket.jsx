@@ -181,6 +181,8 @@ export function StoreSocketProvider(props) {
       }
     });
 
+    socket.on('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', num => setStoreAssoc('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', num));
+
   }, []);
 
   return (<StoreContext.Provider value={{

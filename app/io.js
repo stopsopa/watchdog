@@ -51,22 +51,22 @@ tool.bind = (opt = {}) => {
 
       console.log(`process.env.PROTECTED_TELEGRAM_TOKEN defined, registering express /telegram-webhook middleware for telegram webhook`)
 
-      // PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY="proxyserver" # http://... || proxyserver
+      // PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY="telegramproxyserver" # http://... || telegramproxyserver
 
       if (typeof process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY === 'string') {
 
         console.log(`process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY="${process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY}" defined`)
 
-        const reg = /(^https?:\/\/.*$|^proxyserver$)/;
+        const reg = /(^https?:\/\/.*$|^telegramproxyserver$)/;
 
         if ( ! reg.test(process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY) ) {
 
           throw th(`if process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY defined then it should match '${reg}'`);
         }
 
-        if (process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY === 'proxyserver') {
+        if (process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY === 'telegramproxyserver') {
 
-          console.log(`process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY="proxyserver", registering /telegram-webhook for to forward traffic to dev/local instance`);
+          console.log(`process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY="telegramproxyserver", registering /telegram-webhook for to forward traffic to dev/local instance`);
 
           mid.register = fn => {
 
@@ -78,6 +78,8 @@ tool.bind = (opt = {}) => {
             }
 
             list.push(fn);
+
+            io.emit('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', list.length);
           }
 
           mid.unregister = fn => {
@@ -85,6 +87,8 @@ tool.bind = (opt = {}) => {
             console.log(`middleware.unregister`)
 
             list = list.filter(f => f !== fn);
+
+            io.emit('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', list.length);
           }
 
           mid.expressMiddlewareForward = true;
@@ -118,7 +122,7 @@ tool.bind = (opt = {}) => {
         }
         else { // forward handler: localclient mode http://...
 
-          console.log(`process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY="proxyserver", registering /telegram-webhook proxy websocket traffic receiver`);
+          console.log(`process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY="telegramproxyserver", registering /telegram-webhook proxy websocket traffic receiver`);
 
           const URL           = require('url').URL;
 

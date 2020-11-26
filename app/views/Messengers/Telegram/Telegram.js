@@ -48,6 +48,8 @@ export default (props = {}) => {
     PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY,
   } = telegram || {};
 
+  const PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected = getStoreAssoc('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', 0);
+
   const [ loading, setLoading ] = useState(true);
 
   useEffect(() => {
@@ -84,14 +86,22 @@ export default (props = {}) => {
         <table border="1" className="status">
           <tbody>
           <tr>
-            <td>Is PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY mode on:</td>
+            <td>Is PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY mode on</td>
             <td>{String(Boolean(PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY))}</td>
           </tr>
           {(typeof PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY === 'string') && (
-            <tr>
-              <td>PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY value</td>
-              <td>"{PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY}"</td>
-            </tr>
+            <>
+              <tr>
+                <td>PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY value</td>
+                <td>"{PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY}"</td>
+              </tr>
+              {(PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY === 'telegramproxyserver') && (
+                <tr>
+                  <td>connected clients</td>
+                  <td>{PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected}</td>
+                </tr>
+              )}
+            </>
           )}
           </tbody>
         </table>
