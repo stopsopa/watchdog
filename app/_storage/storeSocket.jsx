@@ -161,7 +161,16 @@ export function StoreSocketProvider(props) {
 
             try {
 
-              location.reload();
+              const delay = 10 * 1000;
+
+              log.dump({
+                'location.reload() in': delay
+              })
+
+              setTimeout(() => {
+
+                location.reload();
+              }, delay);
             }
             catch (e) {
 
