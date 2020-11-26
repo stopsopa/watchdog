@@ -132,12 +132,22 @@ export function StoreSocketProvider(props) {
       // setSocket(undefined);
     });
 
-    socket.on('git_status', ({
+    socket.on('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', num => setStoreAssoc('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', num));
+
+    socket.on('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server', val => setStoreAssoc('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server', val));
+
+    socket.on('server_status', ({
       git_status,
       messengers_detection,
+      PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server,
+      PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected,
     }) => {
 
       setStoreAssoc('messengers_detection', messengers_detection);
+
+      setStoreAssoc('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server', PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server);
+
+      setStoreAssoc('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected);
 
       const {
         NODE_ENV,  // : "production"
@@ -180,9 +190,6 @@ export function StoreSocketProvider(props) {
         }
       }
     });
-
-    socket.on('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', num => setStoreAssoc('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', num));
-
   }, []);
 
   return (<StoreContext.Provider value={{

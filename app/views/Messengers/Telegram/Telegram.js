@@ -48,7 +48,9 @@ export default (props = {}) => {
     PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY,
   } = telegram || {};
 
-  const PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected = getStoreAssoc('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', 0);
+  const PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected    = getStoreAssoc('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', 0);
+
+  const PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server  = getStoreAssoc('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server', false);
 
   const [ loading, setLoading ] = useState(true);
 
@@ -95,10 +97,15 @@ export default (props = {}) => {
                 <td>PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY value</td>
                 <td>"{PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY}"</td>
               </tr>
-              {(PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY === 'telegramproxyserver') && (
+              {(PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY === 'telegramproxyserver') ? (
                 <tr>
                   <td>connected clients</td>
                   <td>{PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected}</td>
+                </tr>
+              ) : (
+                <tr>
+                  <td>connected to server</td>
+                  <td>{String(Boolean(PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server))}</td>
                 </tr>
               )}
             </>

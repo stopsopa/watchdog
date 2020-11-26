@@ -37,7 +37,12 @@ tool.bind = (opt = {}) => {
 
   const telegramMiddleware = (function () {
 
-    const { extractRequest, middleware } = require('./lib/telegram');
+    const {
+      extractRequest,
+      middleware,
+      setPROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server,
+      setPROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected,
+    } = require('./lib/telegram');
 
     let list = [];
 
@@ -80,6 +85,8 @@ tool.bind = (opt = {}) => {
             list.push(fn);
 
             io.emit('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', list.length);
+
+            setPROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected(list.length);
           }
 
           mid.unregister = fn => {
@@ -89,6 +96,8 @@ tool.bind = (opt = {}) => {
             list = list.filter(f => f !== fn);
 
             io.emit('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', list.length);
+
+            setPROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected(list.length);
           }
 
           mid.expressMiddlewareForward = true;
@@ -161,10 +170,10 @@ tool.bind = (opt = {}) => {
 
           console.log(`connecting to remote test telegram proxy server: ${url}`);
 
-          const io = require('socket.io-client');
+          const serverio = require('socket.io-client');
 
           // https://stackoverflow.com/a/47188458
-          var socket = io(url, {
+          var socket = serverio(url, {
             reconnection: true,
             query: {
               telegramproxy: 'true',
@@ -174,11 +183,19 @@ tool.bind = (opt = {}) => {
           socket.on('disconnect', () => {
 
             console.log('disconnected from telegram proxy')
+
+            io.emit('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server', false);
+
+            setPROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server(false);
           });
 
           socket.on('connect', function () {
 
             console.log('connected to telegram proxy')
+
+            io.emit('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server', true);
+
+            setPROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server(true);
 
             // run against public server
             // fetch('/telegram-webhook?q1=v1&g2=v2', {
