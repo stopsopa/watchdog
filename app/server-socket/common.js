@@ -59,6 +59,7 @@ module.exports = ({
 
         return {
           PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY: process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY,
+          webhook_can_be_refreshed_in_browser: typeof process.env.HOST === 'string' && ! /^(0\.0\.0\.0|localhost)$/.test(process.env.HOST),
         }
       }()),
     },

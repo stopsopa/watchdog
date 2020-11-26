@@ -198,7 +198,7 @@ tool.bind = (opt = {}) => {
             // })
           });
 
-          socket.on('telegram-forward-webhook-traffic', middleware);
+          socket.on('telegram_forward_webhook_traffic', middleware);
         }
       }
       else {

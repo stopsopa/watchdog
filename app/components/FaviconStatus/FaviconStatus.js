@@ -75,7 +75,7 @@ export default ({
 
       if ( ! state.ctx ) {
 
-        log('FaviconStatus getContext')
+        // log('FaviconStatus getContext')
 
         const fav = document.querySelector('link[rel*="icon"]');
 

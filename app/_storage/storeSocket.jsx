@@ -19,14 +19,18 @@ import log from 'inspc';
     StoreContext as StoreContextSocket,
   } from './_storage/storeSocket';
 
-  const {
+  let {
     state: socket,
   } = useContext(StoreContextSocket);
 
+  if ( ! socket) {
+
+    socket = {};
+  }
 
    useEffect(() => {
 
-      if (socket) {
+      try {
 
         const abc = abc => {
           /// ...
@@ -37,9 +41,13 @@ import log from 'inspc';
         return () => { // https://stackoverflow.com/a/34716449/5560682
           socket.off('abc', abc)
         }
+
+      }
+      catch (e) {
+
       }
 
-    }, [socket]);
+    }, [socket.id]);
  */
 
 
@@ -84,23 +92,16 @@ export function StoreSocketProvider(props) {
 
     window.socket = socket;
 
-    window.ren = () => {
-      // setSocket(null);
-      setTimeout(() => {
-
-        setSocket(socket);
-      }, 500);
-    }
+    console && console.log && console.log('window.socket registered');
 
     let handler = false, i = 0;
 
     socket.on('connect', () => {
 
-      log.dump('Connection renewed')
-
       socket.emit('status_all_probes')
 
       clearInterval(handler);
+
       i = 0;
 
       if (handler) {
@@ -118,19 +119,25 @@ export function StoreSocketProvider(props) {
       setStatusReset();
 
       clearInterval(handler);
+
       i = 0;
+
       handler = setInterval(() => {
 
         actionGlobalLoaderError("Lost socket connection with server ... waiting to reconnect " +(".".repeat(i)), false);
 
         i += 1;
+
         if (i > 3) {
+
           i = 0;
         }
       }, 500);
 
       // setSocket(undefined);
     });
+
+    socket.on('telegram_get_current_webhook', data => setStoreAssoc('telegram_get_current_webhook', data));
 
     socket.on('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', num => setStoreAssoc('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', num));
 

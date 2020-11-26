@@ -204,7 +204,7 @@ export function StoreAssocProvider(props) {
       }
     }
     else {
-      log.dump('StoreAssocProvider socket not available yet')
+      // log.dump('StoreAssocProvider socket not available yet')
     }
   }, [socket ? socket.id : undefined]);
 
@@ -640,11 +640,11 @@ export const getProjectInServiceMode = id => {
   }
   catch (e) {
 
-    log.dump({
-      getProjectInAServiceMode_catch_error: e,
-      project_id: id,
-      list,
-    });
+    // log.dump({
+    //   getProjectInAServiceMode_catch_error: e,
+    //   project_id: id,
+    //   list,
+    // });
   }
 
   return false;
@@ -675,10 +675,10 @@ export const getProjectInNotAllEnabledMode = id => {
   }
   catch (e) {
 
-    log.dump({
-      getProjectInNotAllEnabledMode_catch_error: e,
-      project_id: id,
-    });
+    // log.dump({
+    //   getProjectInNotAllEnabledMode_catch_error: e,
+    //   project_id: id,
+    // });
   }
 
   return false;

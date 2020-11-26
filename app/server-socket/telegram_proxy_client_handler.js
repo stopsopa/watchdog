@@ -1,10 +1,6 @@
 
 const log = require('inspc');
 
-const delay = require('nlab/delay');
-
-const validator = require('@stopsopa/validator');
-
 const se = require('nlab/se');
 
 const { extractRequest } = require('../lib/telegram')
@@ -13,7 +9,12 @@ const th = msg => new Error(`telegram.js error: ${msg}`);
 
 module.exports = ({
   io,
+
+  // WARNING:
+  //     KEEP IN MIND THAT THIS IS ACTUALLY socket REPRESENTING
+  //     CONNECTION WITH ANOTHER SERVER, NOT BROWSER
   socket,
+
   telegramMiddleware,
 }) => {
   
@@ -25,7 +26,7 @@ module.exports = ({
       forwarding,
     })
 
-    socket.emit('telegram-forward-webhook-traffic', forwarding);
+    socket.emit('telegram_forward_webhook_traffic', forwarding);
   }
 
   telegramMiddleware.register(forward);

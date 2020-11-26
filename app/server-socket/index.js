@@ -17,6 +17,14 @@ module.exports = (...args) => {
 
   require('./groups')(...args);
 
+  (function () {
+
+    if (typeof process.env.PROTECTED_TELEGRAM_TOKEN === 'string') {
+
+      require('./telegram_front_handler')(...args);
+    }
+  }());
+
   (function (opt = {}) {
 
     const {
@@ -40,13 +48,12 @@ module.exports = (...args) => {
 
         console.log('telegramproxy found')
 
-        require('./telegram')(...args);
+        require('./telegram_proxy_client_handler')(...args);
       }
       else {
 
         console.log('telegramproxy not found')
       }
-
     }
     else {
 
