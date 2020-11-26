@@ -39,7 +39,12 @@ module.exports = ({
   }
 
   socket.emit('git_status', {
-    NODE_ENV: process.env.NODE_ENV || 'undefined',
-    ...buildtime,
+    git_status: {
+      NODE_ENV: process.env.NODE_ENV || 'undefined',
+      ...buildtime,
+    },
+    messengers_detection: {
+      telegram: typeof process.env.PROTECTED_TELEGRAM_TOKEN === 'string',
+    },
   });
 }

@@ -32,6 +32,10 @@ import GroupsList from './views/Groups/GroupsList';
 
 import GroupsEdit from './views/Groups/GroupsEdit';
 
+import Messengers from './views/Messengers/Messengers'
+
+import Telegram from './views/Messengers/Telegram/Telegram'
+
 import './App.scss'
 
 import {
@@ -72,6 +76,12 @@ export default function App() {
             activeClassName="active"
           >
             Groups
+          </NavLink>
+          <NavLink
+            to="/messengers"
+            activeClassName="active"
+          >
+            Messengers
           </NavLink>
         </div>
       </div>
@@ -151,6 +161,18 @@ export default function App() {
             path="/groups/:id"
             exact={true}
             component={GroupsEdit}
+          />
+
+          <Route
+            path="/messengers"
+            exact={true}
+            component={Messengers}
+          />
+
+          <Route
+            path="/messengers/telegram"
+            exact={true}
+            component={Telegram}
           />
 
           <Route

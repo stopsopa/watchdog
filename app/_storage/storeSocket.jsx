@@ -132,7 +132,12 @@ export function StoreSocketProvider(props) {
       // setSocket(undefined);
     });
 
-    socket.on('git_status', data => {
+    socket.on('git_status', ({
+      git_status,
+      messengers_detection,
+    }) => {
+
+      setStoreAssoc('messengers_detection', messengers_detection);
 
       const {
         NODE_ENV,  // : "production"
@@ -140,13 +145,13 @@ export function StoreSocketProvider(props) {
         gittime,   // : "2020-11-13_23-53-19"
         mode,      // : "prod"
         time,      // : "2020-11-14_00-30-22"
-      } = data;
+      } = git_status || {};
 
       const prev = getStoreAssoc(`git_status`);
 
       if ( typeof prev === 'undefined' ) {
 
-        setStoreAssoc('git_status', data);
+        setStoreAssoc('git_status', git_status);
       }
       else {
 
