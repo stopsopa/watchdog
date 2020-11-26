@@ -83,8 +83,6 @@ tool.bind = (opt = {}) => {
 
             list.push(fn);
 
-            io.emit('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', list.length);
-
             setTelegramNodeServerStatus('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', list.length)
           }
 
@@ -93,8 +91,6 @@ tool.bind = (opt = {}) => {
             console.log(`middleware.unregister`)
 
             list = list.filter(f => f !== fn);
-
-            io.emit('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', list.length);
 
             setTelegramNodeServerStatus('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', list.length)
           }
@@ -183,16 +179,12 @@ tool.bind = (opt = {}) => {
 
             console.log('disconnected from telegram proxy')
 
-            io.emit('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server', false);
-
             setTelegramNodeServerStatus('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server', false);
           });
 
           socket.on('connect', function () {
 
             console.log('connected to telegram proxy')
-
-            io.emit('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server', true);
 
             setTelegramNodeServerStatus('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server', true);
 

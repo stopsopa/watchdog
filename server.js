@@ -20,15 +20,6 @@ if (process.argv.includes('--telegram-test-forward-server')) { // localhost test
   process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY = "telegramproxyserver" // http://... || telegramproxyserver
 }
 
-if (typeof process.env.PROTECTED_TELEGRAM_TOKEN === 'string') {
-
-  const telegram = require('./app/lib/telegram');
-
-  telegram.config({
-    token: process.env.PROTECTED_TELEGRAM_TOKEN,
-  });
-}
-
 // log.dump({
 //   'process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY': process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY,
 //   'process.env.NODE_PORT': process.env.NODE_PORT,
@@ -212,6 +203,16 @@ const estool = (async function () {
     await (async function () {
 
       const io        = require('socket.io')(server); // io
+
+      if (typeof process.env.PROTECTED_TELEGRAM_TOKEN === 'string') {
+
+        const telegram = require('./app/lib/telegram');
+
+        telegram.config({
+          token: process.env.PROTECTED_TELEGRAM_TOKEN,
+          io,
+        });
+      }
 
       (function () {
 
