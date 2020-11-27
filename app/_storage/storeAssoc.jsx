@@ -362,10 +362,10 @@ export const getStatusProbe = id => {
   }
   catch (e) {
 
-    log.dump({
-      getStatusProbe_catch_error: e,
-      probe_id: id,
-    })
+    // log.dump({
+    //   getStatusProbe_catch_error: e,
+    //   probe_id: id,
+    // })
   }
 
   return {
