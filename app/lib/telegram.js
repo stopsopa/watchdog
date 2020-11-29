@@ -265,6 +265,13 @@ tool.telegram_get_bot_info = async () => {
 
 tool.middleware = async (data = {}) => {
 
+  const help = `
+I'm not programmed to take part in the conversation \\(yet\\)\\. 
+The only commands that I understand are:
+/myid \\- return details about your account \\(most importantly user ID\\)
+/start \\- help
+`
+
   try {
 
     const text = (data?.body?.message?.text || '').toLowerCase().trim();
@@ -282,7 +289,7 @@ tool.middleware = async (data = {}) => {
     const senderId = data?.body?.message?.from?.id;
 
     switch (text) {
-      case '/start':
+      case '/myid':
 
         await tool.sendMessage({
           chat_id: senderId,
@@ -299,7 +306,7 @@ tool.middleware = async (data = {}) => {
           // disable_notification: false,
         })
         break;
-      case '/botlink':
+      case '/start':
 
         let username;
 
@@ -317,7 +324,10 @@ tool.middleware = async (data = {}) => {
 
           text = `
 🤖 Hi I'm the bot and my name is '${first_name}' and this is my official share link:
-[https://t\\.me/${username}](https://t\\.me/${username})`
+[https://t\\.me/${username}](https://t\\.me/${username})
+Tip: Use right mouse click and "Copy Link" \\- it might not work when clicked here on the chat\\.
+
+${help}`
         }
         catch (e) {
 
@@ -337,11 +347,7 @@ tool.middleware = async (data = {}) => {
 
         await tool.sendMessage({
           chat_id: senderId,
-          text: `
-I'm not programmed to take part in the conversation \\(yet\\), the only commands that I understand are:
-/start \\- return details about your account \\(most importantly user ID\\)
-/botlink \\- return boot official homepage url
-        `,
+          text: help,
           parse_mode: 'MarkdownV2',
           disable_web_page_preview: true,
           // disable_notification: false,
