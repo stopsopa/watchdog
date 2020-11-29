@@ -219,11 +219,148 @@ tool.resetWebhook = () => {
   }
 }
 
-tool.middleware = (data = {}) => {
+tool.telegram_get_bot_info = async () => {
 
-  log.dump({
-    mid: data,
-  }, 5)
+  try {
+
+    let data = {};
+
+    try {
+
+      // curl https://api.telegram.org/botxxxx:AAHxxxxxxxxxG8/getMe
+      const res = await tool('getMe');
+
+      let ok = false;
+
+      try {
+
+        ok = res.body.ok === true && isObject(res.body.result);
+      }
+      catch (e) {}
+
+      if (ok) {
+
+        data = res.body.result;
+      }
+      else {
+
+        data.error = res;
+      }
+
+    }
+    catch (e) {
+
+      data.error = e.message;
+    }
+
+    tool.setTelegramNodeServerStatus('getMe', data);
+  }
+  catch (e) {
+
+    log.dump({
+      telegram_get_bot_info__error: se(e)
+    })
+  }
+}
+
+tool.middleware = async (data = {}) => {
+
+  try {
+
+    const text = (data?.body?.message?.text || '').toLowerCase().trim();
+
+    if (typeof text !== 'string') {
+
+      throw new Error(`text is not a string`);
+    }
+
+    if ( ! text ) { // this case is rather impossible but still let's handle it explicitly
+
+      return;
+    }
+
+    const senderId = data?.body?.message?.from?.id;
+
+    switch (text) {
+      case '/start':
+
+        await tool.sendMessage({
+          chat_id: senderId,
+          text: `
+👤 You
+ ├ *id*: \`${senderId}\`
+ ├ *is\\_bot*: \`${String(data?.body?.message?.from?.is_bot ?? '[no is bot flag]')}\`
+ ├ *first\\_name*: \`${data?.body?.message?.from?.first_name ?? '[no first name]'}\`
+ ├ *last\\_name*: \`${data?.body?.message?.from?.last_name ?? '[no last name]'}\` 
+ └ *username*: \`${data?.body?.message?.from?.username ?? '[no username]'}\`     
+        `,
+          parse_mode: 'MarkdownV2',
+          disable_web_page_preview: true,
+          // disable_notification: false,
+        })
+        break;
+      case '/botlink':
+
+        let username;
+
+        let text = ''
+
+        try {
+
+          username = tool.getTelegramNodeServerStatus().getMe.username;
+
+          let first_name = tool.getTelegramNodeServerStatus().getMe.first_name;
+
+          username = username.replace(/_/g, '\\_');
+
+          first_name = first_name.replace(/_/g, '\\_');
+
+          text = `
+🤖 Hi I'm the bot and my name is '${first_name}' and this is my official share link:
+[https://t\\.me/${username}](https://t\\.me/${username})`
+        }
+        catch (e) {
+
+          text = `Error: Can't extract tool\\.getTelegramNodeServerStatus\\(\\)\\.getMe\\.username`
+        }
+
+        await tool.sendMessage({
+          chat_id: senderId,
+          text,
+          parse_mode: 'MarkdownV2',
+          disable_web_page_preview: true,
+          // disable_notification: false,
+        });
+
+        break;
+      default:
+
+        await tool.sendMessage({
+          chat_id: senderId,
+          text: `
+I'm not programmed to take part in the conversation \\(yet\\), the only commands that I understand are:
+/start \\- return details about your account \\(most importantly user ID\\)
+/botlink \\- return boot official homepage url
+        `,
+          parse_mode: 'MarkdownV2',
+          disable_web_page_preview: true,
+          // disable_notification: false,
+        });
+
+        log.dump({
+          unhandled: data,
+        }, 9);
+
+        break;
+    }
+
+  }
+  catch (e) {
+
+    log.dump({
+      "telegram.js general middleware error": se(e),
+    })
+  }
 
 
   /**
@@ -289,6 +426,8 @@ tool.config = opt => {
   config = opt;
 
   tool.resetWebhook();
+
+  tool.telegram_get_bot_info();
 };
 
 (function () {

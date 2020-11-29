@@ -71,6 +71,8 @@ export default (props = {}) => {
 
   const PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server  = getStoreAssoc('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server', false);
 
+  let getMe                                                         = getStoreAssoc('getMe', false);
+
   let telegram_get_current_webhook                                  = getStoreAssoc('telegram_get_current_webhook', false);
 
   (function () {
@@ -173,6 +175,20 @@ export default (props = {}) => {
               {webhook_can_be_refreshed_in_browser && <Button size="mini" onClick={telegram_reset_webhook}>reset</Button>}
             </td>
             <td>{telegram_get_current_webhook}</td>
+          </tr>
+          <tr>
+            <td>
+              Bot share url
+            </td>
+            <td>{(getMe?.username) ? (
+              <a href={`https://t.me/${getMe?.username}`} target="_blank">https://t.me/{getMe?.username}</a>
+            ) : `[username not provided]`}</td>
+          </tr>
+          <tr>
+            <td>
+              Bot id
+            </td>
+            <td>{getMe?.id ?? '[no bot id provided]'}</td>
           </tr>
           </tbody>
         </table>

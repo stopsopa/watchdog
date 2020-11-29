@@ -4,6 +4,8 @@ set -e
 
 _ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P )"
 
+node "$_ROOT/bash/node/versioncheck.js" --nvmrc .nvmrc
+
 if ! [ -f "$_ROOT/.env" ]; then
 
   echo "$_ROOT/.env doesn't exist"

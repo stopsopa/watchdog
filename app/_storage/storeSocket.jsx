@@ -139,9 +139,13 @@ export function StoreSocketProvider(props) {
 
     socket.on('telegram_get_current_webhook', data => setStoreAssoc('telegram_get_current_webhook', data));
 
+
+
     socket.on('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', num => setStoreAssoc('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', num));
 
     socket.on('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server', val => setStoreAssoc('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server', val));
+
+    socket.on('getMe', val => setStoreAssoc('getMe', val));
 
     socket.on('server_status', ({
       git_status,
@@ -149,11 +153,15 @@ export function StoreSocketProvider(props) {
       getTelegramNodeServerStatus = {},
     }) => {
 
-      setStoreAssoc('messengers_detection', messengers_detection);
+      setStoreAssoc('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', getTelegramNodeServerStatus.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected);
 
       setStoreAssoc('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server', getTelegramNodeServerStatus.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_connected_to_server);
 
-      setStoreAssoc('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', getTelegramNodeServerStatus.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected);
+      setStoreAssoc('getMe', getTelegramNodeServerStatus.getMe);
+
+
+
+      setStoreAssoc('messengers_detection', messengers_detection);
 
       const {
         NODE_ENV,  // : "production"
