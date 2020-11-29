@@ -290,57 +290,69 @@ The only commands that I understand are:
 
     switch (text) {
       case '/myid':
+        {
 
-        await tool.sendMessage({
-          chat_id: senderId,
-          text: `
+          let username = data?.body?.message?.from?.username ?? '';
+
+          username = username.replace(/_/g, '\\_');
+
+          await tool.sendMessage({
+            chat_id: senderId,
+            text: `
 👤 You
  ├ *id*: \`${senderId}\`
  ├ *is\\_bot*: \`${String(data?.body?.message?.from?.is_bot ?? '[no is bot flag]')}\`
  ├ *first\\_name*: \`${data?.body?.message?.from?.first_name ?? '[no first name]'}\`
  ├ *last\\_name*: \`${data?.body?.message?.from?.last_name ?? '[no last name]'}\` 
- └ *username*: \`${data?.body?.message?.from?.username ?? '[no username]'}\`     
-        `,
-          parse_mode: 'MarkdownV2',
-          disable_web_page_preview: true,
-          // disable_notification: false,
-        })
+ ├ *username*: \`${username || '[no username]'}\` 
+ └ *link*: [https://t\\.me/${username}](https://t\\.me/${username}) 
+          `,
+            parse_mode: 'MarkdownV2',
+            disable_web_page_preview: true,
+            // disable_notification: false,
+          })
+        }
+
         break;
       case '/start':
 
-        let username;
+        {
 
-        let text = ''
+          let username;
 
-        try {
+          let text = ''
 
-          username = tool.getTelegramNodeServerStatus().getMe.username;
+          try {
 
-          let first_name = tool.getTelegramNodeServerStatus().getMe.first_name;
+            username = tool.getTelegramNodeServerStatus().getMe.username;
 
-          username = username.replace(/_/g, '\\_');
+            let first_name = tool.getTelegramNodeServerStatus().getMe.first_name;
 
-          first_name = first_name.replace(/_/g, '\\_');
+            username = username.replace(/_/g, '\\_');
 
-          text = `
+            first_name = first_name.replace(/_/g, '\\_');
+
+            text = `
 🤖 Hi I'm the bot and my name is '${first_name}' and this is my official share link:
 [https://t\\.me/${username}](https://t\\.me/${username})
 Tip: Use right mouse click and "Copy Link" \\- it might not work when clicked here on the chat\\.
 
 ${help}`
-        }
-        catch (e) {
+          }
+          catch (e) {
 
-          text = `Error: Can't extract tool\\.getTelegramNodeServerStatus\\(\\)\\.getMe\\.username`
-        }
+            text = `Error: Can't extract tool\\.getTelegramNodeServerStatus\\(\\)\\.getMe\\.username`
+          }
 
-        await tool.sendMessage({
-          chat_id: senderId,
-          text,
-          parse_mode: 'MarkdownV2',
-          disable_web_page_preview: true,
-          // disable_notification: false,
-        });
+          await tool.sendMessage({
+            chat_id: senderId,
+            text,
+            parse_mode: 'MarkdownV2',
+            disable_web_page_preview: true,
+            // disable_notification: false,
+          });
+
+        }
 
         break;
       default:
