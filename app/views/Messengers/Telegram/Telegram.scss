@@ -4,5 +4,19 @@
         td {
             padding: 5px;
         }
+        .fix {
+            display: flex;
+            align-items: center;
+            & > :first-child {
+                flex-grow: 1;
+            }
+            & > :last-child {
+                flex-grow: 0;
+            }
+            button {
+                margin-top: -10px;
+                margin-bottom: -10px;
+            }
+        }
     }
 }

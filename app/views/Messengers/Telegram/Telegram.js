@@ -169,10 +169,14 @@ export default (props = {}) => {
             </>
           )}
           <tr>
-            <td>
-              Current webhook
-              <Button size="mini" onClick={refresh_telegram_get_current_webhook}>refresh</Button>
-              {webhook_can_be_refreshed_in_browser && <Button size="mini" onClick={telegram_reset_webhook}>reset</Button>}
+            <td className="fix">
+              <div>
+                Current webhook
+              </div>
+              <div>
+                <Button size="mini" onClick={refresh_telegram_get_current_webhook}>refresh</Button>
+                {webhook_can_be_refreshed_in_browser && <Button size="mini" onClick={telegram_reset_webhook}>reset</Button>}
+              </div>
             </td>
             <td>{telegram_get_current_webhook}</td>
           </tr>
