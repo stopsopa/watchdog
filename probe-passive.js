@@ -29,12 +29,21 @@ module.exports = async function (req, {
   }
   catch (e) {
 
+    e = se(e);
+
+    if (typeof e === 'string') {
+
+      e = {
+        error: e,
+      }
+    }
+
     // remember also to properly handle any potential errors
 
     return {
       probe: false, // still "probe" key with boolean value type is required
-      error: se(e),
-      ...common,
+      ...e,
+      common,
     }
   }
 }

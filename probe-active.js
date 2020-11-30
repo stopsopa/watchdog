@@ -66,11 +66,20 @@ trigger, // normally undefined but it can have value 'nextTriggerFromNowMillisec
   }
   catch (e) {
 
+    e = se(e);
+
+    if (typeof e === 'string') {
+
+      e = {
+        error: e,
+      }
+    }
+
     // remember also to properly handle any potential errors
 
     return {
       probe: false, // still "probe" key with boolean value type is required
-      ...se(e)
+      ...e,
     }
   }
 }

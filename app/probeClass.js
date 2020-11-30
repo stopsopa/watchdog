@@ -580,19 +580,16 @@ function tool(db) {
 
         const _probe = false;
 
-        const record = {
-          method: 'post',
-          body: {
-            probe: _probe,
-            created: created.toISOString(),
-            probe_id: db.id,
-            log: _log,
-          }
-        }
-
         try {
 
-          const esresult = await es(`/${index}/_doc/`, record);
+          const esresult = await es(`/${index}/_doc/`, {
+            body: {
+              probe: _probe,
+              created: created.toISOString(),
+              probe_id: db.id,
+              log: _log,
+            }
+          });
 
           if ( ! Number.isInteger(esresult.status) || (esresult.status < 200 || esresult.status > 299)) {
 
@@ -703,7 +700,6 @@ function tool(db) {
       }
 
       const esresult = await es(`/${index}/_doc/`, {
-        method: 'post',
         body,
       });
 
@@ -750,7 +746,7 @@ function tool(db) {
 
         // enabled
         // disabled
-        const record = {
+        const document = {
           method: 'post',
           body: {
             probe,
@@ -763,17 +759,17 @@ function tool(db) {
 
         if ( ! probe || db.detailed_log && Object.keys(log || {}).length) {
 
-          record.body.log = rest;
+          document.body.log = rest;
         }
 
-        const esresult = await es(`/${index}/_doc/`, record);
+        const esresult = await es(`/${index}/_doc/`, document);
 
         if ( ! Number.isInteger(esresult.status) || (esresult.status < 200 || esresult.status > 299)) {
 
           logg.dump({
             probe_id: db.id,
             prodRunActiveLog_es_insert_status_error: esresult,
-            // record: JSON.stringify(record, null, 4),
+            // document: JSON.stringify(document, null, 4),
           }, 10)
         }
         else {
@@ -855,7 +851,7 @@ function tool(db) {
 
         return {
           probe: false,
-          data: e,
+          error: e,
         }
       }
     },
@@ -867,7 +863,6 @@ function tool(db) {
       }
 
       const response = await es(`/${index}/_search`, {
-        method: "POST",
         body: {
           "query": { "term" : {"probe_id" : probe_id} },
           "sort": { "created": { "order": "desc" } },
