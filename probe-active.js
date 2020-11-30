@@ -70,7 +70,7 @@ trigger, // normally undefined but it can have value 'nextTriggerFromNowMillisec
 
     return {
       probe: false, // still "probe" key with boolean value type is required
-      error: se(e),
+      ...se(e)
     }
   }
 }
