@@ -37,6 +37,27 @@ const th = (msg, data) => {
   return e;
 };
 
+let port = (function (PORT, PROTOCOL) {
+
+  let port = parseInt(PORT, 10);
+
+  if (Number.isInteger(port) && port > 0) {
+
+    if (PROTOCOL  === 'https' && port !== 443) {
+
+      return `:${port}`;
+    }
+
+    if (PROTOCOL === 'http' && port !== 80) {
+
+      return `:${port}`;
+    }
+  }
+
+  return '';
+
+}(process.env.PORT, process.env.PROTOCOL));
+
 const type_regex = /^(active|passive)$/;
 
 const int_regex = /^\d+$/;
@@ -653,7 +674,11 @@ function tool(db) {
 
       const start = new Date();
 
-      data = await currentBinary(req);
+      data = await currentBinary(req, {
+        PROTOCOL: process.env.PROTOCOL,
+        HOST: process.env.HOST,
+        PORT: port,
+      });
 
       const execution_time_ms = (new Date()).getTime() - start.getTime();
 
@@ -748,6 +773,7 @@ function tool(db) {
           logg.dump({
             probe_id: db.id,
             prodRunActiveLog_es_insert_status_error: esresult,
+            // record: JSON.stringify(record, null, 4),
           }, 10)
         }
         else {
@@ -804,7 +830,12 @@ function tool(db) {
           currentBinary = cls.evaluateFunction();
         }
 
-        data = await currentBinary(rest);
+        data = await currentBinary({
+          PROTOCOL: process.env.PROTOCOL,
+          HOST: process.env.HOST,
+          PORT: port,
+          ...rest
+        });
 
         if ( ! isObject(data) ) {
 

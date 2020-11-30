@@ -8,6 +8,12 @@ require('dotenv-up')({
   deep        : 1,
 }, true, 'index.server');
 
+dotenv('PROTOCOL');
+
+dotenv('HOST');
+
+dotenv('PORT');
+
 if (process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY === 'telegramproxyserver') { // prod .env.kub.xxx driven
 
   process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY = "telegramproxyserver" // http://... || telegramproxyserver

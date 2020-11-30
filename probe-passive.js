@@ -3,7 +3,11 @@ const se = require('nlab/se');
 
 const originalUrl = require('original-url');
 
-module.exports = async function (req) {
+module.exports = async function (req, {
+  PROTOCOL, // http || https
+  HOST,     // domain.com || localhost || 0.0.0.0
+  PORT,     // ':80' || ':8080' || '' - empty string only if (PROTOCOL == 'http' && PORT == 80) || (PROTOCOL == 'https' && PORT == 443)
+}) {
 
   const original = originalUrl(req);
 
@@ -29,7 +33,7 @@ module.exports = async function (req) {
 
     return {
       probe: false, // still "probe" key with boolean value type is required
-      catch: se(e),
+      error: se(e),
       ...common,
     }
   }

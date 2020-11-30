@@ -24,6 +24,7 @@ module.exports = function jsonfetch (url, opt = {}) {
     headers     = {},
     debug       = false,
     body,
+    nobody      = false,
   } = opt;
 
   if ( typeof method !== 'string' ) {
@@ -112,11 +113,17 @@ module.exports = function jsonfetch (url, opt = {}) {
           }
         }
 
-        resolve({
+        const payload = {
           status: res.statusCode,
           headers: res.headers,
-          body,
-        })
+        };
+
+        if (nobody === false) {
+
+          payload.body = body;
+        }
+
+        resolve(payload)
       });
     });
 
