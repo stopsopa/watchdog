@@ -25,6 +25,8 @@ drop: # removes all tables with data from db - BE CAREFUL IT MIGHT BE DANGEROUS
 	@printf "\n    node node_modules/.bin/ts-node node_modules/.bin/typeorm schema:drop\n\n";
 
 # for CI  vvv
+recreate:
+	node recreate-db.js safe
 mcountdb:
 	@(cd CI && /bin/bash link.sh)
 	@(cd CI && node mcountdb.js)
@@ -48,7 +50,7 @@ nitrorevert: # Reverts ONE migration back
 	@node CI/nitro/migrate.js revert
 fixtures:
 	@(cd CI && /bin/bash link.sh)
-	node recreate-db.js
+	node recreate-db.js safe
 	make -s nitrorun
 minfo: # Script to determine how many migrations were executed until now (from DB)
 	@(cd CI && /bin/bash link.sh)
