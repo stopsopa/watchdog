@@ -3,6 +3,14 @@ import React, { useEffect, useState, useRef } from 'react';
 
 import { render } from 'react-dom';
 
+import {
+  RecoilRoot,
+  atom,
+  selector,
+  useRecoilState,
+  useRecoilValue,
+} from 'recoil';
+
 // import "regenerator-runtime/runtime.js";
 // instead load <script src="/dist/runtime.js"></script>
 
@@ -32,14 +40,16 @@ const Main = () => (
     <GlobalLoaderProvider />
     <NotificationsProvider />
     <Router>
-      <StoreSocketProvider>
-        <StoreProjectsProvider>
-          <StoreAssocProvider>
-            <FaviconStatusContextDriven />
-            <App />
-          </StoreAssocProvider>
-        </StoreProjectsProvider>
-      </StoreSocketProvider>
+      <RecoilRoot>
+        <StoreSocketProvider>
+          <StoreProjectsProvider>
+            <StoreAssocProvider>
+              <FaviconStatusContextDriven />
+              <App />
+            </StoreAssocProvider>
+          </StoreProjectsProvider>
+        </StoreSocketProvider>
+      </RecoilRoot>
     </Router>
   </>
 )

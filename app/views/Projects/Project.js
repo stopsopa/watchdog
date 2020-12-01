@@ -8,6 +8,8 @@ import React, {
 
 import './Project.scss';
 
+import classnames from 'classnames';
+
 import log from 'inspc';
 
 import all from 'nlab/all';
@@ -160,7 +162,7 @@ export default function Project() {
             </div>
             <div className="project-probes">
               {getProbesList().map(p => (
-                <div key={p.id} className='probe'>
+                <div key={p.id} className={classnames('probe', p.type)}>
                   <Link to={`/projects/${form.id}/log/${p.id}`}>
                     <FitText text={p.name} />
                     <div>

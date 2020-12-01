@@ -27,7 +27,7 @@ trigger, // normally undefined but it can have value 'nextTriggerFromNowMillisec
       nobody: true,
     });
 
-    t(1000);
+    t(1000); // 1 sec
 
     // const common    = 'lymphomahub.com/__ping';
     //

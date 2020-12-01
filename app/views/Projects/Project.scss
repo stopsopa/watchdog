@@ -45,7 +45,6 @@
             padding: 5px;
             margin: 5px;
 
-            background-color: #ffefd2;
             box-shadow: 0 0 2px #040404;
 
             display: flex;
@@ -54,6 +53,12 @@
             position: relative;
 
             color: #414141;
+            &.active {
+                background-color: #f3e9df;
+            }
+            &.passive {
+                background-color: #dbe8de;
+            }
             a {
                 color: dimgray;
                 & > div {
