@@ -18,7 +18,7 @@ preprocess:
 server:
 	node server.js
 
-dev:
+dev: recreate mrun
 	/bin/bash server.sh
 
 esdeleteindex:
@@ -68,5 +68,9 @@ mtest:
 
 minfo:
 	@(cd migrations && make -s minfo)
+
 mcountdb:
 	@(cd migrations && make -s mcountdb)
+
+recreate:
+	@(cd migrations && make -s recreate)
