@@ -34,6 +34,8 @@ import GroupsEdit from './views/Groups/GroupsEdit';
 
 import Messengers from './views/Messengers/Messengers'
 
+import MessengersEdit from './views/Messengers/MessengersEdit'
+
 import Telegram from './views/Messengers/Telegram/Telegram'
 
 import './App.scss'
@@ -167,6 +169,16 @@ export default function App() {
             path="/messengers"
             exact={true}
             component={Messengers}
+          />
+          <Route
+            path="/messengers/create"
+            exact={true}
+            component={MessengersEdit}
+          />
+          <Route
+            path="/messengers/edit/:id"
+            exact={true}
+            component={MessengersEdit}
           />
 
           <Route

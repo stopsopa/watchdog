@@ -17,6 +17,8 @@ module.exports = (...args) => {
 
   require('./groups')(...args);
 
+  require('./messengers')(...args);
+
   (function () {
 
     if (typeof process.env.PROTECTED_TELEGRAM_TOKEN === 'string') {

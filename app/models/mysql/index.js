@@ -11,7 +11,13 @@ const users                     = require('./users');
 
 const groups                    = require('./groups');
 
-const user_groups                    = require('./user_groups');
+const user_groups               = require('./user_groups');
+
+const postbox                   = require('./postbox');
+
+const postbox_group             = require('./postbox_group');
+
+const postbox_user              = require('./postbox_user');
 
 // images.loadPaths();
 
@@ -23,6 +29,9 @@ const managers = {
     users,
     groups,
     user_groups,
+    postbox,
+    postbox_group,
+    postbox_user,
 };
 
 /**
