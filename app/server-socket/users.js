@@ -185,7 +185,9 @@ module.exports = ({
 
       await man.delete(id);
 
-      await users_list_populate(io);
+      await users_list_populate({
+        target: io
+      });
 
       socket.emit('users_delete', {
         found,
