@@ -86,7 +86,7 @@ export default function UsersList() {
           to="/users/create"
         >Create user</Breadcrumb.Section>
       </Breadcrumb>
-      <div className="users-list">
+      <div className="users_list">
         {getStoreAssoc(assocKeyUsersList, []).map(p => (
           <div className={classnames('user', {
             disabled: !p.enabled

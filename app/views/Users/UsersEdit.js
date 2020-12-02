@@ -176,7 +176,7 @@ export default function UsersEdit() {
         <Breadcrumb.Divider />
         <Breadcrumb.Section>{id ? `Edit user ${form.label ? `"${form.label}"` : `...`}`: `Create user`}</Breadcrumb.Section>
       </Breadcrumb>
-      <div className="user">
+      <div className="users_edit">
         {loading ? (
           `Loading...`
         ) : (

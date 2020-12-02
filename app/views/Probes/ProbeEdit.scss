@@ -2,8 +2,12 @@
 
 #app .probe {
     [type="submit"] {
-        z-index: 2;
+        position: fixed;
+        z-index: 4;
+        bottom: 5px;
+        left: 27px;
     }
+    margin-bottom: 46px;
     .right {
         float: right;
     }
@@ -67,9 +71,9 @@
     }
     [type='submit'] {
         position: fixed;
-
+        z-index: 4;
         bottom: 5px;
-        right: 5px;
+        left: 27px;
     }
     .textarea-code {
         width: calc(100% - 200px);

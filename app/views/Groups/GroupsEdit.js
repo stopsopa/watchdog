@@ -200,7 +200,7 @@ export default function GroupsEdit() {
         <Breadcrumb.Divider />
         <Breadcrumb.Section>{id ? `Edit group ${form.name ? `"${form.name}"` : `...`}`: `Create group`}</Breadcrumb.Section>
       </Breadcrumb>
-      <div className="group">
+      <div className="group_edit">
         {loading ? (
           `Loading...`
         ) : (

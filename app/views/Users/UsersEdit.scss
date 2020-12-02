@@ -1,13 +1,13 @@
 
-
-#app .user {
+#app .users_edit {
+    margin-bottom: 46px;
     [type="submit"] {
-        z-index: 2;
+        position: fixed;
+        z-index: 4;
+        bottom: 5px;
+        left: 20px;
     }
     .error {
         color: #9f3a38;
     }
-}
-.modal-error {
-    color: #ef807e;
 }

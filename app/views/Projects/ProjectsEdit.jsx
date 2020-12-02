@@ -104,7 +104,7 @@ export default function ProjectsEdit() {
   }
 
   return (
-    <div className="project-edit">
+    <div className="project_edit">
       <Breadcrumb>
         <Breadcrumb.Section
           // onClick={loginSignOut}

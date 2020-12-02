@@ -154,9 +154,9 @@
     }
     [type='submit'] {
         position: fixed;
-
+        z-index: 4;
         bottom: 5px;
-        right: 5px;
+        left: 27px;
     }
     .textarea-code {
         width: calc(100% - 200px);

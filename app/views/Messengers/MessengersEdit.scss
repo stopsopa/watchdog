@@ -3,4 +3,11 @@
     .error {
         color: #9f3a38;
     }
+    [type="submit"] {
+        position: fixed;
+        bottom: 5px;
+        left: 27px;
+        z-index: 4;
+    }
+    margin-bottom: 46px;
 }

@@ -1,8 +1,12 @@
 
 
-#app .group {
+#app .group_edit {
+    margin-bottom: 46px;
     [type="submit"] {
-        z-index: 2;
+        position: fixed;
+        z-index: 4;
+        bottom: 5px;
+        left: 20px;
     }
     .error {
         color: #9f3a38;
@@ -53,12 +57,6 @@
                 }
             }
         }
-    }
-    [type='submit'] {
-        position: fixed;
-
-        bottom: 5px;
-        right: 5px;
     }
 }
 .modal-error {
