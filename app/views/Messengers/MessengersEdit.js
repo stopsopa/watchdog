@@ -58,19 +58,26 @@ import {
 
 export default () => {
 
-  const { id } = useParams();
-
   let {
     state: socket,
   } = useContext(StoreContextSocket);
 
   const [ form, set_form ] = useRecoilState(postbox_form_atom);
 
+  let { id } = useParams();
+
+  if (Number.isInteger(form.id)) {
+
+    id = form.id;
+  }
+
   const [ errors, set_errors ] = useRecoilState(postbox_form_error_atom);
 
   const [ loading, setLoading ] = useState(true);
 
   const [ sending, setSending ] = useState(false);
+
+  const history = useHistory();
 
   const editField = (name, value) => set_form({
     ...form,
@@ -81,13 +88,31 @@ export default () => {
 
     const postbox_form_atom_populate = ({
       form,
+      errors = {},
+      submitted,
     }) => {
 
       set_form(form);
 
+      set_errors(errors || {});
+
       setLoading(false);
 
       setSending(false);
+
+      if (submitted) {
+
+        if (Object.keys(errors).length === 0) {
+
+          history.push(`/messengers`);
+
+          notificationsAdd(`Messengers '<b>${form.name}</b>' have been ${id ? 'edited': 'created'}`)
+        }
+        else {
+
+          notificationsAdd(`Validation error has been detected, please check the data in the form and submit again.`, 'error');
+        }
+      }
     }
 
     socket.on('postbox_form_atom_populate', postbox_form_atom_populate);
@@ -109,12 +134,9 @@ export default () => {
 
   function onSubmit() {
 
-    // setSending(true);
+    setSending(true);
 
-    console.log(JSON.stringify(form, null, 4))
-    // actionProjectsFormSubmit({
-    //   form,
-    // });
+    socket.emit('postbox_form_submit', form);
   }
 
   return (
@@ -146,6 +168,17 @@ export default () => {
                    autoComplete="nope"
             />
             {errors.name && <div className="error">{errors.name}</div>}
+          </Form.Field>
+          <Form.Field
+            disabled={loading}
+            error={!!errors.box}
+          >
+            <label>Endpoint name (unique)</label>
+            <input placeholder='Endpoint name' value={form.box}
+                   onChange={e => editField('box', e.target.value)}
+                   autoComplete="nope"
+            />
+            {errors.box && <div className="error">{errors.box}</div>}
           </Form.Field>
           <Form.Field
             disabled={loading}

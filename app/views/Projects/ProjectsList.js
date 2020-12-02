@@ -144,7 +144,7 @@ export default function ProjectsList() {
       <Modal
         basic
         size='small'
-        //dimmer="blurring"
+        dimmer="blurring"
         closeOnDimmerClick={true}
         open={!!deleting}
         onClose={cancelDelete}

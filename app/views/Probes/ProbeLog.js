@@ -1082,6 +1082,7 @@ export default function ProbeLog() {
               // }}
               open={Boolean(assocSelectedLog)}
               closeOnEscape={true}
+              dimmer="blurring"
               closeOnDimmerClick={true}
               // trigger={<Button className="test-code">Run code</Button>}
               // size="fullscreen"

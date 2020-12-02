@@ -73,9 +73,9 @@ module.exports = knex => extend(knex, prototype, {
 //         }
 
         return {
-            // name: '',
-            // users: [],
-            // enabled: true,
+            name: '',
+            box: '',
+            enabled: false,
             ...extra,
         }
     },
@@ -86,6 +86,8 @@ module.exports = knex => extend(knex, prototype, {
             return row;
         }
 
+        row.enabled = Boolean(row.enabled);
+
         return row;
     },
     toDb: async function (row, opt, trx) {
@@ -94,6 +96,10 @@ module.exports = knex => extend(knex, prototype, {
 
             return row;
         }
+
+        delete row.created;
+
+        delete row.updated;
 
         return row;
     },
@@ -273,41 +279,116 @@ module.exports = knex => extend(knex, prototype, {
         //     delete data.id;
         // }
 
-        // delete data.created;
-        //
-        // delete data.updated;
+        delete data.created;
 
-        // delete data.label;
-        //
-        // delete data.password;
+        delete data.updated;
 
-        return data;
+        return ({
+            ...this.initialize(),
+            ...data,
+        });
     },
-    getValidators: function (mode, id, entityPrepared) {
+    getValidators: function (mode = null, id, {
+        trx,
+        entity
+    }) {
+    // getValidators: function (mode, id, entityPrepared) {
 
         const collection = {
             id: new Optional(),
             // users: new Optional(),
-            // name: new Required([
-            //     new NotBlank(),
-            //     new Length({max: 50}),
-            // ]),
+            name: new Required([
+                new NotBlank(),
+                new Length({max: 255}),
+            ]),
+            description: new Optional(),
+            box: new Required([
+                new NotBlank(),
+                new Type('str'),
+                new Length({max: 255}),
+                new Callback(async (value, context, path, extra) => {
+
+                    try {
+
+                        if ( typeof value !== 'string') {
+
+                            throw new Error(`box 1`);
+                        }
+
+                        if ( ! value.trim() ) {
+
+                            throw new Error(`box 2`);
+                        }
+
+                        let query = `SELECT COUNT(*) c FROM :table: WHERE box = :box`;
+
+                        const params = {
+                            box: value,
+                        };
+
+                        if (mode === 'edit') {
+
+                            query += ` and :id: != :id`;
+
+                            params.id = id;
+                        }
+
+                        const c = await this.queryColumn(trx, query, params);
+
+                        // log.dump({
+                        //     [mode]: c,
+                        //     id: id || false,
+                        //     query,
+                        //     params,
+                        // });
+
+                        if (c > 0) {
+
+                            context
+                              .buildViolation('Box is not unique')
+                              .atPath(path)
+                              // .setParameter('{{ callback }}', 'not equal')
+                              .setCode("CALLBACK_5")
+                              .setInvalidValue(value)
+                              .addViolation()
+                            ;
+
+                            if (extra && extra.stop) {
+
+                                throw new Error(`reject Callback_5`);
+                            }
+                        }
+
+                        return 'resolve Callback_5';
+                    }
+                    catch (e) {
+
+                        log.dump({
+                            location: 'models mysql/postbox.js => getValidators => box',
+                            e: se(e),
+                        }, 5);
+
+                        throw e;
+                    }
+                }),
+            ]),
             // lastName: new Required([
             //     new NotBlank(),
             //     new Length({max: 50}),
             // ]),
-            // // password: new Required([
-            // //     new NotBlank(),
-            // //     new Length({max: 255}),
-            // // ]),
+            password: new Required([
+                new Type('string'),
+                new NotBlank(),
+                new Length({min: 8}),
+            ]),
             // email: new Required([
             //     new NotBlank(),
             //     new Email(),
             //     new Length({max: 255}),
             // ]),
-            // enabled: new Required([
-            //     new Type('bool'),
-            // ]),
+            enabled: new Required([
+                new Type('bool'),
+            ]),
         };
 
         return new Collection(collection);

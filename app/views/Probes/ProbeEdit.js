@@ -321,6 +321,7 @@ export default function ProbeEdit() {
                     }}
                     open={testModal}
                     closeOnEscape={true}
+                    dimmer="blurring"
                     closeOnDimmerClick={true}
                     trigger={<Button className="test-code">Run code</Button>}
                     // size="fullscreen"
@@ -379,6 +380,7 @@ export default function ProbeEdit() {
                     }}
                     open={testModal}
                     closeOnEscape={true}
+                    dimmer="blurring"
                     closeOnDimmerClick={true}
                     trigger={<Button className="test-code">Examples</Button>}
                     // size="fullscreen"
