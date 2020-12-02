@@ -22,7 +22,10 @@ module.exports = ({
 
   const man   = knex().model.users;
 
-  const users_list_populate = async (target) => {
+  const users_list_populate = async ({
+    target,
+    trx,
+  }) => {
 
     log.dump({
       users_list_populate: true,
@@ -30,7 +33,7 @@ module.exports = ({
 
     try {
 
-      const list = await man.fetch(`select * from :table:`);
+      const list = await man.fetch(trx, `select * from :table:`);
 
       target.emit('users_list_populate', {
         list,
@@ -48,7 +51,9 @@ module.exports = ({
     }
   }
 
-  socket.on('users_list_populate', () => users_list_populate(socket));
+  socket.on('users_list_populate', () => users_list_populate({
+    target: socket,
+  }));
 
   socket.on('users_form_populate', async id => {
 
@@ -106,34 +111,47 @@ module.exports = ({
 
       let entityPrepared  = man.prepareToValidate(form, mode);
 
-      const validators    = man.getValidators(mode, id, entityPrepared);
+      let errors;
 
-      const errors        = await validator(entityPrepared, validators);
+      // await delay(3000);
 
-      if ( ! errors.count() ) {
+      await man.transactify(async trx => {
 
-        if (mode === 'edit') {
+        const validators    = man.getValidators(mode, id, {
+          trx,
+          entity: entityPrepared,
+        });
 
-          await man.update(entityPrepared, id);
+        errors        = await validator(entityPrepared, validators);
+
+        if ( ! errors.count() ) {
+
+          if (mode === 'edit') {
+
+            await man.update(trx, entityPrepared, id);
+          }
+          else {
+
+            id = await man.insert(trx, entityPrepared);
+          }
+
+          // await delay(300);
+
+          form = await man.find(trx, id);
+
+          if ( ! form ) {
+
+            return socket.emit('users_form_populate', {
+              error: `Database state conflict: updated/created entity doesn't exist`,
+            })
+          }
+
+          await users_list_populate({
+            target: io,
+            trx,
+          });
         }
-        else {
-
-          id = await man.insert(entityPrepared);
-        }
-
-        // await delay(300);
-
-        form = await man.find(id);
-
-        if ( ! form ) {
-
-          return socket.emit('users_form_populate', {
-            error: `Database state conflict: updated/created entity doesn't exist`,
-          })
-        }
-
-        await users_list_populate(io);
-      }
+      });
 
       socket.emit('users_form_populate', {
         form,

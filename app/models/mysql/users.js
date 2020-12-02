@@ -15,7 +15,7 @@ const a                 = prototype.a;
 
 const isObject          = require('nlab/isObject');
 
-const se = require('nlab/se');
+const se                = require('nlab/se');
 
 const probeClass       = require('../../probeClass');
 
@@ -306,7 +306,10 @@ module.exports = knex => extend(knex, prototype, {
 
         return data;
     },
-    getValidators: function (mode, id, entityPrepared) {
+    getValidators: function (mode, id, {
+        trx,
+        entity
+    }) {
 
         const collection = {
             id: new Optional(),
@@ -326,6 +329,71 @@ module.exports = knex => extend(knex, prototype, {
                 new NotBlank(),
                 new Email(),
                 new Length({max: 255}),
+                new Callback(async (value, context, path, extra) => {
+
+                    try {
+
+                        if ( typeof value !== 'string') {
+
+                            throw new Error(`box 1`);
+                        }
+
+                        if ( ! value.trim() ) {
+
+                            throw new Error(`box 2`);
+                        }
+
+                        let query = `SELECT COUNT(*) c FROM :table: WHERE email = :email`;
+
+                        const params = {
+                            email: value,
+                        };
+
+                        if (mode === 'edit') {
+
+                            query += ` and :id: != :id`;
+
+                            params.id = id;
+                        }
+
+                        const c = await this.queryColumn(trx, query, params);
+
+                        // log.dump({
+                        //     [mode]: c,
+                        //     id: id || false,
+                        //     query,
+                        //     params,
+                        // });
+
+                        if (c > 0) {
+
+                            context
+                              .buildViolation('Email is not unique')
+                              .atPath(path)
+                              // .setParameter('{{ callback }}', 'not equal')
+                              .setCode("CALLBACK_5")
+                              .setInvalidValue(value)
+                              .addViolation()
+                            ;
+
+                            if (extra && extra.stop) {
+
+                                throw new Error(`reject Callback_5`);
+                            }
+                        }
+
+                        return 'resolve Callback_5';
+                    }
+                    catch (e) {
+
+                        log.dump({
+                            location: 'models mysql/users.js => getValidators => email',
+                            e: se(e),
+                        }, 5);
+
+                        throw e;
+                    }
+                }),
             ]),
             enabled: new Required([
                 new Type('bool'),

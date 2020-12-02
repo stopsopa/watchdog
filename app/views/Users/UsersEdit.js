@@ -121,6 +121,14 @@ export default function UsersEdit() {
           // history.push(`/users`);
 
           notificationsAdd(`User '<b>${form.label}</b>' have been ${id ? 'edited': 'created'}`)
+
+          if ( ! form.password ) {
+
+            try {
+              window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
+            }
+            catch (e) {}
+          }
         }
         else {
 
