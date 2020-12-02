@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -11,11 +11,18 @@ import './AceEditor.scss'
 import AceEditor from "react-ace";
 
 // import "ace-builds/src-noconflict/mode-jsx";
+import "ace-builds/src-noconflict/mode-python";
 import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/mode-batchfile";
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/ext-language_tools"
+
+export const modes = {
+  'python': 'ace/mode/python',
+  'javascript': 'ace/mode/javascript',
+  'json': 'ace/mode/json',
+};
 
 (function () {
 
@@ -38,13 +45,11 @@ export default props => {
 
   const [ uuid, setUuid ] = useState(false);
 
+  const ace = useRef(null);
+
   useEffect(() => {
 
     const uuid = uuidv4();
-
-    log.dump({
-      ace_uuid: uuid,
-    })
 
     setUuid(uuid);
   }, []);
@@ -58,6 +63,7 @@ export default props => {
     <div className="ace-component-wrapper">
       <div className="ace-syntax">syntax: {mode}</div>
       <AceEditor
+        ref={ace}
         mode={mode}
         theme="monokai"
         name={uuid}

@@ -48,6 +48,7 @@ import {
   selector,
   useRecoilState,
   useRecoilValue,
+  useSetRecoilState,
 } from 'recoil';
 
 import {
@@ -173,6 +174,7 @@ export default () => {
           >
             <label>Description</label>
             <AceEditor
+              mode='python'
               value={form.description || ``}
               onChange={value => editField('description', value)}
             />

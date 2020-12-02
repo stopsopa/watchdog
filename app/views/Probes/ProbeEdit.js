@@ -238,6 +238,7 @@ export default function ProbeEdit() {
               >
                 <label>Description</label>
                 <AceEditor
+                  mode='python'
                   value={form.description || ``}
                   onChange={value => actionProbesFormFieldEdit('description', value)}
                 />

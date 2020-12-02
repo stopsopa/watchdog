@@ -140,6 +140,7 @@ export default function ProjectsEdit() {
             >
               <label>Description</label>
               <AceEditor
+                mode='python'
                 value={form.description || ``}
                 onChange={value => actionProjectsFormFieldEdit('description', value)}
               />
