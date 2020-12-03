@@ -1,5 +1,6 @@
 
 #app .postbox_form {
+    margin-bottom: 46px;
     .error {
         color: #9f3a38;
     }
@@ -9,5 +10,25 @@
         left: 27px;
         z-index: 4;
     }
-    margin-bottom: 46px;
+    .main-flex {
+        display: flex;
+        flex-direction: column;
+        & > .left {
+            flex-grow: 1;
+        }
+        & > .right {
+
+        }
+    }
+}
+
+//@media (min-height: 101px) and (max-height: 110px) {
+//
+//}
+@media (min-width: 930px) {
+    #app .postbox_form {
+        .main-flex {
+            flex-direction: row;
+        }
+    }
 }

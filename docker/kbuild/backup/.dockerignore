@@ -1,0 +1,11 @@
+.env*
+Dockerfile
+.gitignore
+.dockerignore
+Makefile
+Makefile
+README.md
+*-tmp-*
+
+
+

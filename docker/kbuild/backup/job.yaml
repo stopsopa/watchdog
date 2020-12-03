@@ -1,0 +1,40 @@
+remove this line with envrender.sh --rmfirst parameter
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ${PROJECT_NAME_SHORT_GENERATED}-${FILENAME}-testjob
+spec:
+  # https://cloud.google.com/kubernetes-engine/docs/how-to/jobs
+  backoffLimit : 0 # https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/#pod-backoff-failure-policy
+  template:
+    spec:
+      restartPolicy : Never # https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/#job-termination-and-cleanup
+      containers:
+        - name: onedrivebackup
+          image: "$PROTECTED_DOCKER_REGISTRY/$PROJECT_NAME:$TAG" # docker run -p 8082:80 docker-registry.phaseiilabs.com/tapp:0.0.12
+          command:
+            - /bin/bash
+            - /home/node/app/exit.sh
+            - "10"
+          volumeMounts:
+#            - name: image-store
+#              mountPath: /home/node/app/public/media
+            - name: env-secret
+              mountPath: /usr/src/envdir
+              readOnly: true
+            - name: onedrive
+              mountPath: /usr/src/onedrive
+              readOnly: true
+      imagePullSecrets:
+        - name: regcred
+      volumes:
+        - name: env-secret
+          secret:
+            secretName: env-${PROJECT_NAME_SHORT}
+        - name: onedrive
+          secret:
+            secretName: onedrive
+#        - name: image-store
+#          persistentVolumeClaim:
+#            claimName: pvc-\$\{PROJECT_NAME_SHORT_PVC__NODASH\}
+#            readOnly: false

@@ -155,72 +155,86 @@ export default () => {
       {loading ? (
         `Loading...`
       ) : (
-        <Form onSubmit={onSubmit}
-              autoComplete="off"
-        >
-          <Form.Field
-            disabled={loading}
-            error={!!errors.name}
-          >
-            <label>Name</label>
-            <input placeholder='Name' value={form.name}
-                   onChange={e => editField('name', e.target.value)}
-                   autoComplete="nope"
-            />
-            {errors.name && <div className="error">{errors.name}</div>}
-          </Form.Field>
-          <Form.Field
-            disabled={loading}
-            error={!!errors.box}
-          >
-            <label>Endpoint name (unique)</label>
-            <input placeholder='Endpoint name' value={form.box}
-                   onChange={e => editField('box', e.target.value)}
-                   autoComplete="nope"
-            />
-            {errors.box && <div className="error">{errors.box}</div>}
-          </Form.Field>
-          <Form.Field
-            disabled={loading}
-            error={!!errors.password}
-          >
-            <label>Password</label>
-            <input placeholder='Password' value={form.password || ''}
-                   onChange={e => editField('password', e.target.value)}
-                   autoComplete="nope"
-            />
-            {errors.password && <div className="error">{errors.password}</div>}
-          </Form.Field>
-          <Form.Field
-            disabled={loading}
-            error={!!errors.enabled}
-          >
-            <NoInput
-              checked={Boolean(form.enabled)}
-              onChange={() => editField('enabled', !form.enabled)}
-            >Enabled</NoInput>
-            {errors.enabled && <div className="error">{errors.enabled}</div>}
-          </Form.Field>
-          <Form.Field
-            disabled={loading}
-            error={!!errors.description}
-          >
-            <label>Description</label>
-            <AceEditor
-              mode='python'
-              value={form.description || ``}
-              onChange={value => editField('description', value)}
-            />
-            {errors.description && <div className="error">{errors.description}</div>}
-          </Form.Field>
-          <Form.Field disabled={sending}>
-            <Button type='submit'
-                    autoComplete="nope"
+        <div className="main-flex">
+          <div className="left">
+            <Form onSubmit={onSubmit}
+                  autoComplete="off"
             >
-              {form.id ? 'Save changes' : 'Create'}
-            </Button> {sending && `Sending data...`}
-          </Form.Field>
-        </Form>
+              <Form.Field
+                disabled={loading}
+                error={!!errors.name}
+              >
+                <label>Name</label>
+                <input placeholder='Name' value={form.name}
+                       onChange={e => editField('name', e.target.value)}
+                       autoComplete="nope"
+                />
+                {errors.name && <div className="error">{errors.name}</div>}
+              </Form.Field>
+              <Form.Field
+                disabled={loading}
+                error={!!errors.box}
+              >
+                <label>Endpoint name (unique)</label>
+                <input placeholder='Endpoint name' value={form.box}
+                       onChange={e => editField('box', e.target.value)}
+                       autoComplete="nope"
+                />
+                {errors.box && <div className="error">{errors.box}</div>}
+              </Form.Field>
+              <Form.Field
+                disabled={loading}
+                error={!!errors.password}
+              >
+                <label>Password</label>
+                <input placeholder='Password' value={form.password || ''}
+                       onChange={e => editField('password', e.target.value)}
+                       autoComplete="nope"
+                />
+                {errors.password && <div className="error">{errors.password}</div>}
+              </Form.Field>
+              <Form.Field
+                disabled={loading}
+                error={!!errors.enabled}
+              >
+                <NoInput
+                  checked={Boolean(form.enabled)}
+                  onChange={() => editField('enabled', !form.enabled)}
+                >Enabled</NoInput>
+                {errors.enabled && <div className="error">{errors.enabled}</div>}
+              </Form.Field>
+              <Form.Field
+                disabled={loading}
+                error={!!errors.description}
+              >
+                <label>Description</label>
+                <AceEditor
+                  mode='python'
+                  value={form.description || ``}
+                  onChange={value => editField('description', value)}
+                />
+                {errors.description && <div className="error">{errors.description}</div>}
+              </Form.Field>
+              <Form.Field disabled={sending}>
+                <Button type='submit'
+                        autoComplete="nope"
+                >
+                  {form.id ? 'Save changes' : 'Create'}
+                </Button> {sending && `Sending data...`}
+              </Form.Field>
+            </Form>
+          </div>
+          <div className="center">
+            <pre>
+              center jfkdlsafdjsafdsjak
+            </pre>
+          </div>
+          <div className="right">
+            <pre>
+              right jfkdlsafdjsafdsjak
+            </pre>
+          </div>
+        </div>
       )}
     </div>
   )
