@@ -25,6 +25,8 @@ const howMuchTimeLeftToNextTrigger = require('./howMuchTimeLeftToNextTrigger');
 
 const verbose = process.argv.includes('--verbose')
 
+const MIN_INTERVAL_MILLISECONDS = parseInt(process.env.MIN_INTERVAL_MILLISECONDS, 10);
+
 const th = (msg, data) => {
 
   const e = new Error(`probeClass.js error: ${msg} `);
@@ -365,13 +367,13 @@ function tool(db) {
           })
         }
 
-        if (nextTriggerFromNowMilliseconds > 1000) { // no point to trigger it now if we will trigger it in next 1 sec anyway
+        if (nextTriggerFromNowMilliseconds > MIN_INTERVAL_MILLISECONDS) { // no point to trigger it now if we will trigger it in next 1 sec anyway
 
           ({
             probe,
             ...log
           } = await this.prodRunActive({
-            trigger: 'nextTriggerFromNowMilliseconds > 1000'
+            trigger: `nextTriggerFromNowMilliseconds > ${ms(MIN_INTERVAL_MILLISECONDS)}`
           }));
 
           if ( ! probe ) {
@@ -419,10 +421,7 @@ function tool(db) {
 
         const run = async () => {
 
-          ({
-            probe,
-            ...log
-          } = await this.prodRunActiveLog());
+          await this.prodRunActiveLog();
 
           // try {
           //
@@ -737,10 +736,10 @@ function tool(db) {
 
         let created = new Date();
 
-        const {
+        ({
           probe,
-          ...rest
-        } = data;
+          ...log
+        } = data);
 
         verbose && logg.t(`probe           ${db.enabled ? 'enabled ' : 'disabled'} [${String(db.type).padStart(8, ' ')}:${String(db.id).padStart(6, ' ')}] [project:${String(db.project_id).padStart(6, ' ')}] ${String(probe).padEnd(5, ' ')} interval: ${ms(db.interval_ms)}`);
 
@@ -753,13 +752,12 @@ function tool(db) {
             created: created.toISOString(),
             probe_id: db.id,
             execution_time_ms,
-            // log: rest,
           }
         }
 
         if ( ! probe || db.detailed_log && Object.keys(log || {}).length) {
 
-          document.body.log = rest;
+          document.body.log = log;
         }
 
         const esresult = await es(`/${index}/_doc/`, document);

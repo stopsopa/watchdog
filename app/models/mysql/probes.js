@@ -372,7 +372,7 @@ module.exports = knex => extend(knex, prototype, {
                             resolve('resolve Callback_5');
                         })
                     );
-                }(generate({m: 1})))
+                }(parseInt(process.env.MIN_INTERVAL_MILLISECONDS, 10)))
                 // }(generate({s: 5})))
             ]),
             project_id: new Required([

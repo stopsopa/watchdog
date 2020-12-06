@@ -29,6 +29,7 @@
 - [x] restart on update
 - [x] require-from-string
 - [x] autoscroll
+- [ ] chrome notifications https://developer.mozilla.org/en-US/docs/Web/API/Notifications_API
 
 https://github.com/stopsopa/watchdog
 

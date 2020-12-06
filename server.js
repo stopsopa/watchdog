@@ -14,6 +14,32 @@ dotenv('HOST');
 
 dotenv('PORT');
 
+(function () {
+
+  dotenv('MIN_INTERVAL_MILLISECONDS');
+
+  if (typeof process.env.MIN_INTERVAL_MILLISECONDS !== 'string') {
+
+    throw new Error(`process.env.MIN_INTERVAL_MILLISECONDS is not a string`);
+  }
+
+  let reg = /^[\d\(\)+\*-\.\/\s]+$/;
+
+  if ( ! reg.test(process.env.MIN_INTERVAL_MILLISECONDS) ) {
+
+    throw new Error(`process.env.MIN_INTERVAL_MILLISECONDS don't match: '${reg}' and it's value is '${process.env.MIN_INTERVAL_MILLISECONDS}'`);
+  }
+
+  process.env.MIN_INTERVAL_MILLISECONDS = eval('(' + process.env.MIN_INTERVAL_MILLISECONDS + ')');
+
+  reg = /^\d+$/;
+
+  if ( ! reg.test(process.env.MIN_INTERVAL_MILLISECONDS) ) {
+
+    throw new Error(`process.env.MIN_INTERVAL_MILLISECONDS don't match: '${reg}' and it's value is '${process.env.MIN_INTERVAL_MILLISECONDS}'`);
+  }
+}());
+
 if (process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY === 'telegramproxyserver') { // prod .env.kub.xxx driven
 
   process.env.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY = "telegramproxyserver" // http://... || telegramproxyserver

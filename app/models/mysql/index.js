@@ -5,8 +5,6 @@ const projects                  = require('./projects');
 
 const probes                    = require('./probes');
 
-const logger                    = require('./logger');
-
 const users                     = require('./users');
 
 const groups                    = require('./groups');
@@ -25,7 +23,6 @@ const managers = {
     common,
     projects,
     probes,
-    logger,
     users,
     groups,
     user_groups,
