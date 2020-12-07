@@ -49,7 +49,8 @@ TARGETFILE="mysql-$(date +"%H_%M_%S").sql.gz"
 
 mysqldump -C -h ${PROTECTED_MYSQL_HOST} -u ${PROTECTED_MYSQL_USER} -p${PROTECTED_MYSQL_PASS} -P${PROTECTED_MYSQL_PORT} ${PROTECTED_MYSQL_DB} | gzip -9 > "$TARGETFILE"
 
-/bin/bash upload.sh --source "$TARGETFILE" --targetdir hubs/$PROJECT_NAME_SHORT/$(date +"%Y-%m-%d")
+#/bin/bash upload.sh --source "$TARGETFILE" --targetdir hubs/$PROJECT_NAME_SHORT/$(date +"%Y-%m-%d")
+/bin/bash upload.sh --source "$TARGETFILE" --targetdir $PROJECT_NAME_SHORT/$(date +"%Y-%m-%d")
 
 ls -lah
 

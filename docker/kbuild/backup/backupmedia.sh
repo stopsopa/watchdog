@@ -46,7 +46,7 @@ TARGETFILE="media-$(date +"%H_%M_%S").tar.gz"
 
 (cd public/media/ && tar -zcvf "../../$TARGETFILE" images resources)
 
-/bin/bash upload.sh --source "$TARGETFILE" --targetdir hubs/$PROJECT_NAME_SHORT/$(date +"%Y-%m-%d")
+/bin/bash upload.sh --source "$TARGETFILE" --targetdir $PROJECT_NAME_SHORT/$(date +"%Y-%m-%d")
 
 ls -lah
 
