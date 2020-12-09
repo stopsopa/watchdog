@@ -134,7 +134,6 @@ const tool = async function (opt = {}) {
         process.exit(1);
       }
     }());
-
   }
 
   await promiseall(all);

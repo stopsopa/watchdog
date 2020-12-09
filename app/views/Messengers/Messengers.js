@@ -37,6 +37,12 @@ import isObject from 'nlab/isObject';
 import log from 'inspc';
 
 import {
+  postbox_list_atom,
+
+  PostboxListAtomMount,
+} from '../../recoil/postbox_list';
+
+import {
   StoreContext as StoreContextSocket,
 } from '../../_storage/storeSocket';
 
@@ -55,10 +61,6 @@ import {
   useSetRecoilState,
 } from 'recoil';
 
-import {
-  postbox_list_atom,
-} from '../../recoil/postbox';
-
 export default (props = {}) => {
 
   const [ deleting, setDeleting ] = useState(false);
@@ -69,34 +71,9 @@ export default (props = {}) => {
     state: socket,
   } = useContext(StoreContextSocket);
 
-  const [ postbox_list, set_postbox_list ] = useRecoilState(postbox_list_atom);
+  const postbox_list = useRecoilValue(postbox_list_atom);
 
   const messengers_detection = getStoreAssoc('messengers_detection');
-
-  useEffect(() => {
-
-    const postbox_list_atom_populate = ({
-      list,
-    }) => {
-
-      set_postbox_list(list);
-    }
-
-    socket.on('postbox_list_atom_populate', postbox_list_atom_populate);
-
-    if (postbox_list.length === 0) {
-
-      socket.emit('postbox_list_atom_populate');
-    }
-
-    return () => {
-
-      socket.off('postbox_list_atom_populate', postbox_list_atom_populate);
-
-      set_postbox_list(postbox_list_atom.reset());
-    }
-
-  }, [socket.id]);
 
   if ( ! isObject(messengers_detection) ) {
 
@@ -111,6 +88,7 @@ export default (props = {}) => {
   }
 
   function deleteItem(deleting) {
+
     setDeleting(false);
 
     socket.emit('postbox_delete', deleting.id);
@@ -135,6 +113,9 @@ export default (props = {}) => {
 
   return (
     <div>
+
+      <PostboxListAtomMount />
+
       {messengersPages}
       <hr />
       <Breadcrumb>

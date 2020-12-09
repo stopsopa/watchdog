@@ -77,6 +77,10 @@ const th = (function () {
   }
 }());
 
+let _socket;
+
+export const getSocket = () => _socket;
+
 /**
  * WARNING: Be careful to create only one provider on the page
  */
@@ -110,6 +114,8 @@ export function StoreSocketProvider(props) {
       }
 
       setSocket(socket);
+
+      _socket = socket;
     });
 
     socket.on('disconnect', () => {
@@ -135,6 +141,8 @@ export function StoreSocketProvider(props) {
       }, 500);
 
       // setSocket(undefined);
+
+      _socket = undefined;
     });
 
     socket.on('telegram_get_current_webhook', data => setStoreAssoc('telegram_get_current_webhook', data));

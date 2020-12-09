@@ -38,6 +38,14 @@ import MessengersEdit from './views/Messengers/MessengersEdit'
 
 import Telegram from './views/Messengers/Telegram/Telegram'
 
+import RecoilToDoExample from './recoil/RecoilToDoExample'
+
+import RecoilAsync from './recoil/RecoilAsync'
+
+import DataFlowGraph from './recoil/DataFlowGraph'
+
+import DataFlowGraphParamFromUrl from './recoil/DataFlowGraphParamFromUrl'
+
 import './App.scss'
 
 import {
@@ -185,6 +193,29 @@ export default function App() {
             path="/messengers/telegram"
             exact={true}
             component={Telegram}
+          />
+
+
+
+          <Route
+            path="/DataFlowGraph"
+            exact={true}
+            component={DataFlowGraph}
+          />
+          <Route
+            path="/DataFlowGraph/:id"
+            exact={true}
+            component={DataFlowGraphParamFromUrl}
+          />
+          <Route
+            path="/RecoilToDoExample"
+            exact={true}
+            component={RecoilToDoExample}
+          />
+          <Route
+            path="/RecoilAsync"
+            exact={true}
+            component={RecoilAsync}
           />
 
           <Route

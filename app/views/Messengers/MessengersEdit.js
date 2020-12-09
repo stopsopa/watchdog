@@ -34,8 +34,6 @@ import {
 
 import './MessengersEdit.scss';
 
-import isObject from 'nlab/isObject';
-
 import log from 'inspc';
 
 import {
@@ -49,14 +47,18 @@ import {
   useRecoilState,
   useRecoilValue,
   useSetRecoilState,
+  useResetRecoilState,
 } from 'recoil';
+
+import delay from 'nlab/delay';
 
 import {
   postbox_form_atom,
   postbox_form_error_atom,
-} from '../../recoil/postbox';
+  PostboxFormAtomMount,
+} from '../../recoil/postbox_form';
 
-export default () => {
+export const MessengersEdit = () => {
 
   let {
     state: socket,
@@ -64,73 +66,45 @@ export default () => {
 
   const [ form, set_form ] = useRecoilState(postbox_form_atom);
 
-  let { id } = useParams();
-
-  if (Number.isInteger(form.id)) {
-
-    id = form.id;
-  }
-
-  const [ errors, set_errors ] = useRecoilState(postbox_form_error_atom);
+  const errors = useRecoilValue(postbox_form_error_atom);
 
   const [ loading, setLoading ] = useState(true);
 
   const [ sending, setSending ] = useState(false);
 
+  let { id } = useParams();
+
   const history = useHistory();
+
+  const onLoad = ({
+    form,
+    errors = {},
+    submitted,
+  }) => {
+
+    setLoading(false);
+
+    setSending(false);
+
+    if (submitted) {
+
+      if (Object.keys(errors).length === 0) {
+
+        history.push(`/messengers`);
+
+        notificationsAdd(`Messengers '<b>${form.name}</b>' have been ${id ? 'edited': 'created'}`)
+      }
+      else {
+
+        notificationsAdd(`Validation error has been detected, please check the data in the form and submit again.`, 'error');
+      }
+    }
+  }
 
   const editField = (name, value) => set_form({
     ...form,
     [name]: value,
   });
-
-  useEffect(() => {
-
-    const postbox_form_atom_populate = ({
-      form,
-      errors = {},
-      submitted,
-    }) => {
-
-      set_form(form);
-
-      set_errors(errors || {});
-
-      setLoading(false);
-
-      setSending(false);
-
-      if (submitted) {
-
-        if (Object.keys(errors).length === 0) {
-
-          history.push(`/messengers`);
-
-          notificationsAdd(`Messengers '<b>${form.name}</b>' have been ${id ? 'edited': 'created'}`)
-        }
-        else {
-
-          notificationsAdd(`Validation error has been detected, please check the data in the form and submit again.`, 'error');
-        }
-      }
-    }
-
-    socket.on('postbox_form_atom_populate', postbox_form_atom_populate);
-
-    socket.emit('postbox_form_atom_populate', {
-      id,
-    });
-
-    return () => {
-
-      socket.off('postbox_form_atom_populate', postbox_form_atom_populate);
-
-      set_form(postbox_form_atom.reset());
-
-      set_errors(postbox_form_error_atom.reset());
-    };
-
-  }, [socket.id]);
 
   function onSubmit() {
 
@@ -141,6 +115,9 @@ export default () => {
 
   return (
     <div className="postbox_form">
+
+      <PostboxFormAtomMount onLoad={onLoad} />
+
       <Breadcrumb>
         <Breadcrumb.Section
           size="mini"
@@ -237,5 +214,13 @@ export default () => {
         </div>
       )}
     </div>
+  )
+}
+
+export default () => {
+  return (
+    <React.Suspense fallback={<div>Loading...</div>}>
+      <MessengersEdit />
+    </React.Suspense>
   )
 }
