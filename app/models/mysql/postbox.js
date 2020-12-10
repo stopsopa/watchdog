@@ -269,7 +269,7 @@ values                  (:group_id, :box_id, :enabled)
 `, {
                     group_id    : gid,
                     box_id      : id,
-                    enabled     : toUpdate[uid],
+                    enabled     : toUpdate[gid],
                 });
             }
         }

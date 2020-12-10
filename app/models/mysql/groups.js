@@ -265,11 +265,6 @@ module.exports = knex => extend(knex, prototype, {
               ...rest
             } = entity;
 
-            log.dump({
-                users_update: users,
-                rest
-            })
-
             await this.updateUsers(debug, trx, id, users);
 
             return prototype.prototype.update.call(this, debug, trx, rest, id);
@@ -291,10 +286,6 @@ module.exports = knex => extend(knex, prototype, {
             entity = this.toDb(Object.assign({}, entity));
 
             const id = await prototype.prototype.insert.call(this, debug, trx, entity);
-
-            log.dump({
-                group_id: id
-            })
 
             if (users) {
 
