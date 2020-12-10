@@ -65,11 +65,18 @@ export const PostboxFormAtomMount = ({
         form,
         errors = {},
         submitted,
+        error,
       } = opt || {};
 
-      set_form(form);
+      if (Object.keys(errors).length > 0 || error) {
 
-      set_errors(errors || {});
+      }
+      else {
+
+        set_form(form);
+
+        set_errors(errors || {});
+      }
 
       onLoad(opt);
     }

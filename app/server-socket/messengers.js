@@ -129,11 +129,11 @@ module.exports = ({
 
           if (mode === 'edit') {
 
-            await man.update(trx, entityPrepared, id);
+            await man.update(true, trx, form, id);
           }
           else {
 
-            id = await man.insert(trx, entityPrepared);
+            id = await man.insert(trx, form);
           }
 
           form = await man.find(trx, id);
@@ -160,12 +160,15 @@ module.exports = ({
     }
     catch (e) {
 
+      e = se(e)
+
       log.dump({
         postbox_form_submit_error: e,
       }, 2);
 
-      socket.emit('postbox_form_submit', {
-        error: `failed to fetch probe by id '${id}' list from database.......`,
+      socket.emit('postbox_form_atom_populate', {
+        error: `database error`,
+        submitted: true,
       })
     }
   })

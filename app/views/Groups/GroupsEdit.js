@@ -266,7 +266,7 @@ export default function GroupsEdit() {
                           onClick={e => {
                             e.preventDefault();
                             e.stopPropagation();
-                            const list = form.users || [];
+                            const list = [...form.users || []];
                             list.push(u.id);
                             editField('users', list)
                           }}

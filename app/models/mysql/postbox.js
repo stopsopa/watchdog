@@ -76,6 +76,8 @@ module.exports = knex => extend(knex, prototype, {
             name: '',
             box: '',
             enabled: false,
+            users: [],
+            groups: [],
             ...extra,
         }
     },
@@ -88,7 +90,53 @@ module.exports = knex => extend(knex, prototype, {
 
         row.enabled = Boolean(row.enabled);
 
+        if ( ! Array.isArray(row.users) ) {
+
+            row.users = await this.fetchUsers(trx, opt, row.id);
+        }
+
+        if ( ! Array.isArray(row.groups) ) {
+
+            row.groups = await this.fetchGroups(trx, opt, row.id);
+        }
+
         return row;
+    },
+    fetchUsers: async function (...args) {
+
+        let [debug, trx, id] = a(args);
+
+        const list = await this.query(trx, debug, `
+select      pu.user_id id, 
+            pu.enabled
+from        postbox_user pu
+where       pu.box_id = :id        
+`, {
+            id,
+        });
+
+        return list.map(u => {
+            u.enabled = Boolean(u.enabled);
+            return u;
+        });
+    },
+    fetchGroups: async function (...args) {
+
+        let [debug, trx, id] = a(args);
+
+        const list = await this.query(trx, debug, `
+select      pg.group_id id, 
+            pg.enabled
+from        postbox_group pg
+where       pg.box_id = :id     
+`, {
+            id,
+        });
+
+        return list.map(u => {
+            u.enabled = Boolean(u.enabled);
+            return u;
+        });
     },
     toDb: async function (row, opt, trx) {
 
@@ -101,44 +149,146 @@ module.exports = knex => extend(knex, prototype, {
 
         delete row.updated;
 
+        delete row.users;
+
+        delete row.groups;
+
         return row;
     },
-    // updateUsers: async function (...args) {
-    //
-    //     let [debug, trx, groupId, usersIds] = a(args);
-    //
-    //     log.dump({
-    //         groupId,
-    //         usersIds,
-    //     })
-    //
-    //     await this.clearUsers(debug, trx, groupId);
-    //
-    //     log.dump({
-    //         list: await this.query(true, trx, 'select * from user_group where group_id = :id', {
-    //             id: groupId,
-    //         })
-    //     })
-    //
-    //     if (Array.isArray(usersIds)) {
-    //
-    //         for (let user_id of usersIds) {
-    //
-    //             await knex.model.user_groups.insert(true, trx, {
-    //                 group_id: groupId,
-    //                 user_id,
-    //             })
-    //         }
-    //     }
-    // },
-    // clearUsers: async function(...args) {
-    //
-    //     let [debug, trx, groupId] = a(args);
-    //
-    //     return await this.query(debug, trx, `delete from user_group where group_id = :id`, {
-    //         id: groupId,
-    //     });
-    // },
+    updateUsers: async function (...args) {
+
+        let [debug, trx, id, toUpdate] = a(args);
+
+        toUpdate = toUpdate.reduce((acc, {id, enabled}) => {
+
+            acc[id] = enabled;
+
+            return acc;
+        }, {});
+
+        let list = await this.fetchUsers(trx, debug, id);
+
+        list = list.reduce((acc, {id, enabled}) => {
+
+            acc[id] = enabled;
+
+            return acc;
+        }, {});
+
+        for (let uid of Object.keys(toUpdate)) {
+
+            if (typeof list[uid] === 'boolean') {
+
+                if (list[uid] !== toUpdate[uid]) {
+
+                    await this.query(trx, debug, `
+update                  postbox_user 
+                    set enabled = :enabled 
+where                   user_id = :user_id
+                    and box_id  = :box_id
+`, {
+                        user_id : uid,
+                        box_id  : id,
+                        enabled : toUpdate[uid],
+                    });
+                }
+            }
+            else {
+
+                await this.query(trx, debug, `
+insert into             postbox_user 
+                        (user_id, box_id, enabled)
+values                  (:user_id, :box_id, :enabled)
+`, {
+                    user_id : uid,
+                    box_id  : id,
+                    enabled : toUpdate[uid],
+                });
+            }
+        }
+
+        for (let uid of Object.keys(list)) {
+
+            if ( typeof toUpdate[uid] === 'undefined' ) {
+
+                await this.query(trx, debug, `
+delete from             postbox_user
+where                   user_id = :user_id
+                    and box_id = :box_id 
+`, {
+                    user_id : uid,
+                    box_id  : id,
+                });
+            }
+        }
+    },
+    updateGroups: async function (...args) {
+
+        let [debug, trx, id, toUpdate] = a(args);
+
+        toUpdate = toUpdate.reduce((acc, {id, enabled}) => {
+
+            acc[id] = enabled;
+
+            return acc;
+        }, {});
+
+        let list = await this.fetchGroups(trx, debug, id);
+
+        list = list.reduce((acc, {id, enabled}) => {
+
+            acc[id] = enabled;
+
+            return acc;
+        }, {});
+
+        for (let gid of Object.keys(toUpdate)) {
+
+            if (typeof list[gid] === 'boolean') {
+
+                if (list[gid] !== toUpdate[gid]) {
+
+                    await this.query(trx, debug, `
+update                  postbox_group 
+                    set enabled = :enabled 
+where                   group_id = :group_id
+                    and box_id  = :box_id
+`, {
+                        group_id    : gid,
+                        box_id      : id,
+                        enabled     : toUpdate[gid],
+                    });
+                }
+            }
+            else {
+
+                await this.query(trx, debug, `
+insert into             postbox_group 
+                        (group_id, box_id, enabled)
+values                  (:group_id, :box_id, :enabled)
+`, {
+                    group_id    : gid,
+                    box_id      : id,
+                    enabled     : toUpdate[uid],
+                });
+            }
+        }
+
+        for (let gid of Object.keys(list)) {
+
+            if ( typeof toUpdate[gid] === 'undefined' ) {
+
+                await this.query(trx, debug, `
+delete from             postbox_group
+where                   group_id = :group_id
+                    and box_id = :box_id 
+`, {
+                    group_id    : gid,
+                    box_id      : id,
+                });
+            }
+        }
+    },
     update: async function (...args) {
 
         let [debug, trx, entity, id] = a(args);
@@ -147,15 +297,13 @@ module.exports = knex => extend(knex, prototype, {
 
             const {
                 users = [],
+                groups = [],
               ...rest
             } = entity;
 
-            // log.dump({
-            //     users_update: users,
-            //     rest
-            // })
-            //
-            // await this.updateUsers(debug, trx, id, users);
+            await this.updateUsers(debug, trx, id, users);
+
+            await this.updateGroups(debug, trx, id, groups);
 
             return prototype.prototype.update.call(this, debug, trx, rest, id);
         });
@@ -166,25 +314,27 @@ module.exports = knex => extend(knex, prototype, {
 
         return await this.transactify(trx, async trx => {
 
-            // let users = [];
-            //
-            // if (Array.isArray(entity.users)) {
-            //
-            //     users = entity.users;
-            // }
-            //
-            // entity = this.toDb(Object.assign({}, entity));
+            let users = [];
+
+            if (Array.isArray(entity.users)) {
+
+                users = entity.users;
+            }
+
+            let groups = [];
+
+            if (Array.isArray(entity.groups)) {
+
+                groups = entity.groups;
+            }
+
+            entity = this.toDb(Object.assign({}, entity));
 
             const id = await prototype.prototype.insert.call(this, debug, trx, entity);
 
-            // log.dump({
-            //     group_id: id
-            // })
-            //
-            // if (users) {
-            //
-            //     await this.updateUsers(trx, id, users);
-            // }
+            await this.updateUsers(debug, trx, id, users);
+
+            await this.updateGroups(debug, trx, id, groups);
 
             return id;
         });
@@ -302,6 +452,8 @@ module.exports = knex => extend(knex, prototype, {
                 new Length({max: 255}),
             ]),
             description: new Optional(),
+            users: new Optional(),
+            groups: new Optional(),
             box: new Required([
                 new NotBlank(),
                 new Type('str'),

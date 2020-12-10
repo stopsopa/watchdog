@@ -7,6 +7,8 @@ import React, {
   useReducer,
 } from 'react';
 
+import set from 'nlab/set';
+
 import AceEditor from '../../components/AceEditor/AceEditor'
 
 import NoInput from '../../components/NoInput/NoInput';
@@ -58,6 +60,16 @@ import {
   PostboxFormAtomMount,
 } from '../../recoil/postbox_form';
 
+import {
+  users_list_atom,
+  UsersListAtomMount,
+} from '../../recoil/users_list';
+
+import {
+  groups_list_atom,
+  GroupsListAtomMount,
+} from '../../recoil/groups_list';
+
 export const MessengersEdit = () => {
 
   let {
@@ -67,6 +79,10 @@ export const MessengersEdit = () => {
   const [ form, set_form ] = useRecoilState(postbox_form_atom);
 
   const errors = useRecoilValue(postbox_form_error_atom);
+
+  const users = useRecoilValue(users_list_atom);
+
+  const groups = useRecoilValue(groups_list_atom);
 
   const [ loading, setLoading ] = useState(true);
 
@@ -79,6 +95,7 @@ export const MessengersEdit = () => {
   const onLoad = ({
     form,
     errors = {},
+    error,
     submitted,
   }) => {
 
@@ -88,35 +105,45 @@ export const MessengersEdit = () => {
 
     if (submitted) {
 
-      if (Object.keys(errors).length === 0) {
+      if (Object.keys(errors).length > 0 || error) {
 
-        history.push(`/messengers`);
-
-        notificationsAdd(`Messengers '<b>${form.name}</b>' have been ${id ? 'edited': 'created'}`)
+        notificationsAdd(error || `Validation error has been detected, please check the data in the form and submit again.`, 'error');
       }
       else {
 
-        notificationsAdd(`Validation error has been detected, please check the data in the form and submit again.`, 'error');
+        // history.push(`/messengers`);
+
+        notificationsAdd(`Messengers '<b>${form.name}</b>' have been ${id ? 'edited': 'created'}`)
       }
     }
   }
 
-  const editField = (name, value) => set_form({
-    ...form,
-    [name]: value,
-  });
+  const editField = (name, value) => {
+
+    const data = JSON.parse(JSON.stringify(form));
+
+    set(data, name, value);
+
+    set_form(data)
+  };
 
   function onSubmit() {
 
-    setSending(true);
+    // setSending(true);
 
     socket.emit('postbox_form_submit', form);
   }
+
+  log.dump(JSON.stringify(form, null, 4))
 
   return (
     <div className="postbox_form">
 
       <PostboxFormAtomMount onLoad={onLoad} />
+
+      <UsersListAtomMount />
+
+      <GroupsListAtomMount />
 
       <Breadcrumb>
         <Breadcrumb.Section
@@ -202,14 +229,98 @@ export const MessengersEdit = () => {
             </Form>
           </div>
           <div className="center">
-            <pre>
-              center jfkdlsafdjsafdsjak
-            </pre>
+            <h4>Users</h4>
+            <div className="flex">
+              <div>
+                {users.filter(u => form.users.map(u => u.id).includes(u.id)).map(u => (
+                  <div key={u.id}>
+                    {(function (index) {
+                      return (
+                        <NoInput
+                          checked={Boolean(form.users[index].enabled)}
+                          onChange={() => editField(`users.${index}.enabled`, !form.users[index].enabled)}
+                        >{u.firstName} {u.lastName}</NoInput>
+                      )
+                    }(form.users.findIndex(uu => uu.id === u.id)))}
+                    <Button
+                      size="mini"
+                      onClick={e => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        editField('users', (form.users || []).filter(uu => uu.id !== u.id))
+                      }}
+                    >&gt;</Button>
+                  </div>
+                ))}
+              </div>
+              <div>
+                {users.filter(u => !form.users.map(u => u.id).includes(u.id)).map(u => (
+                  <div key={u.id}>
+                    <Button
+                      size="mini"
+                      onClick={e => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const list = [...form.users || []];
+                        list.push({
+                          id: u.id,
+                          enabled: true,
+                        });
+                        editField('users', list)
+                      }}
+                    >&lt;</Button>
+                    <span>{u.firstName} {u.lastName}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
           <div className="right">
-            <pre>
-              right jfkdlsafdjsafdsjak
-            </pre>
+            <h4>Groups</h4>
+            <div className="flex">
+              <div>
+                {groups.filter(g => form.groups.map(g => g.id).includes(g.id)).map(g => (
+                  <div key={g.id}>
+                    {(function (index) {
+                      return (
+                        <NoInput
+                          checked={Boolean(form.groups[index].enabled)}
+                          onChange={() => editField(`groups.${index}.enabled`, !form.groups[index].enabled)}
+                        >{g.name}</NoInput>
+                      )
+                    }(form.groups.findIndex(ff => ff.id === g.id)))}
+                    <Button
+                      size="mini"
+                      onClick={e => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        editField('groups', (form.groups || []).filter(gg => gg.id !== g.id))
+                      }}
+                    >&gt;</Button>
+                  </div>
+                ))}
+              </div>
+              <div>
+                {groups.filter(g => !form.groups.map(g => g.id).includes(g.id)).map(g => (
+                  <div key={g.id}>
+                    <Button
+                      size="mini"
+                      onClick={e => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const list = [...form.groups || []];
+                        list.push({
+                          id: g.id,
+                          enabled: true,
+                        });
+                        editField('groups', list)
+                      }}
+                    >&lt;</Button>
+                    <span>{g.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       )}
