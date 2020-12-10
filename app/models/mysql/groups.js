@@ -409,6 +409,7 @@ ORDER BY            id desc
         const collection = {
             id: new Optional(),
             users: new Optional(),
+            description: new Optional(),
             name: new Required([
                 new NotBlank(),
                 new Length({max: 50}),

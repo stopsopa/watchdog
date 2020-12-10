@@ -11,6 +11,8 @@ import all from 'nlab/all';
 
 import './GroupsEdit.scss';
 
+import AceEditor from '../../components/AceEditor/AceEditor';
+
 import {
   Breadcrumb,
   List,
@@ -223,6 +225,18 @@ export default function GroupsEdit() {
                        autoComplete="nope"
                 />
                 {errors.name && <div className="error">{errors.name}</div>}
+              </Form.Field>
+              <Form.Field
+                disabled={loading}
+                error={!!errors.description}
+              >
+                <label>Description</label>
+                <AceEditor
+                  mode='python'
+                  value={form.description || ``}
+                  onChange={value => editField('description', value)}
+                />
+                {errors.description && <div className="error">{errors.description}</div>}
               </Form.Field>
               <Form.Field>
                 <label>Users:</label>

@@ -321,6 +321,7 @@ module.exports = knex => extend(knex, prototype, {
                 new NotBlank(),
                 new Length({max: 50}),
             ]),
+            description: new Optional(),
             // password: new Required([
             //     new NotBlank(),
             //     new Length({max: 255}),

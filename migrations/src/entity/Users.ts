@@ -35,6 +35,11 @@ export class Users {
     })
     lastName: string;
 
+    @Column("mediumtext", {
+        nullable: true,
+    })
+    description: null;
+
     @Column({
         length: 255
     })

@@ -9,6 +9,8 @@ import './UsersEdit.scss';
 
 import NoInput from '../../components/NoInput/NoInput';
 
+import AceEditor from '../../components/AceEditor/AceEditor';
+
 import {
   Breadcrumb,
   List,
@@ -26,6 +28,7 @@ import {
 
 import {
   Link,
+  useHistory,
   useParams,
 } from 'react-router-dom';
 
@@ -63,6 +66,8 @@ const editField = (key, value) => {
 }
 
 export default function UsersEdit() {
+
+  const history = useHistory();
 
   useContext(StoreContextAssoc);
 
@@ -118,7 +123,7 @@ export default function UsersEdit() {
 
         if (Object.keys(errors).length === 0) {
 
-          // history.push(`/users`);
+          history.push(`/users`);
 
           notificationsAdd(`User '<b>${form.label}</b>' have been ${id ? 'edited': 'created'}`)
 
@@ -218,6 +223,18 @@ export default function UsersEdit() {
                        autoComplete="nope"
                 />
                 {errors.lastName && <div className="error">{errors.lastName}</div>}
+              </Form.Field>
+              <Form.Field
+                disabled={loading}
+                error={!!errors.description}
+              >
+                <label>Description</label>
+                <AceEditor
+                  mode='python'
+                  value={form.description || ``}
+                  onChange={value => editField('description', value)}
+                />
+                {errors.description && <div className="error">{errors.description}</div>}
               </Form.Field>
               {/*<Form.Field*/}
               {/*  disabled={loading}*/}
