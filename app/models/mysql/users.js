@@ -340,7 +340,7 @@ module.exports = knex => extend(knex, prototype, {
 
                         if ( ! value.trim() ) {
 
-                            throw new Error(`box 2`);
+                            throw new Error(`box 28`);
                         }
 
                         let query = `SELECT COUNT(*) c FROM :table: WHERE email = :email`;
