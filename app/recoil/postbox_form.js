@@ -47,13 +47,13 @@ export const PostboxFormAtomMount = ({
     state: socket,
   } = useContext(StoreContextSocket);
 
-  const set_form = useSetRecoilState(postbox_form_atom);
+  const set_form      = useSetRecoilState(postbox_form_atom);
 
-  const reset_form = useResetRecoilState(postbox_form_atom);
+  const reset_form    = useResetRecoilState(postbox_form_atom);
 
-  const set_errors = useSetRecoilState(postbox_form_error_atom);
+  const set_errors    = useSetRecoilState(postbox_form_error_atom);
 
-  const reset_errors = useResetRecoilState(postbox_form_error_atom);
+  const reset_errors  = useResetRecoilState(postbox_form_error_atom);
 
   let { id } = useParams();
 
@@ -74,9 +74,9 @@ export const PostboxFormAtomMount = ({
       else {
 
         set_form(form);
-
-        set_errors(errors || {});
       }
+
+      set_errors(errors || {});
 
       onLoad(opt);
     }

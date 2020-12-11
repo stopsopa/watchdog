@@ -90,12 +90,12 @@ module.exports = knex => extend(knex, prototype, {
 
         row.enabled = Boolean(row.enabled);
 
-        if ( ! Array.isArray(row.users) ) {
+        if ( ! Array.isArray(row.users) && Number.isInteger(row.id)) {
 
             row.users = await this.fetchUsers(trx, opt, row.id);
         }
 
-        if ( ! Array.isArray(row.groups) ) {
+        if ( ! Array.isArray(row.groups) && Number.isInteger(row.id)) {
 
             row.groups = await this.fetchGroups(trx, opt, row.id);
         }
