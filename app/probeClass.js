@@ -76,6 +76,7 @@ function tool(db) {
 
   const {
     code,
+    description,
     ...dbNoCode
   } = db;
 
@@ -107,7 +108,9 @@ function tool(db) {
     throw th(`data.code should be null or string`, dbNoCode);
   }
 
-  db = Object.assign({}, db);
+  db = Object.assign(Object.create(null), db);
+
+  delete db.description;
 
   let activeTimeoutHandler;
 
@@ -915,31 +918,31 @@ tool.setup = function (opt) {
     throw th(`setup() Can't create directory '${dir}'`);
   }
 
-  const file = path.resolve(dir, '___xxx.txt');
+  // const file = path.resolve(dir, '___xxx.txt');
 
-  if ( fs.existsSync(file) ) {
+  // if ( fs.existsSync(file) ) {
+  //
+  //   fs.unlinkSync(file);
+  // }
+  //
+  // if ( fs.existsSync(file) ) {
+  //
+  //   throw th(`setup() Can't remove file '${file}' 1`);
+  // }
 
-    fs.unlinkSync(file);
-  }
-
-  if ( fs.existsSync(file) ) {
-
-    throw th(`setup() Can't remove file '${file}' 1`);
-  }
-
-  fs.writeFileSync(file, '');
-
-  if ( ! fs.existsSync(file) ) {
-
-    throw th(`setup() Can't create file '${file}'`);
-  }
-
-  fs.unlinkSync(file);
-
-  if ( fs.existsSync(file) ) {
-
-    throw th(`setup() Can't remove file '${file}' 2`);
-  }
+  // fs.writeFileSync(file, '');
+  //
+  // if ( ! fs.existsSync(file) ) {
+  //
+  //   throw th(`setup() Can't create file '${file}'`);
+  // }
+  //
+  // fs.unlinkSync(file);
+  //
+  // if ( fs.existsSync(file) ) {
+  //
+  //   throw th(`setup() Can't remove file '${file}' 2`);
+  // }
 }
 
 module.exports = tool;

@@ -3,7 +3,7 @@ const log = require('inspc');
 
 const isObject = require('nlab/isObject');
 
-const probeClass = require('./probeClass');
+const boxClass = require('./boxClass');
 
 const promiseall = require('nlab/promiseall');
 
@@ -11,7 +11,7 @@ const se = require('nlab/se');
 
 let init;
 
-let probes = {};
+let boxes = {};
 
 let knex;
 
@@ -19,15 +19,15 @@ let es;
 
 let man;
 
-const th = msg => new Error(`probeDriver.js error: ${msg}`);
+const th = msg => new Error(`usersDriver.js error: ${msg}`);
 
 async function register(db) {
 
-  let cls = probeClass(db);
+  let cls = boxClass(db);
 
   await cls.construct();
 
-  probes[db.id] = cls;
+  boxes[db.id] = cls;
 }
 
 const intreg = /^\d+$/;
@@ -42,8 +42,8 @@ async function unregister(id) {
 
   ({
     [id]: cls,
-    ...probes
-  } = probes);
+    ...boxes
+  } = boxes);
 
   try {
 
@@ -54,7 +54,7 @@ async function unregister(id) {
     log.dump({
       id,
       destructor_error: se(e),
-    })
+    }, 4)
   }
 }
 
@@ -79,7 +79,7 @@ const tool = async function (opt = {}) {
 
   try {
 
-    man = opt.knex.model.probes;
+    man = opt.knex.model.postbox;
 
     list = await man.fetch(`select * from :table:`);
 
@@ -97,7 +97,7 @@ const tool = async function (opt = {}) {
 
   } catch (e) {
 
-    throw th(`couldn't fetch probes from db: ${e}`);
+    throw th(`couldn't fetch boxes from db: ${e}`);
   }
 
   ({
@@ -116,7 +116,6 @@ const tool = async function (opt = {}) {
       // it should crush server actually because it is used only here with list from db
 
       let {
-        code,
         description,
         ...rest
       } = db;
@@ -142,27 +141,27 @@ const tool = async function (opt = {}) {
   init = opt;
 }
 
-tool.getProbe = (id, _throw = true) => {
+tool.getBox = (id, _throw = true) => {
 
   if ( ! intreg.test(id) ) {
 
-    throw th(`getProbe() error: id don't match ${intreg}`);
+    throw th(`getBox() error: id don't match ${intreg}`);
   }
 
   if (_throw) {
 
-    if ( ! probes[id] ) {
+    if ( ! boxes[id] ) {
 
-      throw th(`getProbe() error: probe not found by id ${id}`);
+      throw th(`getBox() error: probe not found by id ${id}`);
     }
   }
 
-  return probes[id];
+  return boxes[id];
 }
 
-tool.getProbes = () => probes;
+tool.getBoxes = () => boxes;
 
-tool.getProbesArray = () => Object.keys(probes).map(key => probes[key]);
+tool.getBoxesArray = () => Object.keys(boxes).map(key => boxes[key]);
 
 tool.register = db => register(db);
 
