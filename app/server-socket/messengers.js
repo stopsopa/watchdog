@@ -203,7 +203,7 @@ module.exports = ({
       }, 2);
 
       socket.emit('postbox_delete', {
-        error: `failed to fetch messengers by id '${id}' list from database.......`,
+        error: `First detach all users and groups from messenger in order to remove it`,
       })
     }
   });

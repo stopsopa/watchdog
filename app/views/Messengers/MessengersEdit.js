@@ -14,6 +14,10 @@ import AceEditor from '../../components/AceEditor/AceEditor'
 import NoInput from '../../components/NoInput/NoInput';
 
 import {
+  notificationsAdd,
+} from '../../components/Notifications/storeNotifications';
+
+import {
   Link,
   useHistory,
   useParams,
@@ -90,7 +94,7 @@ export const MessengersEdit = () => {
 
   let { id } = useParams();
 
-  const history = useHistory();
+  // const history = useHistory();
 
   const onLoad = ({
     form,
@@ -129,12 +133,10 @@ export const MessengersEdit = () => {
 
   function onSubmit() {
 
-    // setSending(true);
+    setSending(true);
 
     socket.emit('postbox_form_submit', form);
   }
-
-  log.dump(JSON.stringify(form, null, 4))
 
   return (
     <div className="postbox_form">

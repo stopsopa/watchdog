@@ -212,9 +212,9 @@ export const notificationsAdd = (...args) => {
 
 try {
 
-  window.notificationsAdd    = notificationsAdd;
+  window.notificationsAddGlobal    = notificationsAdd;
 
-  window.notificationsRemove = notificationsRemove;
+  window.notificationsRemoveGlobal = notificationsRemove;
 }
 catch (e) {
 

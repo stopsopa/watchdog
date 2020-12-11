@@ -27,6 +27,7 @@ import {
 import {
   StoreContext as StoreContextSocket,
 } from '../_storage/storeSocket';
+import { notificationsAdd } from '../components/Notifications/storeNotifications'
 
 export const postbox_list_atom = atom({
   key: 'postbox_list_atom',
@@ -56,6 +57,15 @@ export const PostboxListAtomMount = ({
 
     socket.on('postbox_list_atom_populate', postbox_list_atom_populate);
 
+    const postbox_delete = ({
+      error,
+    }) => {
+      
+      notificationsAdd(error, 'error');
+    }
+
+    socket.on('postbox_delete', postbox_delete);
+
     if (list.length === 0) {
 
       socket.emit('postbox_list_atom_populate');
@@ -64,6 +74,8 @@ export const PostboxListAtomMount = ({
     return () => {
 
       socket.off('postbox_list_atom_populate', postbox_list_atom_populate);
+
+      socket.off('postbox_delete', postbox_delete);
 
       reset_list();
     }
