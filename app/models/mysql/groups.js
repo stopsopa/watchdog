@@ -89,28 +89,23 @@ module.exports = knex => extend(knex, prototype, {
             return row;
         }
 
-        if (typeof row.uids !== 'undefined') {
-
-            if (typeof row.uids === 'string') {
-
-                row.uids = row.uids.split(",").map(id => parseInt(id, 10));
-            }
-
-            if ( ! Array.isArray(row.uids) ) {
-
-                row.uids = [];
-            }
-        }
-        else {
+        if (typeof row.users !== 'undefined') {
 
             if (typeof row.users === 'string') {
 
-                row.users = row.users.split(',').map(r => /^\d+$/.test(r) ? parseInt(r, 10) : r).filter(Boolean);
+                row.users = row.users.split(",").map(id => parseInt(id, 10));
             }
 
             if ( ! Array.isArray(row.users) ) {
 
                 row.users = [];
+            }
+        }
+        else {
+
+            if ( ! Array.isArray(row.users) && Number.isInteger(row.id)) {
+
+                row.users = await this.fetchUsers(trx, opt, row.id);
             }
         }
 
@@ -161,22 +156,27 @@ module.exports = knex => extend(knex, prototype, {
 
         return row;
     },
+    fetchUsers: async function (...args) {
+
+        let [debug, trx, id] = a(args);
+
+        const list = await this.query(trx, debug, `
+select              ug.user_id users
+from                :table: g
+         inner join user_group ug
+                 on g.id = ug.group_id
+where               g.id = :id     
+`, {
+            id,
+        });
+
+        return list.map(u => parseInt(u, 10));
+    },
     updateUsers: async function (...args) {
 
         let [debug, trx, groupId, usersIds] = a(args);
 
-        log.dump({
-            groupId,
-            usersIds,
-        })
-
         await this.clearUsers(debug, trx, groupId);
-
-        log.dump({
-            list: await this.query(true, trx, 'select * from user_group where group_id = :id', {
-                id: groupId,
-            })
-        })
 
         if (Array.isArray(usersIds)) {
 
@@ -248,7 +248,7 @@ module.exports = knex => extend(knex, prototype, {
 
         return await this.fetch(`
 select              ${columns.join(', ')},
-                    group_concat(ug.user_id) uids
+                    group_concat(ug.user_id) users
 from                :table: g
           left join user_group ug
                  on g.id = ug.group_id
@@ -270,9 +270,13 @@ group by            g.id
             throw `groups.js::find(): id not specified or invalid`;
         }
 
+        const columns = await this.fetchColumnsFiltered(debug, trx, {
+            format: 'list',
+        });
+
         const query = `
-select              g.*, group_concat(ug.user_id) users
-from                \`group\` g
+select              ${columns.join(', ')}, group_concat(ug.user_id) users
+from                :table: g
           left join user_group ug
                  on g.id = ug.group_id
 where               g.id = :id

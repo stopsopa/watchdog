@@ -21,10 +21,6 @@ const th = msg => new Error(`groupsDriver.js error: ${msg}`);
 
 async function register(db) {
 
-  log.dump({
-    group: db,
-  }, 10);
-
   list[db.id] = db;
 }
 

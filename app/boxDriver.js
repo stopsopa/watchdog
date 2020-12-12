@@ -9,6 +9,10 @@ const promiseall = require('nlab/promiseall');
 
 const se = require('nlab/se');
 
+const groupsDriver = require('./groupsDriver');
+
+const usersDriver = require('./usersDriver');
+
 let init;
 
 let list = {};
@@ -92,9 +96,7 @@ const tool = async function (opt = {}) {
 
   try {
 
-    const driver = require('./groupsDriver');
-
-    await driver(opt);
+    await groupsDriver(opt);
   }
   catch (e) {
 
@@ -107,9 +109,7 @@ const tool = async function (opt = {}) {
 
   try {
 
-    const driver = require('./usersDriver');
-
-    await driver(opt);
+    await usersDriver(opt);
   }
   catch (e) {
 
@@ -145,17 +145,10 @@ const tool = async function (opt = {}) {
       format: 'list',
     });
 
-    // log.dump({
-    //   list_all_probes: list.map(r => {
-    //
-    //     const {
-    //       code,
-    //       ...rest
-    //     } = r;
-    //
-    //     return rest;
-    //   })
-    // })
+    log.dump({
+      list,
+      one: await man.find(7)
+    }, 10);
 
   } catch (e) {
 

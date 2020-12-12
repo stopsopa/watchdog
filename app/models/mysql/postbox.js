@@ -93,14 +93,56 @@ module.exports = knex => extend(knex, prototype, {
 
         row.enabled = Boolean(row.enabled);
 
-        if ( ! Array.isArray(row.users) && Number.isInteger(row.id)) {
+        if (typeof row.users !== 'undefined') {
 
-            row.users = await this.fetchUsers(trx, opt, row.id);
+            if (typeof row.users === 'string') {
+
+                row.users = row.users
+                  .split(",")
+                  .map(id => parseInt(id, 10))
+
+                row.users = [...new Set(row.users)];
+
+                row.users = row.users.map(id => ({id, enabled: true}));
+            }
+
+            if ( ! Array.isArray(row.users) ) {
+
+                row.users = [];
+            }
+        }
+        else {
+
+            if ( ! Array.isArray(row.users) && Number.isInteger(row.id)) {
+
+                row.users = await this.fetchUsers(trx, opt, row.id);
+            }
         }
 
-        if ( ! Array.isArray(row.groups) && Number.isInteger(row.id)) {
+        if (typeof row.groups !== 'undefined') {
 
-            row.groups = await this.fetchGroups(trx, opt, row.id);
+            if (typeof row.groups === 'string') {
+
+                row.groups = row.groups
+                  .split(",")
+                  .map(id => parseInt(id, 10))
+
+                row.groups = [...new Set(row.groups)];
+
+                row.groups = row.groups.map(id => ({id, enabled: true}));
+            }
+
+            if ( ! Array.isArray(row.groups) ) {
+
+                row.groups = [];
+            }
+        }
+        else {
+
+            if ( ! Array.isArray(row.groups) && Number.isInteger(row.id)) {
+
+                row.groups = await this.fetchGroups(trx, opt, row.id);
+            }
         }
 
         return row;
@@ -350,7 +392,17 @@ where                   group_id = :group_id
             format: 'list',
         });
 
-        return await this.fetch(`select ${columns.join(`, `)} from :table:`);
+        return await this.fetch(`
+select                      p.*, 
+                            group_concat(pg.group_id) groups, 
+                            group_concat(pu.user_id) users
+from                        postbox p
+                  left join postbox_group pg
+                         on p.id = pg.box_id and pg.enabled = 1
+                  left join postbox_user pu
+                         on p.id = pu.box_id and pu.enabled = 1
+group by                    p.id        
+`);
     },
     delete: async function (id, ...args) {
 
