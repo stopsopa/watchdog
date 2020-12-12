@@ -55,10 +55,13 @@ async function unregister(id) {
   }
   catch (e) {
 
-    log.dump({
-      id,
-      destructor_error: se(e),
-    }, 4)
+    if (e.message !== `Cannot read property 'destruct' of undefined`) {
+
+      log.dump({
+        id,
+        destructor_error: se(e),
+      })
+    }
   }
 }
 
@@ -210,7 +213,12 @@ const tool = async function (opt = {}) {
 <li><a href="/groupsDriver">/groupsDriver</a></li>
 <li><a href="/usersDriver">/usersDriver</a></li>
 </ul>
-<pre>${JSON.stringify(tool.getBoxesArray(), null, 4)}</pre>      
+<pre>${JSON.stringify(tool.getBoxesArray(), null, 4)}</pre>   
+<hr>
+<pre>${JSON.stringify(tool.getBoxesArray().reduce((acc, b) => {
+  acc[b.toJSON().id] = b.getUsers();
+  return acc;
+      }, {}), null, 4)}</pre>        
 `);
     });
   }
@@ -239,6 +247,31 @@ tool.getBoxes = () => list;
 tool.getBoxesArray = () => Object.keys(list).map(key => list[key]);
 
 tool.register = db => register(db);
+
+tool.updateById = async (id, trx) => {
+
+  if ( ! Number.isInteger(id) ) {
+
+    throw th(`updateById is is not an integer`);
+  }
+
+  unregister(id);
+
+  man = knex.model.postbox;
+
+  try {
+
+    const db = await man.findFiltered(trx, id);
+
+    register(db)
+  }
+  catch (e) {
+
+    log.dump({
+      updateById_boxDriver: `Can't reregister by id ${id} - object doesn't exist in database`,
+    })
+  }
+};
 
 tool.unregister = id => unregister(id);
 

@@ -214,7 +214,19 @@ module.exports = knex => extend(knex, prototype, {
             format: 'list',
         });
 
-        return await this.fetch(`select ${columns.join(`, `)} from :table:`);
+        return await this.fetch(debug, trx, `select ${columns.join(`, `)} from :table:`);
+    },
+    findFiltered: async function (...args) {
+
+        let [debug, trx, id] = a(args);
+
+        const columns = await this.fetchColumnsFiltered(debug, trx, {
+            format: 'list',
+        });
+
+        return await this.queryOne(debug, trx, `select ${columns.join(`, `)} from :table: where id = :id`, {
+            id,
+        });
     },
     delete: async function (id, ...args) {
 

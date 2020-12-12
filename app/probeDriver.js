@@ -51,10 +51,13 @@ async function unregister(id) {
   }
   catch (e) {
 
-    log.dump({
-      id,
-      destructor_error: se(e),
-    })
+    if (e.message !== `Cannot read property 'destruct' of undefined`) {
+
+      log.dump({
+        id,
+        destructor_error: se(e),
+      })
+    }
   }
 }
 
@@ -182,6 +185,31 @@ tool.getProbes = () => list;
 tool.getProbesArray = () => Object.keys(list).map(key => list[key]);
 
 tool.register = db => register(db);
+
+tool.updateById = async (id, trx) => {
+
+  if ( ! Number.isInteger(id) ) {
+
+    throw th(`updateById is is not an integer`);
+  }
+
+  unregister(id);
+
+  man = knex.model.probes;
+
+  try {
+
+    const db = await man.findFiltered(trx, id);
+
+    register(db)
+  }
+  catch (e) {
+
+    log.dump({
+      updateById_probeDriver: `Can't reregister by id ${id} - object doesn't exist in database`,
+    })
+  }
+};
 
 tool.unregister = id => unregister(id);
 

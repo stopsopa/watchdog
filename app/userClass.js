@@ -80,7 +80,7 @@ function tool(db) {
     throw th(`data.id is not an integer`, dbNoCode);
   }
 
-  db = Object.assign(Object.create(null), db);
+  db = Object.assign({}, db);
 
   const cls = {
     destruct: function (opt = {}) {
@@ -122,7 +122,7 @@ function tool(db) {
       return response.body;
     },
     toJSON: function () {
-      return dbNoCode;
+      return {cls:'userClass', ...dbNoCode};
     },
   }
 

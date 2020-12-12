@@ -89,7 +89,14 @@ module.exports = knex => extend(knex, prototype, {
             return row;
         }
 
-        if (typeof row.users !== 'undefined') {
+        if (typeof row.users === 'undefined') {
+
+            if ( ! Array.isArray(row.users) && Number.isInteger(row.id)) {
+
+                row.users = await this.fetchUsers(trx, opt, row.id);
+            }
+        }
+        else {
 
             if (typeof row.users === 'string') {
 
@@ -99,13 +106,6 @@ module.exports = knex => extend(knex, prototype, {
             if ( ! Array.isArray(row.users) ) {
 
                 row.users = [];
-            }
-        }
-        else {
-
-            if ( ! Array.isArray(row.users) && Number.isInteger(row.id)) {
-
-                row.users = await this.fetchUsers(trx, opt, row.id);
             }
         }
 
@@ -161,7 +161,7 @@ module.exports = knex => extend(knex, prototype, {
         let [debug, trx, id] = a(args);
 
         const list = await this.query(trx, debug, `
-select              ug.user_id users
+select              ug.user_id id
 from                :table: g
          inner join user_group ug
                  on g.id = ug.group_id
@@ -170,7 +170,7 @@ where               g.id = :id
             id,
         });
 
-        return list.map(u => parseInt(u, 10));
+        return list.map(u => parseInt(u.id, 10));
     },
     updateUsers: async function (...args) {
 
@@ -182,7 +182,7 @@ where               g.id = :id
 
             for (let user_id of usersIds) {
 
-                await knex.model.user_groups.insert(true, trx, {
+                await knex.model.user_groups.insert(debug, trx, {
                     group_id: groupId,
                     user_id,
                 })
@@ -232,7 +232,7 @@ where               g.id = :id
 
             if (users) {
 
-                await this.updateUsers(trx, id, users);
+                await this.updateUsers(debug, trx, id, users);
             }
 
             return id;
@@ -246,7 +246,7 @@ where               g.id = :id
             format: 'list',
         });
 
-        return await this.fetch(`
+        return await this.fetch(debug, trx, `
 select              ${columns.join(', ')},
                     group_concat(ug.user_id) users
 from                :table: g
@@ -254,6 +254,18 @@ from                :table: g
                  on g.id = ug.group_id
 group by            g.id
 `);
+    },
+    findFiltered: async function (...args) {
+
+        let [debug, trx, id] = a(args);
+
+        const columns = await this.fetchColumnsFiltered(debug, trx, {
+            format: 'list',
+        });
+
+        return await this.queryOne(debug, trx, `select ${columns.join(`, `)} from :table: where id = :id`, {
+            id,
+        });
     },
     delete: async function (id, ...args) {
 
@@ -291,7 +303,7 @@ ORDER BY            id desc
             both: false,
         }), trx, query, params);
 
-        return this.fromDb(data);
+        return this.fromDb(data, debug, trx);
     },
 //     find: function (...args) {
 //

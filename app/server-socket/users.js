@@ -11,6 +11,8 @@ const se = require('nlab/se');
 
 const th = msg => new Error(`users.js error: ${msg}`);
 
+const driver = require('../usersDriver');
+
 const {
   generate,
 } = require('../lib/password');
@@ -93,8 +95,6 @@ module.exports = ({
     }
   })
 
-
-
   socket.on('users_form_submit', async ({
     form
   }) => {
@@ -138,6 +138,8 @@ module.exports = ({
           // await delay(300);
 
           form = await man.find(trx, id);
+
+          await driver.updateById(id, trx);
 
           if ( ! form ) {
 
@@ -184,6 +186,8 @@ module.exports = ({
       found = await man.find(id);
 
       await man.delete(id);
+
+      await driver.unregister(id);
 
       await users_list_populate({
         target: io
@@ -254,6 +258,8 @@ module.exports = ({
         password: JSON.stringify(generate(password), null, 4),
         id,
       });
+
+      await driver.updateById(id);
     }
     catch (e) {
 

@@ -11,6 +11,8 @@ const se = require('nlab/se');
 
 const th = msg => new Error(`groups.js error: ${msg}`);
 
+const driver = require('../groupsDriver');
+
 module.exports = ({
   io,
   socket,
@@ -82,9 +84,7 @@ module.exports = ({
         error: `failed to fetch group by id '${id}' list from database`,
       })
     }
-  })
-
-
+  });
 
   socket.on('groups_form_submit', async ({
     form
@@ -117,9 +117,9 @@ module.exports = ({
           id = await man.insert(entityPrepared);
         }
 
-        // await delay(300);
-
         form = await man.find(id);
+
+        await driver.updateById(id);
 
         if ( ! form ) {
 
@@ -162,6 +162,8 @@ module.exports = ({
       found = await man.find(id);
 
       await man.delete(id);
+
+      await driver.unregister(id);
 
       await groups_list_populate(io);
 

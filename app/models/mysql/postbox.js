@@ -93,7 +93,14 @@ module.exports = knex => extend(knex, prototype, {
 
         row.enabled = Boolean(row.enabled);
 
-        if (typeof row.users !== 'undefined') {
+        if (typeof row.users === 'undefined') {
+
+            if ( ! Array.isArray(row.users) && Number.isInteger(row.id)) {
+
+                row.users = await this.fetchUsers(trx, opt, row.id);
+            }
+        }
+        else {
 
             if (typeof row.users === 'string') {
 
@@ -109,15 +116,15 @@ module.exports = knex => extend(knex, prototype, {
                 row.users = [];
             }
         }
-        else {
 
-            if ( ! Array.isArray(row.users) && Number.isInteger(row.id)) {
+        if (typeof row.groups === 'undefined') {
 
-                row.users = await this.fetchUsers(trx, opt, row.id);
+            if ( ! Array.isArray(row.groups) && Number.isInteger(row.id)) {
+
+                row.groups = await this.fetchGroups(trx, opt, row.id);
             }
         }
-
-        if (typeof row.groups !== 'undefined') {
+        else {
 
             if (typeof row.groups === 'string') {
 
@@ -131,13 +138,6 @@ module.exports = knex => extend(knex, prototype, {
             if ( ! Array.isArray(row.groups) ) {
 
                 row.groups = [];
-            }
-        }
-        else {
-
-            if ( ! Array.isArray(row.groups) && Number.isInteger(row.id)) {
-
-                row.groups = await this.fetchGroups(trx, opt, row.id);
             }
         }
 
@@ -388,7 +388,7 @@ where                   group_id = :group_id
             format: 'list',
         });
 
-        return await this.fetch(`
+        return await this.fetch(debug, trx, `
 select                      p.*, 
                             group_concat(pg.group_id) groups, 
                             group_concat(pu.user_id) users
@@ -399,6 +399,18 @@ from                        postbox p
                          on p.id = pu.box_id and pu.enabled = 1
 group by                    p.id        
 `);
+    },
+    findFiltered: async function (...args) {
+
+        let [debug, trx, id] = a(args);
+
+        const columns = await this.fetchColumnsFiltered(debug, trx, {
+            format: 'list',
+        });
+
+        return await this.queryOne(debug, trx, `select ${columns.join(`, `)} from :table: where id = :id`, {
+            id,
+        });
     },
     delete: async function (id, ...args) {
 

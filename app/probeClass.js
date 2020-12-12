@@ -108,7 +108,7 @@ function tool(db) {
     throw th(`data.code should be null or string`, dbNoCode);
   }
 
-  db = Object.assign(Object.create(null), db);
+  db = Object.assign({}, db);
 
   delete db.description;
 
@@ -879,7 +879,7 @@ function tool(db) {
       return response.body;
     },
     toJSON: function () {
-      return dbNoCode;
+      return {cls:'probeClass', ...dbNoCode};
     },
   }
 

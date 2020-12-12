@@ -161,8 +161,7 @@ order by created
           })
         }
 
-
-        await driver.update(form);
+        await driver.updateById(id);
 
         await probes_list_populate(io, form.project_id);
       }

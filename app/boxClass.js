@@ -19,6 +19,10 @@ const promiseall = require('nlab/promiseall');
 
 const verbose = process.argv.includes('--verbose')
 
+const groupsDriver = require('./groupsDriver');
+
+const usersDriver = require('./usersDriver');
+
 const th = (msg, data) => {
 
   const e = new Error(`boxClass.js error: ${msg} `);
@@ -80,7 +84,7 @@ function tool(db) {
     throw th(`data.id is not an integer`, dbNoCode);
   }
 
-  db = Object.assign(Object.create(null), db);
+  db = Object.assign({}, db);
 
   delete db.description;
 
@@ -123,8 +127,39 @@ function tool(db) {
 
       return response.body;
     },
+    getUsers: function () {
+
+      let ids = [];
+
+      db.groups
+        .filter(g => g.enabled === true)
+        .map(g => {
+
+          const group = groupsDriver.getGroup(g.id, false);
+
+          if (group) {
+
+            return group.users;
+          }
+        })
+        .filter(Boolean)
+        .map(u => {
+          ids = ids.concat(u);
+        })
+      ;
+
+      ids = ids.concat(db.users.filter(u => u.enabled === true).map(u => u.id));
+
+      ids = [...new Set(ids)];
+
+      return ids.reduce((acc, id) => {
+        const user = usersDriver.getUser(id, false);
+        user && acc.push(user);
+        return acc;
+      }, []);
+    },
     toJSON: function () {
-      return dbNoCode;
+      return {cls:'boxClass', ...dbNoCode};
     },
   }
 

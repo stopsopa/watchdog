@@ -13,6 +13,8 @@ const { extractRequest } = require('../lib/telegram')
 
 const th = msg => new Error(`telegram.js error: ${msg}`);
 
+const driver = require('../boxDriver');
+
 module.exports = ({
   io,
   socket,
@@ -138,6 +140,8 @@ module.exports = ({
 
           form = await man.find(trx, id);
 
+          await driver.updateById(id, trx);
+
           if ( ! form ) {
 
             return socket.emit('probes_form_populate', {
@@ -189,6 +193,8 @@ module.exports = ({
 
           await man.delete(trx, id);
         }
+
+        await driver.unregister(id);
 
         await postbox_list_atom_populate({
           target: io,
