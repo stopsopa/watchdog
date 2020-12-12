@@ -323,6 +323,7 @@ const estool = (async function () {
           const driver = require('./app/boxDriver');
 
           await driver({
+            app,
             knex: knex(),
             es,
             io,

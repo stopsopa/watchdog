@@ -122,7 +122,10 @@ function tool(db) {
       }
 
       return response.body;
-    }
+    },
+    toJSON: function () {
+      return dbNoCode;
+    },
   }
 
   return cls;

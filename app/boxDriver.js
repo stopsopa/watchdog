@@ -74,6 +74,16 @@ const tool = async function (opt = {}) {
     throw th(`opt is not an object`);
   }
 
+  if ( typeof opt.app !== 'function' ) {
+
+    throw th(`opt.app is not a function`);
+  }
+
+  if ( typeof opt.app.use !== 'function' ) {
+
+    throw th(`opt.app.use is not a function`);
+  }
+
   if ( typeof opt.es !== 'function' ) {
 
     throw th(`opt.es is not defined`);
@@ -145,11 +155,6 @@ const tool = async function (opt = {}) {
       format: 'list',
     });
 
-    log.dump({
-      list,
-      one: await man.find(7)
-    }, 10);
-
   } catch (e) {
 
     throw th(`couldn't fetch boxes from db: ${e}`);
@@ -194,6 +199,21 @@ const tool = async function (opt = {}) {
   await promiseall(all);
 
   init = opt;
+
+  if (process.env.TEST_MODE === 'true') {
+
+    opt.app.all('/boxDriver', (req, res) => {
+      res.set('Content-type', 'text/html; charset=utf-8')
+      return res.end(`
+<ul>
+<li><a href="/boxDriver">/boxDriver</a></li>
+<li><a href="/groupsDriver">/groupsDriver</a></li>
+<li><a href="/usersDriver">/usersDriver</a></li>
+</ul>
+<pre>${JSON.stringify(tool.getBoxesArray(), null, 4)}</pre>      
+`);
+    });
+  }
 }
 
 tool.getBox = (id, _throw = true) => {
