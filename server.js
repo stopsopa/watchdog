@@ -282,8 +282,6 @@ const estool = (async function () {
           //   body: JSON.stringify({a: 'b'})
           // }).then(res => res.json()).then(data => console.log(data))
 
-          const man = knex().model.probes;
-
           app.all('/passive/:id(\\d+)', async (req, res) => {
 
             const id = req.params.id;

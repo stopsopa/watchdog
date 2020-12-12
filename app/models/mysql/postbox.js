@@ -101,9 +101,7 @@ module.exports = knex => extend(knex, prototype, {
                   .split(",")
                   .map(id => parseInt(id, 10))
 
-                row.users = [...new Set(row.users)];
-
-                row.users = row.users.map(id => ({id, enabled: true}));
+                row.users = [...new Set(row.users)].map(id => ({id, enabled: true}));
             }
 
             if ( ! Array.isArray(row.users) ) {
@@ -127,9 +125,7 @@ module.exports = knex => extend(knex, prototype, {
                   .split(",")
                   .map(id => parseInt(id, 10))
 
-                row.groups = [...new Set(row.groups)];
-
-                row.groups = row.groups.map(id => ({id, enabled: true}));
+                row.groups = [...new Set(row.groups)].map(id => ({id, enabled: true}));
             }
 
             if ( ! Array.isArray(row.groups) ) {
