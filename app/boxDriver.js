@@ -11,7 +11,7 @@ const se = require('nlab/se');
 
 let init;
 
-let boxes = {};
+let list = {};
 
 let knex;
 
@@ -27,7 +27,7 @@ async function register(db) {
 
   await cls.construct();
 
-  boxes[db.id] = cls;
+  list[db.id] = cls;
 }
 
 const intreg = /^\d+$/;
@@ -42,8 +42,8 @@ async function unregister(id) {
 
   ({
     [id]: cls,
-    ...boxes
-  } = boxes);
+    ...list
+  } = list);
 
   try {
 
@@ -75,13 +75,75 @@ const tool = async function (opt = {}) {
     throw th(`opt.es is not defined`);
   }
 
+  try {
+
+    const cls = require('./boxClass');
+
+    cls.setup(opt);
+  }
+  catch (e) {
+
+    log.dump({
+      boxClass_contructor_general_error: se(e)
+    });
+
+    process.exit(1);
+  }
+
+  try {
+
+    const driver = require('./groupsDriver');
+
+    await driver(opt);
+  }
+  catch (e) {
+
+    log.dump({
+      groupsDriver_contructor_general_error: se(e)
+    });
+
+    process.exit(1);
+  }
+
+  try {
+
+    const driver = require('./usersDriver');
+
+    await driver(opt);
+  }
+  catch (e) {
+
+    log.dump({
+      usersDriver_contructor_general_error: se(e)
+    });
+
+    process.exit(1);
+  }
+
+  try {
+
+    const cls = require('./userClass');
+
+    cls.setup(opt);
+  }
+  catch (e) {
+
+    log.dump({
+      userClass_contructor_general_error: se(e)
+    });
+
+    process.exit(1);
+  }
+
   let list;
 
   try {
 
     man = opt.knex.model.postbox;
 
-    list = await man.fetch(`select * from :table:`);
+    list = await man.listImportantColumns({
+      format: 'list',
+    });
 
     // log.dump({
     //   list_all_probes: list.map(r => {
@@ -127,7 +189,7 @@ const tool = async function (opt = {}) {
       catch (e) {
 
         log.dump({
-          general_error_running_probe: se(e),
+          general_error_running_box: se(e),
           context: rest,
         }, 4)
 
@@ -150,18 +212,18 @@ tool.getBox = (id, _throw = true) => {
 
   if (_throw) {
 
-    if ( ! boxes[id] ) {
+    if ( ! list[id] ) {
 
       throw th(`getBox() error: probe not found by id ${id}`);
     }
   }
 
-  return boxes[id];
+  return list[id];
 }
 
-tool.getBoxes = () => boxes;
+tool.getBoxes = () => list;
 
-tool.getBoxesArray = () => Object.keys(boxes).map(key => boxes[key]);
+tool.getBoxesArray = () => Object.keys(list).map(key => list[key]);
 
 tool.register = db => register(db);
 

@@ -226,11 +226,11 @@ const estool = (async function () {
 
     knex.init(config);
 
+    await knex().model.common.howMuchDbIsFasterThanNode(true); // crush if greater than 5 sec
+
     let es = await estool;
 
     es = await es();
-
-    const driver = require('./app/probeDriver');
 
     await (async function () {
 
@@ -256,44 +256,57 @@ const estool = (async function () {
           bind: require('./app/server-socket'),
           app,
         });
-
       }());
 
-      (function () {
-
-        const cls = require('./app/probeClass');
-
-        cls.setup({
-          // dir: path.resolve(__dirname, 'var', 'probes'),
-          dir: path.resolve(__dirname),
-          es,
-          io
-        });
-      }());
-
-      // setTimeout(async () => {
+      await (async function () {
 
         try {
 
+          const driver = require('./app/probeDriver');
+
           await driver({
+            dir: path.resolve(__dirname),
             knex: knex(),
             es,
             io,
           });
 
-          // setTimeout(() => {
-          //
-          //   log.dump({
-          //     probes: Object.entries(driver.getProbes()).map(([key, obj]) => obj.state()),
-          //   }, 5)
-          //
-          //
-          //   // driver.unregister(31)                                    // ???????
-          //   //
-          //   // log.dump({
-          //   //   probes: driver.getProbes(),
-          //   // })
-          // }, 1000);
+          // fetch('/passive')
+
+          // fetch('/passive/67', {
+          //   method: 'post',
+          //   credentials: 'omit',
+          //   headers: {
+          //     "Content-type": "application/json; charset=utf-8"
+          //   },
+          //   body: JSON.stringify({a: 'b'})
+          // }).then(res => res.json()).then(data => console.log(data))
+
+          const man = knex().model.probes;
+
+          app.all('/passive/:id(\\d+)', async (req, res) => {
+
+            const id = req.params.id;
+
+            try {
+
+              const probe = driver.getProbe(id);
+
+              await probe.passiveEndpoint(req);
+
+              return res.send("logged").end();
+            }
+            catch (e) {
+
+              log.dump({
+                passive_probe_endpoint_error: se(e)
+              });
+
+              return res.status(500).json({
+                error: String(e),
+              });
+            }
+          });
         }
         catch (e) {
 
@@ -303,48 +316,30 @@ const estool = (async function () {
 
           process.exit(1);
         }
-      // }, 1000);
+      }())
 
-      // fetch('/passive')
-
-      // fetch('/passive/67', {
-      //   method: 'post',
-      //   credentials: 'omit',
-      //   headers: {
-      //     "Content-type": "application/json; charset=utf-8"
-      //   },
-      //   body: JSON.stringify({a: 'b'})
-      // }).then(res => res.json()).then(data => console.log(data))
-
-      const man = knex().model.probes;
-
-      app.all('/passive/:id(\\d+)', async (req, res) => {
-
-        const id = req.params.id;
+      await (async function () {
 
         try {
 
-          const probe = driver.getProbe(id);
+          const driver = require('./app/boxDriver');
 
-          await probe.passiveEndpoint(req);
-
-          return res.send("logged").end();
+          await driver({
+            knex: knex(),
+            es,
+            io,
+          });
         }
         catch (e) {
 
           log.dump({
-            passive_probe_endpoint_error: se(e)
+            boxDriver_contructor_general_error: se(e)
           });
 
-          return res.status(500).json({
-            error: String(e),
-          });
+          process.exit(1);
         }
-      });
-
+      }());
     }());
-
-    await knex().model.common.howMuchDbIsFasterThanNode(true); // crush if greater than 5 sec
 
 // see more: https://github.com/stopsopa/nlab/blob/master/src/express/extend-res.js
     (function () {

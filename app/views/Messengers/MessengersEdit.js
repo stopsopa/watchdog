@@ -159,7 +159,7 @@ export const MessengersEdit = () => {
 
 
       {loading ? (
-        `Loading...`
+        <div>Loading...</div>
       ) : (
         <div className="main-flex">
           <div className="left">

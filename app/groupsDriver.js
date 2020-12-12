@@ -3,8 +3,6 @@ const log = require('inspc');
 
 const isObject = require('nlab/isObject');
 
-const userClass = require('./userClass');
-
 const promiseall = require('nlab/promiseall');
 
 const se = require('nlab/se');
@@ -19,15 +17,15 @@ let es;
 
 let man;
 
-const th = msg => new Error(`usersDriver.js error: ${msg}`);
+const th = msg => new Error(`groupsDriver.js error: ${msg}`);
 
 async function register(db) {
 
-  let cls = userClass(db);
+  log.dump({
+    group: db,
+  }, 10);
 
-  await cls.construct();
-
-  list[db.id] = cls;
+  list[db.id] = db;
 }
 
 const intreg = /^\d+$/;
@@ -79,7 +77,7 @@ const tool = async function (opt = {}) {
 
   try {
 
-    man = opt.knex.model.users;
+    man = opt.knex.model.groups;
 
     list = await man.listImportantColumns({
       format: 'list',
@@ -87,7 +85,7 @@ const tool = async function (opt = {}) {
 
   } catch (e) {
 
-    throw th(`couldn't fetch users from db: ${e}`);
+    throw th(`couldn't fetch group from db: ${e}`);
   }
 
   ({

@@ -55,6 +55,9 @@ const def = {
 }
 
 module.exports = knex => extend(knex, prototype, {
+    filters: {
+        def : ['created', 'updated', 'description'],
+    },
     initialize: async function (extra) {
 
 //         const id = await this.raw(`
@@ -202,6 +205,16 @@ module.exports = knex => extend(knex, prototype, {
         // }
 
         return id;
+    },
+    listImportantColumns: async function (...args) {
+
+        let [debug, trx] = a(args);
+
+        const columns = await this.fetchColumnsFiltered(debug, trx, {
+            format: 'list',
+        });
+
+        return await this.fetch(`select ${columns.join(`, `)} from :table:`);
     },
     delete: async function (id, ...args) {
 

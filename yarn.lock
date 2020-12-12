@@ -4338,10 +4338,10 @@ klona@^2.0.4:
   resolved "https://registry.yarnpkg.com/klona/-/klona-2.0.4.tgz#7bb1e3affb0cb8624547ef7e8f6708ea2e39dfc0"
   integrity sha512-ZRbnvdg/NxqzC7L9Uyqzf4psi1OM4Cuc+sJAkQPjO6XkQIJTNbfK2Rsmbw8fx1p2mkZdp2FZYo2+LwXYY/uwIA==
 
-knex-abstract@^0.0.113:
-  version "0.0.113"
-  resolved "https://registry.yarnpkg.com/knex-abstract/-/knex-abstract-0.0.113.tgz#051e98e72b682c3f15f227ddfa5fcc15a1b3c42e"
-  integrity sha512-KHMFsH999rTlwx12huTy6h2KgvHUCZrfQSX9rdlgbHDprYp/AcnoE3WgLxcWgMU1oV9+aDl4ZKgVwGGH2bkPxQ==
+knex-abstract@^0.0.115:
+  version "0.0.115"
+  resolved "https://registry.yarnpkg.com/knex-abstract/-/knex-abstract-0.0.115.tgz#2b2ecdf931e45b8cf5c4348a9f3c9f1e4eb58852"
+  integrity sha512-QdRH8RSWSopQliSm2zthAoK+Y9/6bPFPaAPejLWL0cGJ5hcGxxFPAXnFODluzQD4esbx5olQXmw67+7YLuFgDg==
   dependencies:
     dotenv-up "^1.0.28"
     inspc "^0.0.19"

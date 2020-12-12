@@ -52,6 +52,9 @@ const table             = 'group';
 const id                = 'id';
 
 module.exports = knex => extend(knex, prototype, {
+    filters: {
+        def : ['created', 'updated', 'description'],
+    },
     initialize: async function (extra) {
 
 //         const id = await this.raw(`
@@ -86,7 +89,19 @@ module.exports = knex => extend(knex, prototype, {
             return row;
         }
 
-        (function () {
+        if (typeof row.uids !== 'undefined') {
+
+            if (typeof row.uids === 'string') {
+
+                row.uids = row.uids.split(",").map(id => parseInt(id, 10));
+            }
+
+            if ( ! Array.isArray(row.uids) ) {
+
+                row.uids = [];
+            }
+        }
+        else {
 
             if (typeof row.users === 'string') {
 
@@ -97,79 +112,7 @@ module.exports = knex => extend(knex, prototype, {
 
                 row.users = [];
             }
-        }());
-
-        // if (typeof row.roles === 'string') {
-        //
-        //     row.roles = row.roles.split(',').map(r => /^\d+$/.test(r) ? parseInt(r, 10) : r).filter(Boolean);
-        // }
-        //
-        // if (typeof row.rnames === 'string') {
-        //
-        //     row.rnames = row.rnames.split(',').filter(Boolean);
-        // }
-        //
-        // if ( ! Array.isArray(row.roles) ) {
-        //
-        //     row.roles = [];
-        // }
-        //
-
-        // row.enabled = Boolean(row.enabled);
-
-        // (function (label) {
-        //
-        //     if (typeof row.firstName === 'string') {
-        //
-        //         label.push(row.firstName)
-        //     }
-        //
-        //     if (typeof row.lastName === 'string') {
-        //
-        //         label.push(row.lastName)
-        //     }
-        //
-        //     row.label = label.join(' ');
-        // }([]));
-
-        // (function () {
-        //
-        //     if (typeof row.password === 'string') {
-        //
-        //         if ( ! isObject(row.password) ) {
-        //
-        //             try {
-        //
-        //                 row.password = JSON.parse(row.password);
-        //             }
-        //             catch (e) {
-        //
-        //                 row.password = {}
-        //             }
-        //         }
-        //     }
-        //     if ( ! isObject(row.password) ) {
-        //
-        //         row.password = null;
-        //     }
-        // }());
-
-        //
-        // row.detailed_log = Boolean(row.detailed_log);
-        //
-        // row.service_mode = Boolean(row.service_mode);
-        //
-        // if (typeof row.config === 'string') {
-        //
-        //     try {
-        //
-        //         row.config = JSON.parse(row.config);
-        //     }
-        //     catch (e) {
-        //
-        //         row.config = {};
-        //     }
-        // }
+        }
 
         return row;
     },
@@ -294,6 +237,23 @@ module.exports = knex => extend(knex, prototype, {
 
             return id;
         });
+    },
+    listImportantColumns: async function (...args) {
+
+        let [debug, trx] = a(args);
+
+        const columns = await this.fetchColumnsFiltered(debug, trx, {
+            format: 'list',
+        });
+
+        return await this.fetch(`
+select              ${columns.join(', ')},
+                    group_concat(ug.user_id) uids
+from                :table: g
+          left join user_group ug
+                 on g.id = ug.group_id
+group by            g.id
+`);
     },
     delete: async function (id, ...args) {
 

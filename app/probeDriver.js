@@ -11,7 +11,7 @@ const se = require('nlab/se');
 
 let init;
 
-let probes = {};
+let list = {};
 
 let knex;
 
@@ -27,7 +27,7 @@ async function register(db) {
 
   await cls.construct();
 
-  probes[db.id] = cls;
+  list[db.id] = cls;
 }
 
 const intreg = /^\d+$/;
@@ -42,8 +42,8 @@ async function unregister(id) {
 
   ({
     [id]: cls,
-    ...probes
-  } = probes);
+    ...list
+  } = list);
 
   try {
 
@@ -75,13 +75,30 @@ const tool = async function (opt = {}) {
     throw th(`opt.es is not defined`);
   }
 
+  try {
+
+    const cls = require('./probeClass');
+
+    cls.setup(opt);
+  }
+  catch (e) {
+
+    log.dump({
+      probeClass_contructor_general_error: se(e)
+    });
+
+    process.exit(1);
+  }
+
   let list;
 
   try {
 
     man = opt.knex.model.probes;
 
-    list = await man.fetch(`select * from :table:`);
+    list = await man.listImportantColumns({
+      format: 'list',
+    });
 
     // log.dump({
     //   list_all_probes: list.map(r => {
@@ -151,18 +168,18 @@ tool.getProbe = (id, _throw = true) => {
 
   if (_throw) {
 
-    if ( ! probes[id] ) {
+    if ( ! list[id] ) {
 
       throw th(`getProbe() error: probe not found by id ${id}`);
     }
   }
 
-  return probes[id];
+  return list[id];
 }
 
-tool.getProbes = () => probes;
+tool.getProbes = () => list;
 
-tool.getProbesArray = () => Object.keys(probes).map(key => probes[key]);
+tool.getProbesArray = () => Object.keys(list).map(key => list[key]);
 
 tool.register = db => register(db);
 

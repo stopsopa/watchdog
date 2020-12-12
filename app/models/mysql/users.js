@@ -50,6 +50,9 @@ const table             = 'users';
 const id                = 'id';
 
 module.exports = knex => extend(knex, prototype, {
+    filters: {
+        def : ['created', 'updated', 'description'],
+    },
     initialize: async function (extra) {
 
 //         const id = await this.raw(`
@@ -102,14 +105,14 @@ module.exports = knex => extend(knex, prototype, {
 
         (function (label) {
 
-            if (typeof row.firstName === 'string') {
+            if (typeof row.firstName === 'string' && row.firstName.trim()) {
 
-                label.push(row.firstName)
+                label.push(row.firstName.trim())
             }
 
-            if (typeof row.lastName === 'string') {
+            if (typeof row.lastName === 'string' && row.lastName.trim()) {
 
-                label.push(row.lastName)
+                label.push(row.lastName.trim())
             }
 
             row.label = label.join(' ');
@@ -136,23 +139,6 @@ module.exports = knex => extend(knex, prototype, {
                 row.password = null;
             }
         }());
-
-        //
-        // row.detailed_log = Boolean(row.detailed_log);
-        //
-        // row.service_mode = Boolean(row.service_mode);
-        //
-        // if (typeof row.config === 'string') {
-        //
-        //     try {
-        //
-        //         row.config = JSON.parse(row.config);
-        //     }
-        //     catch (e) {
-        //
-        //         row.config = {};
-        //     }
-        // }
 
         return row;
     },
@@ -289,6 +275,16 @@ module.exports = knex => extend(knex, prototype, {
 //             return data[0];
 //         }).then(list => Promise.all(list.map(l => this.fromDb(l))));
 //     },
+    listImportantColumns: async function (...args) {
+
+        let [debug, trx] = a(args);
+
+        const columns = await this.fetchColumnsFiltered(debug, trx, {
+            format: 'list',
+        });
+
+        return await this.fetch(`select ${columns.join(`, `)} from :table:`);
+    },
     prepareToValidate: function (data = {}, mode) {
 
         // if (typeof data.id !== 'undefined') {

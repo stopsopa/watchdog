@@ -21,7 +21,7 @@ const verbose = process.argv.includes('--verbose')
 
 const th = (msg, data) => {
 
-  const e = new Error(`boxClass.js error: ${msg} `);
+  const e = new Error(`userClass.js error: ${msg} `);
 
   if (data) {
 
@@ -68,7 +68,7 @@ function tool(db) {
   } = db;
 
   // if ( this instanceof tool )
-  //   throw new Error( `Can't create instance of function 'boxClass' just use it as a function` );
+  //   throw new Error( `Can't create instance of function 'userClass' just use it as a function` );
 
   if ( ! isObject(dbNoCode) ) {
 
@@ -82,8 +82,6 @@ function tool(db) {
 
   db = Object.assign(Object.create(null), db);
 
-  delete db.description;
-
   const cls = {
     destruct: function (opt = {}) {
 
@@ -91,11 +89,11 @@ function tool(db) {
         hide_log,
       } = opt || {};
 
-      hide_log || (logg.t(`box destruct  ${db.enabled ? 'enabled ' : 'disabled'} [${String(db.id).padStart(6, ' ')}]`));
+      hide_log || (logg.t(`user destruct  ${db.enabled ? 'enabled ' : 'disabled'} [${String(db.id).padStart(6, ' ')}]`));
     },
     construct: async function () {
 
-      logg.t(`box construct ${db.enabled ? 'enabled ' : 'disabled'} [${String(db.id).padStart(6, ' ')}]`);
+      logg.t(`user construct ${db.enabled ? 'enabled ' : 'disabled'} [${String(db.id).padStart(6, ' ')}]`);
 
       this.destruct({
         hide_log: true,
@@ -150,7 +148,7 @@ tool.setup = function (opt) {
     throw th(`setup() io is not an object`);
   }
 
-  index = es.prefix('box');
+  index = es.prefix('users');
 }
 
 module.exports = tool;
