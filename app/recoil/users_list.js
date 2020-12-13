@@ -68,7 +68,7 @@ export const UsersListAtomMount = ({
       reset_list();
     }
 
-  }, [socket.id]);
+  }, []);
 
   return null;
 }

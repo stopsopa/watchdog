@@ -80,7 +80,7 @@ export const PostboxListAtomMount = ({
       reset_list();
     }
 
-  }, [socket.id]);
+  }, []);
 
   return null;
 }

@@ -131,7 +131,7 @@ module.exports = ({
 
           if (mode === 'edit') {
 
-            await man.update(true, trx, form, id);
+            await man.update(trx, form, id);
           }
           else {
 

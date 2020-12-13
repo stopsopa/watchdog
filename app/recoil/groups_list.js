@@ -68,7 +68,7 @@ export const GroupsListAtomMount = ({
       reset_list();
     }
 
-  }, [socket.id]);
+  }, []);
 
   return null;
 }

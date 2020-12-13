@@ -96,7 +96,7 @@ export const PostboxFormAtomMount = ({
       reset_errors();
     };
 
-  }, [socket.id]);
+  }, []);
 
   return null;
 }
