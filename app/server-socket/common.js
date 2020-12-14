@@ -63,6 +63,14 @@ module.exports = ({
         }
       }()),
     },
+    "process_memoryUsage": (function () {
+      const used = process.memoryUsage();
+      const mem = {};
+      for (let key in used) {
+        mem[key] = `${key} ${Math.round(used[key] / 1024 / 1024 * 100) / 100} MB`;
+      }
+      return mem;
+    }()),
     getTelegramNodeServerStatus: getTelegramNodeServerStatus(),
   });
 }

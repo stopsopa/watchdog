@@ -13,6 +13,8 @@ import io from 'socket.io-client';
 
 import log from 'inspc';
 
+import isObject from 'nlab/isObject';
+
 /**
  *
   import {
@@ -159,7 +161,13 @@ export function StoreSocketProvider(props) {
       git_status,
       messengers_detection,
       getTelegramNodeServerStatus = {},
+      process_memoryUsage,
     }) => {
+
+      if (isObject(process_memoryUsage)) {
+
+        log.dump(JSON.stringify(process_memoryUsage, null, 4));
+      }
 
       setStoreAssoc('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', getTelegramNodeServerStatus.PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected);
 
