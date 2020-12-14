@@ -75,6 +75,7 @@ module.exports = knex => extend(knex, prototype, {
 
         return {
             enabled: true,
+            config: {},
             ...extra,
         }
     },
@@ -140,6 +141,23 @@ module.exports = knex => extend(knex, prototype, {
             }
         }());
 
+        if ( typeof row.config === 'string' ) {
+
+            try {
+
+                row.config = JSON.parse(row.config) || {};
+            }
+            catch (e) {
+
+            }
+        }
+
+        if ( ! isObject(row.config)) {
+
+
+            row.config = {};
+        }
+
         return row;
     },
     toDb: async function (row, opt, trx) {
@@ -184,6 +202,22 @@ module.exports = knex => extend(knex, prototype, {
         //
         //     row.config = JSON.stringify(row.config, null, 4);
         // }
+
+        if ( isObject(row.config) ) {
+
+            try {
+
+                row.config = JSON.stringify(row.config, null, 4);
+            }
+            catch (e) {
+
+            }
+        }
+
+        if ( typeof row.config !== 'string' ) {
+
+            row.config = "{}";
+        }
 
         return row;
     },
@@ -299,6 +333,8 @@ module.exports = knex => extend(knex, prototype, {
     },
     prepareToValidate: function (data = {}, mode) {
 
+        data = {...data};
+
         // if (typeof data.id !== 'undefined') {
         //
         //     delete data.id;
@@ -330,6 +366,7 @@ module.exports = knex => extend(knex, prototype, {
                 new Length({max: 50}),
             ]),
             description: new Optional(),
+            // config: new Optional(),
             // password: new Required([
             //     new NotBlank(),
             //     new Length({max: 255}),
@@ -408,6 +445,39 @@ module.exports = knex => extend(knex, prototype, {
                 new Type('bool'),
             ]),
         };
+
+        let config = {};
+
+        // telegram
+        (
+          typeof process.env.PROTECTED_TELEGRAM_TOKEN === 'string' &&
+          process.env.PROTECTED_TELEGRAM_TOKEN.trim()
+        ) && (function () {
+
+            try {
+
+                if (entity.config.telegram.id) { // field is not required
+
+                    config.telegram = new Collection({
+                        id: new Regex({
+                            pattern     : /^-?\d+$/g, // required, type regex
+                            message     : 'Value should be a number for regular user and negative number (with minus prefix) for bot',
+                            match       : true, // true     - if value match regex then validation passed
+                                                // false    - if value NOT match regex then validation passed
+                        })
+                    });
+                }
+            }
+            catch (e) {}
+        }());
+
+        if (Object.keys(config).length > 0) {
+
+            collection.config = new Collection(config);
+        }
+        else {
+            collection.config = new Optional();
+        }
 
         return new Collection(collection);
     },

@@ -141,6 +141,22 @@ export default function ProjectsList() {
         ))}
       </div>
 
+      {(function (on) {
+
+        if ( ! on ) {
+
+          return null;
+        }
+
+        return (
+          <>
+            <hr />
+            env('TEST_MODE') === 'true': &nbsp;
+            <a href="/usersDriver" target="_blank">/usersDriver</a>
+          </>
+        )
+      }(env('TEST_MODE') === 'true'))}
+
       <Modal
         basic
         size='small'

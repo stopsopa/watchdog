@@ -285,6 +285,8 @@ module.exports = knex => extend(knex, prototype, {
 //     },
     prepareToValidate: function (data = {}, mode) {
 
+        data = {...data};
+
         // if (typeof data.id !== 'undefined') {
         //
         //     delete data.id;

@@ -171,6 +171,10 @@ export function StoreSocketProvider(props) {
 
       setStoreAssoc('messengers_detection', messengers_detection);
 
+      log.dump({
+        messengers_detection__: messengers_detection,
+      })
+
       const {
         NODE_ENV,  // : "production"
         githash,   // : "66c9be4"

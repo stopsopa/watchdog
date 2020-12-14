@@ -356,6 +356,8 @@ ORDER BY            id desc
 //     },
     prepareToValidate: function (data = {}, mode) {
 
+        data = {...data};
+
         // if (typeof data.id !== 'undefined') {
         //
         //     delete data.id;

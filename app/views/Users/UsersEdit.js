@@ -7,6 +7,10 @@ import React, {
 
 import './UsersEdit.scss';
 
+import log from 'inspc';
+
+import isObject from 'nlab/isObject';
+
 import NoInput from '../../components/NoInput/NoInput';
 
 import AceEditor from '../../components/AceEditor/AceEditor';
@@ -73,6 +77,23 @@ export default function UsersEdit() {
 
   useContext(StoreContextProjects);
 
+  const messengers_detection = getStoreAssoc('messengers_detection');
+
+  /**
+   * That's actually recommended way to detect if any messenger system is registered in .env
+   * because messengers_detection might be like:
+   * messengers_detection = {}
+   * or
+   * messengers_detection = {
+   *   telegram: false
+   * }
+   * or
+   * messengers_detection = {
+   *   telegram: { ... object with any properties for telegram ... }
+   * }
+   */
+  let found = Object.values(messengers_detection || {}).find(Boolean);
+
   const socket = getSocket();
 
   let {
@@ -83,6 +104,8 @@ export default function UsersEdit() {
 
     id = parseInt(id, 10);
   }
+
+  const [ tab, setTab ] = useState(false);
 
   const [ loading, setLoading ] = useState(true);
 
@@ -175,6 +198,11 @@ export default function UsersEdit() {
     actionUsersFormSubmit({
       form,
     });
+  }
+
+  if ( ! isObject(messengers_detection) ) {
+
+    return "Loading..."
   }
 
   return (
@@ -285,6 +313,76 @@ export default function UsersEdit() {
                   {errors.password && <div className="error">{errors.password}</div>}
                 </Form.Field>
               )}
+
+              {found && (function ({
+                moreThanOneMessengerType,
+                telegram = false, // from: messengers_detection
+                other,
+              }) {
+
+                const buttons = {};
+
+                if (telegram) {
+
+                  buttons.telegram = (
+                    <Button size="mini"
+                            key="telegram"
+                            color={(tab === 'telegram') ? 'grey' : undefined}
+                            onClick={e => {e.preventDefault(); setTab('telegram')}}
+                    >
+                      <Icon name="telegram" />
+                      Telegram
+                    </Button>
+                  );
+                }
+
+                // if (other) {
+                //
+                //   buttons.other = (
+                //     <Button size="mini"
+                //             key="other"
+                //             color={(tab === 'other') ? 'grey' : undefined}
+                //             onClick={e => {e.preventDefault(); setTab('other')}}
+                //     >
+                //       <Icon name="telegram" />
+                //       other
+                //     </Button>
+                //   );
+                // }
+
+                if (tab === false) {
+
+                  setTimeout(() => setTab(Object.keys(buttons)[0] || ''), 0);
+                }
+
+                return (
+                  <>
+                    {moreThanOneMessengerType && Object.values(buttons)}
+                    {(tab === 'telegram') && <div>
+                      <h5>Telegram settings</h5>
+                      <Form.Field
+                        disabled={loading}
+                        error={!!(function (){try {return errors.config.telegram.id}catch(e){return false}})()}
+                      >
+                        <label>User id</label>
+                        <input placeholder='User id' value={(function (){try {return form.config.telegram.id}catch(e){return ''}})()}
+                               onChange={e => editField('config.telegram.id', e.target.value)}
+                               autoComplete="nope"
+                        />
+                        {(function (){try {return errors.config.telegram.id}catch(e){return false}})() && <div className="error">{errors.config.telegram.id}</div>}
+                      </Form.Field>
+                    </div>}
+                    {(tab === 'other') && <div>
+                      other...
+                    </div>}
+                  </>
+                )
+
+              }({
+                ...messengers_detection,
+                // other: true,
+                moreThanOneMessengerType: Object.values(messengers_detection).length > 1
+              }))}
               <Form.Field disabled={sending}>
                 <Button type='submit'
                         autoComplete="nope"

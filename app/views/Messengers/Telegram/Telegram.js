@@ -64,7 +64,7 @@ export default (props = {}) => {
 
   const {
     PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY,
-    webhook_can_be_refreshed_in_browser,
+    telegram_webhook_can_be_refreshed_in_browser,
   } = telegram || {};
 
   const PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected    = getStoreAssoc('PROTECTED_TELEGRAM_ENABLE_SOCKET_PROXY_clients_connected', 0);
@@ -175,7 +175,7 @@ export default (props = {}) => {
               </div>
               <div>
                 <Button size="mini" onClick={refresh_telegram_get_current_webhook}>refresh</Button>
-                {webhook_can_be_refreshed_in_browser && <Button size="mini" onClick={telegram_reset_webhook}>reset</Button>}
+                {telegram_webhook_can_be_refreshed_in_browser && <Button size="mini" onClick={telegram_reset_webhook}>reset</Button>}
               </div>
             </td>
             <td>{telegram_get_current_webhook}</td>

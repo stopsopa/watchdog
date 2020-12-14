@@ -56,6 +56,11 @@ export class Users {
     })
     enabled: boolean;
 
+    @Column("mediumtext", {
+        nullable: true,
+    })
+    config: null;
+
     @Column("datetime", {
         default: () => 'CURRENT_TIMESTAMP',
     })

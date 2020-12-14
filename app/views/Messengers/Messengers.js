@@ -80,7 +80,20 @@ export default (props = {}) => {
     return "Loading..."
   }
 
-  let found = Object.values(messengers_detection).find(Boolean);
+  /**
+   * That's actually recommended way to detect if any messenger system is registered in .env
+   * because messengers_detection might be like:
+   * messengers_detection = {}
+   * or
+   * messengers_detection = {
+   *   telegram: false
+   * }
+   * or
+   * messengers_detection = {
+   *   telegram: { ... object with any properties for telegram ... }
+   * }
+   */
+  let found = Object.values(messengers_detection || {}).find(Boolean);
 
   function cancelDelete() {
 
