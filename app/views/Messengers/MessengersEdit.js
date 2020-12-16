@@ -42,21 +42,11 @@ import './MessengersEdit.scss';
 
 import log from 'inspc';
 
+import delay from 'nlab/delay';
+
 import {
   StoreContext as StoreContextSocket,
 } from '../../_storage/storeSocket';
-
-import {
-  RecoilRoot,
-  atom,
-  selector,
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-  useResetRecoilState,
-} from 'recoil';
-
-import delay from 'nlab/delay';
 
 import {
   postbox_form_atom,
@@ -74,7 +64,17 @@ import {
   GroupsListAtomMount,
 } from '../../recoil/groups_list';
 
-export const MessengersEdit = () => {
+import {
+  RecoilRoot,
+  atom,
+  selector,
+  useRecoilState,
+  useRecoilValue,
+  useSetRecoilState,
+  useResetRecoilState,
+} from 'recoil';
+
+export default () => {
 
   let {
     state: socket,
@@ -157,7 +157,6 @@ export const MessengersEdit = () => {
         <Breadcrumb.Section>{id ? `Edit messenger ${form.name ? `"${form.name}"` : `...`}`: `Create messenger`}</Breadcrumb.Section>
       </Breadcrumb>
 
-
       {loading ? (
         <div>Loading...</div>
       ) : (
@@ -166,6 +165,14 @@ export const MessengersEdit = () => {
             <Form onSubmit={onSubmit}
                   autoComplete="off"
             >
+              <div>
+                {form.id && <Button
+                  content="Logs"
+                  as={Link}
+                  to={`/messengers/log/${form.id}`}
+                  className="logbutton"
+                />}
+              </div>
               <Form.Field
                 disabled={loading}
                 error={!!errors.name}
@@ -327,13 +334,5 @@ export const MessengersEdit = () => {
         </div>
       )}
     </div>
-  )
-}
-
-export default () => {
-  return (
-    <React.Suspense fallback={<div>Loading...</div>}>
-      <MessengersEdit />
-    </React.Suspense>
   )
 }

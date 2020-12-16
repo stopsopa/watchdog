@@ -56,10 +56,7 @@ export const GroupsListAtomMount = ({
 
     socket.on('groups_list_populate', groups_list_populate);
 
-    if (list.length === 0) {
-
-      socket.emit('groups_list_populate');
-    }
+    socket.emit('groups_list_populate');
 
     return () => {
 

@@ -150,6 +150,11 @@ export default (props = {}) => {
             <Link to={`/messengers/edit/${m.id}`}>{m.name} [{m.box}]</Link>
             <div className="actions">
               <Button
+                size="mini"
+                as={Link}
+                to={`/messengers/log/${m.id}`}
+              >Log</Button>
+              <Button
                 icon="trash"
                 size="mini"
                 color="red"
@@ -159,12 +164,6 @@ export default (props = {}) => {
                   setDeleting(m);
                 }}
               />
-              {/*<Button*/}
-              {/*  size="mini"*/}
-              {/*  as={Link}*/}
-              {/*  color="olive"*/}
-              {/*  to={`/users/${p.id}`}*/}
-              {/*>Edit</Button>*/}
             </div>
           </div>
         ))}

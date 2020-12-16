@@ -56,10 +56,7 @@ export const UsersListAtomMount = ({
 
     socket.on('users_list_populate', users_list_populate);
 
-    if (list.length === 0) {
-
-      socket.emit('users_list_populate');
-    }
+    socket.emit('users_list_populate');
 
     return () => {
 

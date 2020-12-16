@@ -36,6 +36,8 @@ import Messengers from './views/Messengers/Messengers'
 
 import MessengersEdit from './views/Messengers/MessengersEdit'
 
+import MessengersLog from './views/Messengers/MessengersLog'
+
 import Telegram from './views/Messengers/Telegram/Telegram'
 
 import RecoilToDoExample from './recoil/RecoilToDoExample'
@@ -187,6 +189,11 @@ export default function App() {
             path="/messengers/edit/:id"
             exact={true}
             component={MessengersEdit}
+          />
+          <Route
+            path="/messengers/log/:id"
+            exact={true}
+            component={MessengersLog}
           />
 
           <Route

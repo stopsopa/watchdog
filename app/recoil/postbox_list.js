@@ -66,10 +66,7 @@ export const PostboxListAtomMount = ({
 
     socket.on('postbox_delete', postbox_delete);
 
-    if (list.length === 0) {
-
-      socket.emit('postbox_list_atom_populate');
-    }
+    socket.emit('postbox_list_atom_populate');
 
     return () => {
 
