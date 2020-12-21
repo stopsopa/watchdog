@@ -237,36 +237,46 @@ function tool(db) {
 
       let esid = undefined;
 
-      let status = 'inserted';
-
       if (db.enabled) {
 
         try {
 
           ({
-            // esid,
-            status,
+            esid,
             body,
           } = await this.sent({...body}));
         }
         catch (e) {
 
-          esid = await this.insert({...body});
+          // insert just before thorow
+          // because it is important to save it but
+          // also handle it as an error because there was an error during sending message
+
+          ({
+            esid,
+            body,
+          } = await this.index({...body}));
 
           throw e;
         }
       }
+      else {
 
-      if ( ! esid ) {
-
-        esid = await this.insert(body);
+        ({
+          esid,
+          body,
+        } = await this.index({...body}));
       }
 
       return {
-        status,
         esid,
+        body,
       }
     },
+    /**
+     * If esid provided this method will update es document in es
+     * if not provided then insert
+     */
     sent: async function ({
       esid,
       ...body
@@ -291,11 +301,17 @@ function tool(db) {
 
       const users = await this.getUsers();
 
-      const sent_to = [];
+      const log = [];
+
+      let status = 'sent';
 
       for ( let user of users ) {
 
         const udb = user.toJSON();
+
+        log.dump({
+          udb,
+        }, 10);
 
         const data = {id: udb.id};
 
@@ -312,59 +328,99 @@ function tool(db) {
             }
             catch (e) {
 
+              // if catch then change status to error !!! IT'S MANDATORY
+              status = 'errors';
+
               data.telegram_error = String(e);
             }
           }
         }());
 
-        sent_to.push(data);
+        log.push(data);
       }
 
-      body.sent_to = sent_to;
+      body.log      = log;
 
-      body.sent = new Date();
+      body.sent     = new Date();
+
+      body.status   = status;
+
+      ({
+        esid,
+        body,
+      } = await this.index(body, esid));
 
       return {
-        status: 'sent',
+        esid,
         body,
       }
     },
-    insert: async function (data) {
+    index: async function (body, esid) {
 
-      const esresult = await es(`/${index}/_doc/`, {
-        body: (function (body) {
-          if (isDate(body.created)) {
-            body.created = body.created.toISOString();
-          }
-          if (isDate(body.sent)) {
-            body.sent = body.sent.toISOString();
-          }
-          return body;
-        }({...data})),
-      });
+      // this will change in place
+      if ( ! /^(sent|errors)$/.test(body.status) ) {
+
+        body.status = 'suspended';
+      }
+
+      const esresult = await es(
+        `/${index}/_doc/${esid || ''}`,
+        {
+          method: esid ? 'PUT': 'POST',
+          body: (function (body) {
+
+            // those are changes made just for insert purposes
+            // deliberately on copy in closure
+
+            if (isDate(body.created)) {
+
+              body.created = body.created.toISOString();
+            }
+
+            if (isDate(body.sent)) {
+
+              body.sent = body.sent.toISOString();
+            }
+
+            return body;
+          }({...body})),
+        }
+      );
 
       if ( ! Number.isInteger(esresult.status) || (esresult.status < 200 || esresult.status > 299)) {
 
         log.dump({
           messenger_id: db.id,
-          insert_es_insert_status_error: esresult,
+          method: esid ? 'PUT': 'POST',
+          esid,
+          index_es_status_error: esresult,
         }, 10)
 
-        throw th(`es insert error`);
+        throw th(`es index error`);
       }
 
-      let esid = null
+      // log.dump({
+      //   method: esid ? 'PUT': 'POST',
+      //   esid,
+      //   esresult
+      // }, 10)
 
-      try {
+      if ( ! esid ) {
 
-        if (typeof esresult.body._id === 'string') {
+        try {
 
-          esid = esresult.body._id;
+          if (typeof esresult.body._id === 'string') {
+
+            esid = esresult.body._id;
+          }
         }
+        catch (e) {}
       }
-      catch (e) {}
 
-      return esid;
+      return {
+        esid,
+        body,
+      };
     },
     find: async function (esid) {
 

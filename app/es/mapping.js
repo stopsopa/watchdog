@@ -34,11 +34,14 @@ module.exports = [
                     "messenger_id": {
                         "type": "keyword"
                     },
-                    "sent_to": {
+                    "log": {
                         "type": "nested"
                     },
                     "sent": {
                         "type": "date"
+                    },
+                    "status": { // suspended (default), sent, errors
+                        "type": "keyword"
                     },
                     "created": {
                         "type": "date"
