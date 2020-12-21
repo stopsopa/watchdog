@@ -199,28 +199,51 @@ module.exports = ({
     }
     catch (e) {
 
-      if (String(e).includes(`a foreign key constraint fails`)) {
+      let user_group = 'empty';
 
-        let list = await man.queryColumn(`select group_concat(group_id) g from user_group where user_id = :id`, {
+      let postbox_user = 'empty';
+
+      let error = `Server error`;
+
+      if (String(e).includes(`user_group`)) {
+
+        user_group = await man.queryColumn(`select group_concat(group_id) g from user_group where user_id = :id`, {
           id,
         });
 
-        list = (list || '').split(',').map(u => parseInt(u, 10)).filter(Boolean);
+        user_group = (user_group || '').split(',').map(u => parseInt(u, 10)).filter(Boolean);
 
-        socket.emit('users_delete', {
-          error: `First remove user from all groups ` + list.map(id => `<a href="/groups/${id}">${id}</a>`).join(', '),
-          found,
-          list,
-          miliseconds: 15 * 1000
-        });
-      }
-      else {
+        if (user_group.length) {
 
-        socket.emit('users_delete', {
-          error: `Server error`,
-          found,
-        });
+          error = `First detach user from all groups `;
+
+          error += user_group.map(id => `<a href="/groups/${id}" target="_blank">${id}</a>`).join(', ');
+        }
       }
+
+      if (String(e).includes(`postbox_user`)) {
+
+        postbox_user = await man.queryColumn(`select group_concat(box_id) g from postbox_user where user_id = :id group by user_id`, {
+          id,
+        });
+
+        postbox_user = (postbox_user || '').split(',').map(u => parseInt(u, 10)).filter(Boolean);
+
+        if (postbox_user.length) {
+
+          error = `First detach this user from all listed messengers `;
+
+          error += postbox_user.map(id => `<a href="/messengers/edit/${id}" target="_blank">${id}</a>`).join(', ');
+        }
+      }
+
+      socket.emit('users_delete', {
+        error,
+        found,
+        user_group,
+        postbox_user,
+        miliseconds: 15 * 1000
+      });
 
       log.dump({
         users_delete_error: e,

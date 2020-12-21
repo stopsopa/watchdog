@@ -534,6 +534,7 @@ function tool(db) {
       if ( ! db.enabled ) {
 
         return logg.dump({
+          probe_id: db.id,
           passiveWatchdog: 'disabled - passiveWatchdog not triggered'
         });
       }

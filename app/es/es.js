@@ -13,6 +13,8 @@ const jsonfetch = require('../lib/jsonfetch');
 
 const th = msg => new Error(`es.js error: ${msg}`);
 
+const color = require('../lib/color');
+
 /**
  *
  * const estool = require('es');

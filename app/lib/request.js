@@ -100,7 +100,7 @@ module.exports = function request(url, opt = {}) {
         req.abort();
 
         reject({
-          type: 'timeout',
+          type: `timeout (${timeout}ms)`,
         })
       });
     });

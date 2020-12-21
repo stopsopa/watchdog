@@ -349,12 +349,13 @@ module.exports = async ({
     catch (e) {
 
       log.dump({
+        probe_id,
         probes_logs_selection_error: e,
       }, 2);
 
       e = String(e);
 
-      if (e.includes('can\'t extract response.body.hits.hits from que')) {
+      if (e.includes('can\'t extract response.body.hits.hits from queue')) {
 
         e = 'No results found for this dates range';
       }

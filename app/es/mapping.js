@@ -22,5 +22,29 @@ module.exports = [
                 }
             }
         }
+    },
+    {
+        "messengers": {
+            "settings": {
+                "number_of_shards": 1,
+                "number_of_replicas": 0
+            },
+            "mappings": {
+                "properties": {
+                    "messenger_id": {
+                        "type": "keyword"
+                    },
+                    "sent": {
+                        "type": "boolean"
+                    },
+                    "created": {
+                        "type": "date"
+                    },
+                    "log": {
+                        "type": "nested"
+                    },
+                }
+            }
+        }
     }
 ]

@@ -5,6 +5,8 @@ const mappings = require('./mapping');
 
 const log = require('inspc');
 
+const color = require('../lib/color');
+
 const putMapping = async (index, mapping) => {
 
     const es = estool();
@@ -104,13 +106,27 @@ const tool = async () => {
     }
 }
 
-tool.delete = async () => {
+tool.delete = async (index) => {
 
     // curl -XDELETE -H "Authorization: Basic xxx"  http://elastic.xxx.com/watchdog
 
     try {
 
-        console.log(`deleting index\n`)
+        if (typeof index !== 'string') {
+
+            console.log(color(`\n\n    specify index name with --delete argument\n\n`, 'r'))
+
+            process.exit(1);
+        }
+
+        if ( ! index.trim() ) {
+
+            console.log(color(`\n\n    value of --delete argument is an empty string\n\n`, 'r'))
+
+            process.exit(1);
+        }
+
+        console.log(color(`deleting index\n`), 'g')
 
         const es = estool();
 
@@ -121,16 +137,25 @@ tool.delete = async () => {
 
         for (let row of mappings) {
 
-            let index = (Object.keys(row))[0];
+            let idx = (Object.keys(row))[0];
 
-            index = es.prefix(index);
+            if (idx !== index) {
 
-            const response = await es(`/${index}`, {
+                console.log(color(`skipping index ${idx}`, 'y'))
+
+                continue;
+            }
+
+            console.log(color(`deleting index ${idx}`, 'r'))
+
+            idx = es.prefix(idx);
+
+            const response = await es(`/${idx}`, {
                 method: "DELETE",
             });
 
             log.dump({
-                path: `/${index}`,
+                path: `/${idx}`,
                 method: "DELETE",
                 response,
             }, 6)

@@ -135,7 +135,7 @@ module.exports = function jsonfetch (url, opt = {}) {
 
         req.abort();
 
-        reject(emsg(`timeout`))
+        reject(emsg(`timeout (${timeout}ms)`))
       });
     });
 

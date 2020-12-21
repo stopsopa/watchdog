@@ -199,9 +199,11 @@ const estool = (async function () {
 
   const es = estool();
 
-  if (process.argv.includes('--delete')) {
+  const i = process.argv.indexOf(`--delete`);
 
-    await ensureIndex.delete();
+  if (i > -1) {
+
+    await ensureIndex.delete(process.argv[i + 1]);
   }
   else {
 

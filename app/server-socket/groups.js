@@ -177,8 +177,35 @@ module.exports = ({
         groups_delete_error: e,
       }, 2);
 
+      let postbox_group = 'empty';
+
+      let error = `Server error`;
+
+      if (String(e).includes('postbox_group')) {
+
+        postbox_group = await man.queryColumn(`select group_concat(box_id) g from postbox_group pg where group_id = :id group by group_id`, {
+          id,
+        });
+
+        postbox_group = (postbox_group || '').split(',').map(u => parseInt(u, 10)).filter(Boolean);
+
+        if (postbox_group.length) {
+
+          error = `First detach this group from listed messengers: `;
+
+          error += postbox_group.map(id => ` <a href="/messengers/edit/${id}" target="_blank">${id}</a>`).join(', ');
+        }
+      }
+
+      if (String(e).includes('user_group')) {
+
+        error = `First detach all users from the group`;
+      }
+
       socket.emit('groups_delete', {
-        error: `First detach all users from the group`,
+        error,
+        postbox_group,
+        // error: `First detach all users from the group <br />and detach group from messengers `,
         found,
       })
     }
