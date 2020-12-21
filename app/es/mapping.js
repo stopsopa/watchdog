@@ -34,20 +34,25 @@ module.exports = [
                     "messenger_id": {
                         "type": "keyword"
                     },
-                    "log": {
+                    "data": { // data comming from body and query from http request
                         "type": "nested"
                     },
-                    "sent": {
-                        "type": "date"
-                    },
-                    "status": { // suspended (default), sent, errors
+                    "status": {
+                        // suspended (default)  - just logged, not sent
+                        // sent                 - sent successfully
+                        // errors               - sent but there were some errors
                         "type": "keyword"
                     },
-                    "created": {
+                    "sent": { // last attempt to sent - no matter if status = sent or errors
                         "type": "date"
                     },
-                    "data": {
+                    "log": {
+                        // detailed log object with key (user id) and value,
+                        // status of sending through particular channel
                         "type": "nested"
+                    },
+                    "created": { // when record was created - no matter if sent or not
+                        "type": "date"
                     },
                 }
             }
