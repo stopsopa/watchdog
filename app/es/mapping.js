@@ -34,13 +34,16 @@ module.exports = [
                     "messenger_id": {
                         "type": "keyword"
                     },
+                    "sent_to": {
+                        "type": "nested"
+                    },
                     "sent": {
-                        "type": "boolean"
+                        "type": "date"
                     },
                     "created": {
                         "type": "date"
                     },
-                    "log": {
+                    "data": {
                         "type": "nested"
                     },
                 }

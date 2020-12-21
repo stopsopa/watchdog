@@ -62,3 +62,22 @@ error_symbol: [string]
 level: DEBUG INFO WARNING+ ERROR CRITICAL [string]    
 
 created: [datetime]
+
+# deleting es index
+
+just run server specifying --delete parameter
+then run server normally to recreate index in new format
+
+```
+
+node server.js --delete messengers
+node server.js --delete watchdog
+```
+
+see mapping.js file
+
+# Requirements:
+
+- es version 7.6.0
+- node.js - look to .nvmrc
+- mysql version - docker image (see docker/docker-compose.yml file)

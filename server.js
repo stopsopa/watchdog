@@ -330,6 +330,41 @@ const estool = (async function () {
             es,
             io,
           });
+
+          // fetch('/messenger')
+
+          // fetch('/messenger/aaac?password=abc', {
+          //   method: 'post',
+          //   credentials: 'omit',
+          //   headers: {
+          //     "Content-type": "application/json; charset=utf-8"
+          //   },
+          //   body: JSON.stringify({a: 'b'})
+          // }).then(res => res.json()).then(data => console.log(data))
+
+          app.all(`/messenger/:name`, async (req, res) => {
+
+            const name = req.params.name;
+
+            try {
+
+              const messenger = driver.getBoxByName(name);
+
+              const data = await messenger.endpoint(req);
+
+              return res.json(data);
+            }
+            catch (e) {
+
+              log.dump({
+                messenger_endpoint_error: se(e)
+              });
+
+              return res.status(500).json({
+                error: String(e),
+              });
+            }
+          });
         }
         catch (e) {
 

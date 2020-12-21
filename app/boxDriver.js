@@ -242,6 +242,31 @@ tool.getBox = (id, _throw = true) => {
   return list[id];
 }
 
+tool.getBoxByName = (name, _throw = true) => {
+
+  if ( typeof name !== 'string' ) {
+
+    throw th(`getBoxByName() error: name is not a string`);
+  }
+
+  if ( ! name.trim() ) {
+
+    throw th(`getBoxByName() error: name is an empty string`);
+  }
+
+  const found = tool.getBoxesArray().find(b => (b && b.isName(name)));
+
+  if (_throw) {
+
+    if ( ! found ) {
+
+      throw th(`getBoxByName() error: messenger not found by name ${name}`);
+    }
+  }
+
+  return found;
+}
+
 tool.getBoxes = () => list;
 
 tool.getBoxesArray = () => Object.keys(list).map(key => list[key]);
