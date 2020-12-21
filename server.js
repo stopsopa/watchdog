@@ -333,6 +333,11 @@ const estool = (async function () {
 
           // fetch('/messenger')
 
+          // await fetch('/messenger/test?password=testtest&test=100').then(p => p.json())
+
+          // https://stopsopa.github.io/pages/bash/index.html?admin:password#basic-auth-generator
+          // WARNING: USE PROTECTED_ES_DEFAULT_USERNAME & PROTECTED_ES_DEFAULT_PASSWORD FROM .env
+
           // fetch('/messenger/aaac?password=abc', {
           //   method: 'post',
           //   credentials: 'omit',
@@ -341,6 +346,13 @@ const estool = (async function () {
           //   },
           //   body: JSON.stringify({a: 'b'})
           // }).then(res => res.json()).then(data => console.log(data))
+
+          // curl -XPOST -H "authorization: Basic xxxxxx" -H 'Content-Type: application/json' 'elastic.xxxx.com/watchdog_messengers/_search?format=yaml' -d '
+          // {
+          //   "query": { "term" : {"messenger_id" : 1} },
+          //   "sort": { "created": { "order": "desc" } },
+          //   "size": 1
+          // }'
 
           app.all(`/messenger/:name`, async (req, res) => {
 
