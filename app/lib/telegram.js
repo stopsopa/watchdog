@@ -116,7 +116,7 @@ Object {
  * https://core.telegram.org/bots/api#sendmessage
  * https://core.telegram.org/bots/api#markdown-style
  FORMATTING:
- https://i.imgur.com/Uqc5ukf.png
+ https://gist.github.com/stopsopa/f1bf716478283192dcdf6cfa7ffd5bb3
  https://core.telegram.org/bots/api#formatting-options
 
 
@@ -137,6 +137,13 @@ tool.sendMessage = (opt = {}) => {
     chat_id,
     ...rest
   } = opt || {};
+
+  const parse_mode = opt.parse_mode;
+
+  if (parse_mode === 'MarkdownV2' && typeof rest.text === 'string') {
+
+    rest.text = MarkdownV2fix(rest.text)
+  }
 
   if ( ! (typeof chat_id === 'string' || typeof chat_id === 'number') ) {
 
@@ -266,10 +273,10 @@ tool.telegram_get_bot_info = async () => {
 tool.middleware = async (data = {}) => {
 
   const help = `
-I'm not programmed to take part in the conversation \\(yet\\)\\. 
+[[I'm not programmed to take part in the conversation (yet).]]
 The only commands that I understand are:
-/myid \\- return details about your account \\(most importantly user ID\\)
-/start \\- help
+/myid [[- return details about your account (most importantly user ID)]]
+/start [[- help]]
 `
 
   try {
@@ -294,18 +301,16 @@ The only commands that I understand are:
 
           let username = data?.body?.message?.from?.username ?? '';
 
-          username = username.replace(/_/g, '\\_');
-
           await tool.sendMessage({
             chat_id: senderId,
             text: `
 👤 You
- ├ *id*: \`${senderId}\`
- ├ *is\\_bot*: \`${String(data?.body?.message?.from?.is_bot ?? '[no is bot flag]')}\`
- ├ *first\\_name*: \`${data?.body?.message?.from?.first_name ?? '[no first name]'}\`
- ├ *last\\_name*: \`${data?.body?.message?.from?.last_name ?? '[no last name]'}\` 
- ├ *username*: \`${username || '[no username]'}\` 
- └ *link*: [https://t\\.me/${username}](https://t\\.me/${username}) 
+ ├ *id*: \`[[${senderId}]]\`
+ ├ *[[is_bot]]*: \`[[${String(data?.body?.message?.from?.is_bot ?? '[no is bot flag]')}]]\`
+ ├ *[[first_name]]*: \`[[${data?.body?.message?.from?.first_name ?? '[no first name]'}]]\`
+ ├ *[[last_name]]*: \`[[${data?.body?.message?.from?.last_name ?? '[no last name]'}]]\` 
+ ├ *username*: \`[[${username || '[no username]'}]]\` 
+ └ *link*: [[[https://t.me/${username}]]]([[https://t.me/${username}]]) 
           `,
             parse_mode: 'MarkdownV2',
             disable_web_page_preview: true,
@@ -328,20 +333,16 @@ The only commands that I understand are:
 
             let first_name = tool.getTelegramNodeServerStatus().getMe.first_name;
 
-            username = username.replace(/_/g, '\\_');
-
-            first_name = first_name.replace(/_/g, '\\_');
-
             text = `
-🤖 Hi I'm the bot and my name is '${first_name}' and this is my official share link:
-[https://t\\.me/${username}](https://t\\.me/${username})
-Tip: Use right mouse click and "Copy Link" \\- it might not work when clicked here on the chat\\.
+[[🤖 Hi I'm the bot and my name is '${first_name}' and this is my official share link:]]
+[[[https://t.me/${username}]]]([[https://t.me/${username}]])
+[[Tip: Use right mouse click and "Copy Link" - it might not work when clicked here on the chat.]]
 
 ${help}`
           }
           catch (e) {
 
-            text = `Error: Can't extract tool\\.getTelegramNodeServerStatus\\(\\)\\.getMe\\.username`
+            text = `[[Error: Can't extract tool.getTelegramNodeServerStatus().getMe.username]]`
           }
 
           await tool.sendMessage({
@@ -476,3 +477,10 @@ tool.config = opt => {
 }());
 
 module.exports = tool;
+
+function MarkdownV2fix(text) {
+  return text.replace(
+    /\[\[([^\[][\s\S]*?)\]\]/g,
+    (a, b) => b.replace(/([\.\(\)\*\+-_`>=#|{}!~])/g, '\\$1')
+  )
+}

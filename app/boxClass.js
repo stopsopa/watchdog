@@ -27,9 +27,15 @@ const groupsDriver = require('./groupsDriver');
 
 const usersDriver = require('./usersDriver');
 
+const telegram = require('./lib/telegram')
+
+const {
+  sendMessage,
+} = telegram;
+
 const th = (msg, data) => {
 
-  const e = new Error(`boxClass.js error: ${msg} `);
+  const e = new Error(`boxClass.js error: ${msg}`);
 
   if (data) {
 
@@ -197,24 +203,19 @@ function tool(db) {
         throw th(`endpoint(): password is an empty string`);
       }
 
-      const data = {
-        query: {},
-        body: {},
-      };
+      let data = {};
 
       if (isObject(req.query)) {
 
-        data.query = {...req.query};
+        data = {...data, ...req.query};
       }
 
       if (isObject(req.body)) {
 
-        data.body = {...req.body};
+        data = {...data, ...req.body};
       }
 
-      delete data.query.password;
-
-      delete data.body.password;
+      delete data.password;
 
       // log.dump({
       //   password,
@@ -299,7 +300,7 @@ function tool(db) {
 
       const users = await this.getUsers();
 
-      const log = [];
+      const _log = {};
 
       let status = 'sent';
 
@@ -307,37 +308,62 @@ function tool(db) {
 
         const udb = user.toJSON();
 
-        log.dump({
-          udb,
-        }, 10);
+                  log.dump({
+                    udb,
+                  }, 10);
 
-        const data = {id: udb.id};
+        const data = {user_id: udb.id};
 
         // telegram
         await (async function () {
 
           const config = udb.config.telegram;
 
-          if (config && config.id) {
+          if (config && typeof config.id === 'string') {
+          // if (config && typeof config.id === 'string' && false) {
 
             try {
 
-              data.telegram_sent = config.id;
+              let res = await sendMessage({
+                chat_id: config.id,
+                text: `
+test message *bold* [[[https://google.com]]]([[https://google.com]])  
+          `,
+                parse_mode: 'MarkdownV2',
+                disable_web_page_preview: true,
+                // disable_notification: false,
+              });
+
+              if (res.body.ok && res.status === 200) {
+
+                data.telegram_sent = 'sent';
+              }
+              else {
+
+                data.telegram_error = res;
+              }
             }
             catch (e) {
 
-              // if catch then change status to error !!! IT'S MANDATORY
-              status = 'errors';
-
-              data.telegram_error = String(e);
+              data.telegram_error = se(e);
             }
+          }
+          else {
+
+            data.telegram_error = 'telegram id not defined';
+          }
+
+          if (data.telegram_error) {
+
+            // if catch then change status to error !!! IT'S MANDATORY
+            status = 'errors';
           }
         }());
 
-        log.push(data);
+        _log[udb.id] = data;
       }
 
-      body.log      = log;
+      body.log      = _log;
 
       body.sent     = new Date();
 
@@ -353,45 +379,69 @@ function tool(db) {
         body,
       }
     },
-    index: async function (body, esid) {
+    index: async function (data, esid) {
 
       // this will change in place
-      if ( ! /^(sent|errors)$/.test(body.status) ) {
+      if ( ! /^(sent|errors)$/.test(data.status) ) {
 
-        body.status = 'suspended';
+        data.status = 'suspended';
       }
 
-      const esresult = await es(
-        `/${index}/_doc/${esid || ''}`,
-        {
-          method: esid ? 'PUT': 'POST',
-          body: (function (body) {
+// #curl -XPOST -H "authorization: Basic a2liYW5hZXM6Yz5QaS1dKyo2fnI6WEVxVTxqW10=" -H 'Content-Type: application/json'
+// 'elastic.phaseiilabs.com/watchdog_test_watchdog/_update/pmzAQHUB0Hp5v4hrbDr7?format=yaml' -d '
+// #{
+// #    "doc": {
+// #        "probe": false
+// #    }
+// #}'
+//
+      let body = (function (body) {
 
-            // those are changes made just for insert purposes
-            // deliberately on copy in closure
+        // those are changes made just for insert purposes
+        // deliberately on copy in closure
 
-            if (isDate(body.created)) {
+        if (isDate(body.created)) {
 
-              body.created = body.created.toISOString();
-            }
-
-            if (isDate(body.sent)) {
-
-              body.sent = body.sent.toISOString();
-            }
-
-            return body;
-          }({...body})),
+          body.created = body.created.toISOString();
         }
-      );
+
+        if (isDate(body.sent)) {
+
+          body.sent = body.sent.toISOString();
+        }
+
+        return body;
+      }({...data}))
+
+      let url = `/${index}`;
+
+      if (esid) {
+
+        url += `/_update/${esid || ''}`
+
+        body = {
+          doc: body,
+        }
+      }
+      else {
+
+        url += `/_doc/`
+      }
+
+      const esresult = await es(url, {
+        body,
+      });
 
       if ( ! Number.isInteger(esresult.status) || (esresult.status < 200 || esresult.status > 299)) {
 
         log.dump({
           messenger_id: db.id,
-          method: esid ? 'PUT': 'POST',
           esid,
           index_es_status_error: esresult,
+          request: {
+            url,
+            body,
+          }
         }, 10)
 
         throw th(`es index error`);

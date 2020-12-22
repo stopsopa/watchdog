@@ -17,7 +17,8 @@ module.exports = [
                         "type": "date"
                     },
                     "log": {
-                        "type": "nested"
+                        "type": "nested",
+                        "enabled": false, // https://stackoverflow.com/a/45750679
                     },
                 }
             }
@@ -35,7 +36,9 @@ module.exports = [
                         "type": "keyword"
                     },
                     "data": { // data comming from body and query from http request
-                        "type": "nested"
+                        "type": "nested",
+                        // "ignore_malformed": true,
+                        "enabled": false, // https://stackoverflow.com/a/45750679
                     },
                     "status": {
                         // suspended (default)  - just logged, not sent
@@ -49,7 +52,8 @@ module.exports = [
                     "log": {
                         // detailed log object with key (user id) and value,
                         // status of sending through particular channel
-                        "type": "nested"
+                        "type": "nested",
+                        "enabled": false, // https://stackoverflow.com/a/45750679
                     },
                     "created": { // when record was created - no matter if sent or not
                         "type": "date"
