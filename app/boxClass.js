@@ -227,11 +227,9 @@ function tool(db) {
         throw th(`endpoint(): db.password !== password`);
       }
 
-      let created = new Date();
-
       let body = {
         messenger_id  : db.id,
-        created,
+        created       : new Date(),
         data,
       };
 
