@@ -81,3 +81,39 @@ see mapping.js file
 - es version 7.6.0
 - node.js - look to .nvmrc
 - mysql version - docker image (see docker/docker-compose.yml file)
+
+# changing structure of index in es
+
+https://www.elastic.co/blog/reindex-is-coming
+ 
+investigate strucutre of index
+
+    curl -H "authorization: Basic xxx" 'elastic.xxx.com/watchdog_watchdog?format=yaml'
+    
+    curl -XPOST -H "authorization: Basic xxx" -H 'Content-Type: application/json' elastic.xxx.com/_reindex?pretty -d '{
+        "source": {
+            "index": "watchdog_watchdog"
+        },
+        "dest": {
+            "index": "watchdogg_watchdog"
+        }
+    }'
+    
+    watch "curl -H \"authorization: Basic xxx\" 'elastic.xxx.com/_cat/indices?v' | grep watch"
+
+when ready, then just clone index:
+https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-clone-index.html
+
+    curl -XPUT -H "authorization: Basic xxx" -H 'Content-Type: application/json' elastic.xxx.com/watchdog_watchdog/_settings -d '{
+        "settings": {
+            "index.blocks.write": false
+        }
+    }'
+
+    curl -XPOST -H "authorization: Basic xxx" elastic.xxx.com/source_index/_clone/target_index
+
+and remove old index:
+https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-delete-index.html
+
+    curl -XDELETE -H "authorization: Basic xxx" elastic.xxx.com/watchdog_watchdog
+
