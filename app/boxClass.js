@@ -177,7 +177,7 @@ function tool(db) {
     toJSON: function () {
       return {cls:'boxClass', ...dbNoCode};
     },
-    endpoint: async function (req) {
+    messageEndpointCheckPassword: async function (req) {
 
       let password = req.body.password;
 
@@ -215,8 +215,6 @@ function tool(db) {
         data = {...data, ...req.body};
       }
 
-      delete data.password;
-
       // log.dump({
       //   password,
       //   data,
@@ -227,6 +225,8 @@ function tool(db) {
 
         throw th(`endpoint(): db.password !== password`);
       }
+
+      delete data.password;
 
       let body = {
         messenger_id  : db.id,

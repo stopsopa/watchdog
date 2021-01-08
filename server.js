@@ -362,7 +362,7 @@ const estool = (async function () {
 
               const messenger = driver.getBoxByName(name);
 
-              const data = await messenger.endpoint(req);
+              const data = await messenger.messageEndpointCheckPassword(req);
 
               return res.json(data);
             }
