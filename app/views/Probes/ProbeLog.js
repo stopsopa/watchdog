@@ -703,6 +703,24 @@ export default function ProbeLog() {
     clockBridge = bridge();
   }
 
+  useEffect(() => {
+
+    function keydown(e) {
+
+      if (e.key === 'Backspace') {
+
+        history.push(`/projects/${pform.id}`)
+      }
+    }
+
+    document.addEventListener('keydown', keydown);
+
+    return () => {
+
+      document.removeEventListener('keydown', keydown);
+    }
+  }, []);
+
   (function () {
 
     if (scrollElement.current) {

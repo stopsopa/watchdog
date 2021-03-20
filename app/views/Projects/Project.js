@@ -71,6 +71,8 @@ import {
 
 export default function Project() {
 
+  const history = useHistory();
+
   const { id } = useParams();
 
   const [ deleting, setDeleting ] = useState(false);
@@ -119,6 +121,24 @@ export default function Project() {
     }
 
   }, []);
+
+  useEffect(() => {
+
+    function keydown(e) {
+
+      if (e.key === 'Backspace') {
+
+        history.push(`/projects`)
+      }
+    }
+
+    document.addEventListener('keydown', keydown);
+
+    return () => {
+
+      document.removeEventListener('keydown', keydown);
+    }
+  }, [])
 
   return (
     <div>
